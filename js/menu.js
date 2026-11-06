@@ -7,6 +7,7 @@
      id      -> parola breve senza spazi (serve per i link)
      nome    -> titolo mostrato sul sito
      nota    -> (facoltativo) frase sotto il titolo
+     tipo    -> illustrazione: "pizza", "calzone", "fritto", "bevanda", "dolce"
      piatti  -> elenco dei prodotti
 
    Ogni prodotto ha:
@@ -16,13 +17,51 @@
      tag          -> (facoltativo) uno o più tra:
                      "novita", "piccante", "vegetariana", "consigliata"
 
+   Facoltativo per ogni prodotto:
+     foto         -> percorso di una foto, es. "img/margherita.jpg"
+                     (se manca viene mostrata un'illustrazione)
+
    ATTENZIONE: prodotti e prezzi qui sotto sono di ESEMPIO.
    Sostituiscili con quelli reali della pizzeria.
    ========================================================= */
 
+/* ---------- DATI DELLA PIZZERIA ---------- */
+const CONFIG = {
+  nome: "Pizzeria Pallone",
+  telefono: "0823 460661",
+  whatsapp: "393887839516",            // solo numeri, con 39 davanti
+  indirizzo: "Via Circumvallazione, 21",
+  citta: "81020 Casapulla (CE)",
+  instagram: "pizzeriapallone",
+  email: "nicolapalma87@libero.it",
+
+  /* Orari: un elenco per giorno (0 = domenica ... 6 = sabato).
+     Ogni fascia è ["apertura", "chiusura"]. Giorno chiuso = [].
+     Lascia orari: null per non mostrare orari e stato "Aperto/Chiuso".
+     Esempio:
+     orari: {
+       0: [["18:30", "23:30"]],
+       1: [],
+       2: [["18:30", "23:30"]],
+       3: [["18:30", "23:30"]],
+       4: [["18:30", "23:30"]],
+       5: [["18:30", "00:00"]],
+       6: [["18:30", "00:00"]]
+     }, */
+  orari: null,
+
+  /* Consegna a domicilio: metti i numeri per mostrarli (null = non mostrare) */
+  consegna: {
+    attiva: true,
+    costo: null,        // es. 1.5
+    minimoOrdine: null  // es. 10
+  }
+};
+
 const MENU = [
   {
     id: "classiche",
+    tipo: "pizza",
     nome: "Pizze Classiche",
     piatti: [
       { nome: "Marinara", ingredienti: "Pomodoro, aglio, origano, olio EVO", prezzo: 4.0, tag: ["vegetariana"] },
@@ -37,6 +76,7 @@ const MENU = [
   },
   {
     id: "speciali",
+    tipo: "pizza",
     nome: "Pizze Speciali",
     nota: "Le creazioni della casa.",
     piatti: [
@@ -51,6 +91,7 @@ const MENU = [
   },
   {
     id: "calzoni",
+    tipo: "calzone",
     nome: "Calzoni e Fritte",
     piatti: [
       { nome: "Calzone al Forno", ingredienti: "Ricotta, salame, fior di latte, pomodoro", prezzo: 7.0 },
@@ -60,6 +101,7 @@ const MENU = [
   },
   {
     id: "fritti",
+    tipo: "fritto",
     nome: "Fritti",
     piatti: [
       { nome: "Crocchè di Patate", prezzo: 1.5, tag: ["vegetariana"] },
@@ -71,6 +113,7 @@ const MENU = [
   },
   {
     id: "bevande",
+    tipo: "bevanda",
     nome: "Bevande",
     piatti: [
       { nome: "Acqua naturale / frizzante", ingredienti: "0,5 L", prezzo: 1.0 },
@@ -81,6 +124,7 @@ const MENU = [
   },
   {
     id: "dolci",
+    tipo: "dolce",
     nome: "Dolci",
     piatti: [
       { nome: "Pizza alla Nutella", ingredienti: "Disco di pizza con Nutella e zucchero a velo", prezzo: 5.0, tag: ["vegetariana"] },

@@ -1,20 +1,25 @@
-# Pizzeria Pallone – Sito menù
+# Pizzeria Pallone – Sito menù e ordini
 
-Sito statico (HTML/CSS/JS, nessuna installazione necessaria) con il menù di Pizzeria Pallone, Casapulla.
+Sito statico, pensato prima di tutto per lo smartphone. Non serve nessuna installazione:
+basta pubblicare la cartella (GitHub Pages, Netlify, Vercel…).
 
-## Come modificare il menù
-Apri `js/menu.js`: ogni pizza è una riga con `nome`, `ingredienti`, `prezzo` e `tag`
-(`vegetariana`, `piccante`, `consigliata`, `novita`). Salva e ricarica la pagina.
+## Cosa fa
+- Menù con categorie fisse in alto, ricerca e filtri (vegetariane, piccanti, novità)
+- Sezione "I più amati" (prodotti con tag `consigliata` o `novita`)
+- Scheda prodotto con quantità e richieste particolari ("ben cotta", "senza origano"…)
+- Carrello sempre visibile in basso, salvato anche se si chiude la pagina
+- Scelta Asporto / Domicilio, nome, indirizzo, orario desiderato
+- **Invio dell'ordine già scritto su WhatsApp** al numero della pizzeria
+- Stato "Aperto / Chiuso" e tabella orari (se compilati)
+- Modalità scura automatica, installabile come app sul telefono
 
-> I prodotti e i prezzi attuali sono **di esempio**: sostituiscili con quelli reali.
+## Come modificare
+Tutto si cambia in **`js/menu.js`**:
+- `CONFIG` → telefono, WhatsApp, indirizzo, **orari**, costo e minimo di consegna
+- `MENU` → categorie e prodotti (`nome`, `ingredienti`, `prezzo`, `tag`, `foto` facoltativa)
+- `AGGIUNTE` → elenco delle aggiunte
 
-## Struttura
-- `index.html` – la pagina
-- `css/style.css` – grafica (colori del logo in cima al file)
-- `js/menu.js` – **il menù da modificare**
-- `js/app.js` – logica (categorie, ricerca)
-- `img/logo.png` – logo
+Le foto vanno nella cartella `img/` (consigliato: JPG/WebP quadrate, circa 600×600, sotto i 100 KB).
+Senza foto viene mostrata un'illustrazione automatica.
 
-## Vedere il sito
-Apri `index.html` nel browser. Per pubblicarlo gratis: GitHub Pages
-(Settings → Pages → branch principale), Netlify o Vercel.
+> I prodotti e i prezzi attuali sono **di esempio**: vanno sostituiti con quelli reali.
