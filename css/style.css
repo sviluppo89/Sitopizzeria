@@ -534,3 +534,5 @@ img.is-contain, .is-contain img { object-fit: contain !important; }
 .deal__txt small { opacity: .9; font-size: .86rem; }
 .deal__go { font-size: 1.8rem; line-height: 1; opacity: .9; }
 .ps__tags + .choices, .ps__tags + .ps__desc[hidden] + .ps__more[hidden] + .ps__allergens[hidden] + .choices { margin-top: 14px; }
+.footer__admin { font-size: .78rem; opacity: .6; text-decoration: none; display: inline-block; padding: 8px; }
+.footer__admin:hover { opacity: 1; text-decoration: underline; }
