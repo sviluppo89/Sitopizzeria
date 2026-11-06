@@ -1,28 +1,46 @@
 # Pizzeria Pallone – Sito menù e ordini
 
-Sito statico, pensato prima di tutto per lo smartphone. Non serve nessuna installazione:
-basta pubblicare la cartella (GitHub Pages, Netlify, Vercel…).
+Sito statico pensato per lo smartphone, con pagina di gestione (`admin.html`).
+Non serve un server né un abbonamento: il menù è il file `data/menu.json` nel repository
+e la pagina admin lo aggiorna tramite GitHub.
 
-## Cosa fa
-- Menù con categorie fisse in alto, ricerca e filtri (vegetariane, piccanti, novità)
-- Carosello "Le offerte" con il badge "Valida oggi" in base al giorno della settimana
-- Formati e gusti (es. 33 cl / 1,5 L, 5 / 10 pezzi) e opzione "Nel ruoto +2 €" per le pizze
-- Prodotti non disponibili mostrati ma non ordinabili
-- Scheda prodotto con quantità e richieste particolari ("ben cotta", "senza origano"…)
-- Carrello sempre visibile in basso, salvato anche se si chiude la pagina
-- Scelta Asporto / Domicilio, nome, indirizzo, orario desiderato
-- **Invio dell'ordine già scritto su WhatsApp** al numero della pizzeria
-- Stato "Aperto / Chiuso" e tabella orari (se compilati)
-- Modalità scura automatica, installabile come app sul telefono
+## Il sito (`index.html`)
+- Menù con categorie fisse in alto, ricerca e filtri
+- Carosello "Le offerte" con validità per giorni della settimana o per periodo
+- Formati e gusti, extra a pagamento (es. "Nel ruoto +2 €"), allergeni
+- Carrello e **invio dell'ordine già scritto su WhatsApp**
+- Stato "Aperto / Chiuso", avvisi in cima, pausa degli ordini online
+- Modalità scura automatica, installabile come app
 
-## Come modificare
-Tutto si cambia in **`js/menu.js`**:
-- `CONFIG` → telefono, WhatsApp, indirizzo, **orari**, costo e minimo di consegna
-- `MENU` → categorie e prodotti (tutti i campi sono spiegati in cima al file)
-- `AGGIUNTE` → elenco delle aggiunte
+## La pagina admin (`admin.html`)
+| Sezione | Cosa puoi fare |
+|---|---|
+| **Menù** | Aggiungere, modificare, duplicare, eliminare e riordinare prodotti e categorie. Segnare un prodotto come *esaurito* con un tocco. Nascondere senza cancellare. Foto, formati, etichette, allergeni, giorni |
+| **Offerte** | Creare offerte e promo con giorni della settimana e periodo (dal/al), attivarle e spegnerle |
+| **Negozio** | Pausa ordini online, avviso in cima al sito, orari, consegna (costo, minimo, zone), contatti, P.IVA |
+| **Altro** | Pubblicare, anteprima, annullare le modifiche, QR code del menù, copia di sicurezza |
 
-Se un giorno vuoi una foto per un prodotto, aggiungi `foto: "img/nome.webp"`: al posto del disegno comparirà la foto.
+Le modifiche restano in **bozza** sul dispositivo finché non premi **Pubblica**.
+Con l'occhio in alto vedi l'**anteprima** del sito con le modifiche.
 
-Il menù è stato importato da go.nordqr.com/pizzeria-pallone.
-Ogni prodotto è mostrato con un'illustrazione disegnata in automatico in base agli ingredienti.
-Se cambi il menù su NordQR, ricordati di aggiornare anche `js/menu.js`.
+### Primo accesso
+1. Crea un codice di accesso su GitHub (la pagina admin spiega i passaggi in "Come ottengo il codice di accesso?").
+   Serve il permesso **Contents: Read and write** solo sul repository *Sitopizzeria*.
+2. Apri `admin.html`, incolla il codice e premi **Entra**. Resta salvato su quel dispositivo.
+
+### Pubblicare il sito gratis
+Il pannello pubblica sul ramo `main` (si cambia in "Impostazioni avanzate" all'accesso).
+- **GitHub Pages**: Settings → Pages → Branch `main`. Con il piano gratuito il repository deve essere *pubblico*
+  (il contenuto è comunque il menù del sito; il codice di accesso non è mai nel repository).
+- In alternativa **Netlify** o **Cloudflare Pages** (gratuiti) funzionano anche con repository privato:
+  si collegano a GitHub e si aggiornano da soli a ogni pubblicazione.
+
+## Struttura
+- `index.html`, `css/style.css`, `js/app.js` – il sito
+- `admin.html`, `css/admin.css`, `js/admin.js` – la gestione
+- `js/art.js` – i disegni automatici dei prodotti
+- `data/menu.json` – menù, offerte e dati del negozio
+- `img/uploads/` – foto caricate dalla pagina admin
+
+Per provare in locale serve un piccolo server (il sito legge `data/menu.json`), ad esempio
+`python3 -m http.server`, poi apri http://localhost:8000
