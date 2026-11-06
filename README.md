@@ -21,8 +21,8 @@ Tutto si cambia in **`js/menu.js`**:
 - `MENU` → categorie e prodotti (tutti i campi sono spiegati in cima al file)
 - `AGGIUNTE` → elenco delle aggiunte
 
-Le foto vanno nella cartella `img/` (consigliato: JPG/WebP quadrate, circa 600×600, sotto i 100 KB).
-Senza foto viene mostrata un'illustrazione automatica.
+Se un giorno vuoi una foto per un prodotto, aggiungi `foto: "img/nome.webp"`: al posto del disegno comparirà la foto.
 
-Il menù e le foto (`img/menu/`) sono stati importati da go.nordqr.com/pizzeria-pallone.
+Il menù è stato importato da go.nordqr.com/pizzeria-pallone.
+Ogni prodotto è mostrato con un'illustrazione disegnata in automatico in base agli ingredienti.
 Se cambi il menù su NordQR, ricordati di aggiornare anche `js/menu.js`.

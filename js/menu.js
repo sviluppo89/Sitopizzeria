@@ -8,7 +8,7 @@
      id       -> parola breve senza spazi (serve per i link)
      nome     -> titolo mostrato sul sito
      tipo     -> illustrazione se manca la foto:
-                 "pizza", "calzone", "fritto", "bevanda", "dolce"
+                 "pizza", "offerta", "calzone", "fritto", "bevanda", "dolce"
      nota     -> (facoltativo) frase sotto il titolo
      foto     -> (facoltativo) foto sotto il titolo
      opzioni  -> (facoltativo) aggiunte con sovrapprezzo che il cliente
@@ -23,7 +23,7 @@
      varianti     -> (al posto di prezzo) formati/gusti con prezzo diverso,
                      es. [{ nome: "33 cl", prezzo: 2 }, { nome: "66 cl", prezzo: 3 }]
      tag          -> (facoltativo) ["piccante"], ["novita"], ["consigliata"], ["vegetariana"]
-     foto         -> (facoltativo) es. "img/menu/margherita.webp"
+     foto         -> (facoltativo) es. "img/margherita.webp"
      fotoIntera   -> true = mostra la foto senza ritagli (volantini)
      disponibile  -> false = prodotto visibile ma non ordinabile
      giorni       -> (offerte) giorni validi: 0 = domenica ... 6 = sabato
@@ -68,7 +68,7 @@ const MENU = [
   {
     id: "offerte",
     nome: "Le offerte",
-    tipo: "pizza",
+    tipo: "offerta",
     offerte: true,
     piatti: [
       { nome: "Today's Special", ingredienti: "Pizza Classic + patatina o alghe + bibita", prezzo: 8, giorni: [1, 3, 5], dettagli: "Pizza Classic a scelta tra: Napoletana, Marinara, Margherita, Bufala, Diavola, Siciliana, 4 Formaggi, Cosacca, USA, Crocchè, Parmigiana, Ripieni.", segnaposto: "Scrivi la pizza, patatina o alghe e la bibita" },
@@ -83,30 +83,30 @@ const MENU = [
     tipo: "pizza",
     opzioni: [{"nome": "Nel ruoto", "prezzo": 2}],
     piatti: [
-      { nome: "Margherita", ingredienti: "Pomodoro San Marzano, Fior di latte, Olio evo, Basilico", prezzo: 5, foto: "img/menu/margherita.webp" },
+      { nome: "Margherita", ingredienti: "Pomodoro San Marzano, Fior di latte, Olio evo, Basilico", prezzo: 5 },
       { nome: "Focaccia", ingredienti: "Olio evo, Origano", prezzo: 3 },
       { nome: "Napoletana", ingredienti: "Pomodoro San Marzano, Aglio, Origano, Olio Evo, Basilico", prezzo: 5 },
       { nome: "Marinara", ingredienti: "Pomodoro San Marzano, Alici di Cetara, Olive nere, Aglio, Olio evo, Basilico", prezzo: 5 },
-      { nome: "Cosacca", ingredienti: "Pomodoro San Marzano, Pecorino Romano, Olio evo, Basilico", prezzo: 6, foto: "img/menu/cosacca.webp" },
-      { nome: "Diavola", ingredienti: "Pomodoro San Marzano, Fior di latte, Salame piccante, Olio evo, Basilico", prezzo: 6, tag: ["piccante"], foto: "img/menu/diavola.webp" },
-      { nome: "Siciliana", ingredienti: "Pomodoro San Marzano, Fior di latte, Melanzane a funghetto, Grana Padano, Olio evo, Basilico", prezzo: 6.5, foto: "img/menu/siciliana.webp" },
-      { nome: "Marinara Gialla", ingredienti: "Pomodorini gialli, Capperi, Alici di Cetara, Olive nere, Aglio, Origano, Olio evo, Basilico", prezzo: 7, foto: "img/menu/marinara-gialla.webp" },
-      { nome: "Bufala", ingredienti: "Pomodoro San Marzano, Mozzarella di Bufala DOP, Olio Evo, Basilico", prezzo: 7, foto: "img/menu/bufala.webp" },
-      { nome: "Ortolana", ingredienti: "Fior di latte, Melanzane, Zucchine, Peperoni, Olio evo, Basilico", prezzo: 7, foto: "img/menu/ortolana.webp" },
-      { nome: "4 Formaggi", ingredienti: "Fior di latte, Gorgonzola DOP, Provola di Agerola, Parmigiano Reggiano, Olio evo, Basilico", prezzo: 7, foto: "img/menu/4-formaggi.webp" },
-      { nome: "USA", ingredienti: "Fior di latte, Würstel, Patatine stick, Olio evo", varianti: [{"nome": "Piccola", "prezzo": 7}, {"nome": "Media", "prezzo": 8}, {"nome": "Grande", "prezzo": 8}], foto: "img/menu/usa.webp" },
-      { nome: "Mimosa", ingredienti: "Fior di latte, Prosciutto cotto alla brace, Mais, Panna, Olio evo, Basilico", prezzo: 7, foto: "img/menu/mimosa.webp" },
+      { nome: "Cosacca", ingredienti: "Pomodoro San Marzano, Pecorino Romano, Olio evo, Basilico", prezzo: 6 },
+      { nome: "Diavola", ingredienti: "Pomodoro San Marzano, Fior di latte, Salame piccante, Olio evo, Basilico", prezzo: 6, tag: ["piccante"] },
+      { nome: "Siciliana", ingredienti: "Pomodoro San Marzano, Fior di latte, Melanzane a funghetto, Grana Padano, Olio evo, Basilico", prezzo: 6.5 },
+      { nome: "Marinara Gialla", ingredienti: "Pomodorini gialli, Capperi, Alici di Cetara, Olive nere, Aglio, Origano, Olio evo, Basilico", prezzo: 7 },
+      { nome: "Bufala", ingredienti: "Pomodoro San Marzano, Mozzarella di Bufala DOP, Olio Evo, Basilico", prezzo: 7 },
+      { nome: "Ortolana", ingredienti: "Fior di latte, Melanzane, Zucchine, Peperoni, Olio evo, Basilico", prezzo: 7 },
+      { nome: "4 Formaggi", ingredienti: "Fior di latte, Gorgonzola DOP, Provola di Agerola, Parmigiano Reggiano, Olio evo, Basilico", prezzo: 7 },
+      { nome: "USA", ingredienti: "Fior di latte, Würstel, Patatine stick, Olio evo", varianti: [{"nome": "Piccola", "prezzo": 7}, {"nome": "Media", "prezzo": 8}, {"nome": "Grande", "prezzo": 8}] },
+      { nome: "Mimosa", ingredienti: "Fior di latte, Prosciutto cotto alla brace, Mais, Panna, Olio evo, Basilico", prezzo: 7 },
       { nome: "Parmigiana", ingredienti: "Pomodoro San Marzano, Fior di latte, Parmigiana di melanzane, Parmigiano Reggiano, Olio evo, Basilico", prezzo: 7 },
       { nome: "Crocchè", ingredienti: "Fior di latte, Crocchè Home Made, Prosciutto cotto alla brace, Olio evo, Basilico", prezzo: 8 },
       { nome: "O' Nonno", ingredienti: "Fior di latte, Salsiccia fresca, Patate al forno, Olio evo, Basilico", prezzo: 8 },
-      { nome: "Tropea", ingredienti: "Fior di latte, Tonno, Cipolla rossa di Tropea IGP, Olio evo, Basilico", prezzo: 8, foto: "img/menu/tropea.webp" },
-      { nome: "DOC", ingredienti: "Datterini rossi, Mozzarella di bufala DOP, Olio evo, Basilico", prezzo: 8, foto: "img/menu/doc.webp" },
-      { nome: "Capricciosa", ingredienti: "Pomodoro San Marzano, Fior di latte, Prosciutto cotto alla brace, Salame dolce, Olive nere, Carciofini, Funghi, Olio evo, Basilico", prezzo: 8, foto: "img/menu/capricciosa.webp" },
-      { nome: "Carabiniera", ingredienti: "Pomodoro San Marzano, Mozzarella di bufala DOP, Salame piccante, Olive nere, Origano, Olio evo, Basilico", prezzo: 8, tag: ["piccante"], foto: "img/menu/carabiniera.webp" },
-      { nome: "Mediterranea", ingredienti: "Fior di latte, Pomodorini, Rucola, Prosciutto crudo, Parmigiano Reggiano, Olio evo", prezzo: 8, foto: "img/menu/mediterranea.webp" },
+      { nome: "Tropea", ingredienti: "Fior di latte, Tonno, Cipolla rossa di Tropea IGP, Olio evo, Basilico", prezzo: 8 },
+      { nome: "DOC", ingredienti: "Datterini rossi, Mozzarella di bufala DOP, Olio evo, Basilico", prezzo: 8 },
+      { nome: "Capricciosa", ingredienti: "Pomodoro San Marzano, Fior di latte, Prosciutto cotto alla brace, Salame dolce, Olive nere, Carciofini, Funghi, Olio evo, Basilico", prezzo: 8 },
+      { nome: "Carabiniera", ingredienti: "Pomodoro San Marzano, Mozzarella di bufala DOP, Salame piccante, Olive nere, Origano, Olio evo, Basilico", prezzo: 8, tag: ["piccante"] },
+      { nome: "Mediterranea", ingredienti: "Fior di latte, Pomodorini, Rucola, Prosciutto crudo, Parmigiano Reggiano, Olio evo", prezzo: 8 },
       { nome: "Cacio e Gusto", ingredienti: "Fior di latte, Pancetta, Zucchine, Pecorino Romano, Olio evo", prezzo: 8 },
-      { nome: "Cetara", ingredienti: "Mozzarella di bufala DOP, Pomodorini, Alici di Cetara, Olive nere, Olio evo", prezzo: 8, foto: "img/menu/cetara.webp" },
-      { nome: "Laura", ingredienti: "Mozzarella di bufala DOP, Salame piccante, Patate al forno, Olio evo, Basilico", prezzo: 8, tag: ["piccante"], foto: "img/menu/laura.webp" },
+      { nome: "Cetara", ingredienti: "Mozzarella di bufala DOP, Pomodorini, Alici di Cetara, Olive nere, Olio evo", prezzo: 8 },
+      { nome: "Laura", ingredienti: "Mozzarella di bufala DOP, Salame piccante, Patate al forno, Olio evo, Basilico", prezzo: 8, tag: ["piccante"] },
       { nome: "Ariccia", ingredienti: "Crema di patate, Provola di Agerola, Porchetta Ariccia artigianale, Parmigiano Reggiano, Olio evo, Basilico", prezzo: 8 },
       { nome: "Ninja", ingredienti: "Fior di latte, Gorgonzola DOP, Provola, Parmigiano reggiano, Salame piccante", prezzo: 9, tag: ["piccante"] },
       { nome: "Ross", ingredienti: "Provola, Pomodori gialli e rossi, Pepe", prezzo: 9 },
