@@ -71,10 +71,10 @@ const MENU = [
     tipo: "pizza",
     offerte: true,
     piatti: [
-      { nome: "Today's Special", ingredienti: "Pizza Classic + patatina o alghe + bibita", prezzo: 8, giorni: [1, 3, 5], fotoIntera: true, dettagli: "Pizza Classic a scelta tra: Napoletana, Marinara, Margherita, Bufala, Diavola, Siciliana, 4 Formaggi, Cosacca, USA, Crocchè, Parmigiana, Ripieni.", segnaposto: "Scrivi la pizza, patatina o alghe e la bibita", foto: "img/menu/today-s-special.webp" },
-      { nome: "Scrigno Party", ingredienti: "Scrigno o pizza special + patatina o alghe + bibita", prezzo: 9.99, giorni: [1, 3, 5], fotoIntera: true, segnaposto: "Scrivi lo scrigno o la pizza, patatina o alghe e la bibita", foto: "img/menu/scrigno-party.webp" },
-      { nome: "Crazy Sunday", ingredienti: "Una selezione di pizze del menù a 5 €", prezzo: 5, giorni: [0], fotoIntera: true, segnaposto: "Quale pizza dell'offerta?", foto: "img/menu/crazy-sunday.webp" },
-      { nome: "Give Me 5", ingredienti: "Una selezione di pizze del menù a 5 €", prezzo: 5, giorni: [4, 0], fotoIntera: true, segnaposto: "Quale pizza dell'offerta?", foto: "img/menu/give-me-5.webp" }
+      { nome: "Today's Special", ingredienti: "Pizza Classic + patatina o alghe + bibita", prezzo: 8, giorni: [1, 3, 5], dettagli: "Pizza Classic a scelta tra: Napoletana, Marinara, Margherita, Bufala, Diavola, Siciliana, 4 Formaggi, Cosacca, USA, Crocchè, Parmigiana, Ripieni.", segnaposto: "Scrivi la pizza, patatina o alghe e la bibita" },
+      { nome: "Scrigno Party", ingredienti: "Scrigno o pizza special + patatina o alghe + bibita", prezzo: 9.99, giorni: [1, 3, 5], segnaposto: "Scrivi lo scrigno o la pizza, patatina o alghe e la bibita" },
+      { nome: "Crazy Sunday", ingredienti: "Una selezione di pizze del menù a 5 €", prezzo: 5, giorni: [0], segnaposto: "Quale pizza dell'offerta?" },
+      { nome: "Give Me 5", ingredienti: "Una selezione di pizze del menù a 5 €", prezzo: 5, giorni: [4, 0], segnaposto: "Quale pizza dell'offerta?" }
     ]
   },
   {
@@ -107,7 +107,7 @@ const MENU = [
       { nome: "Cacio e Gusto", ingredienti: "Fior di latte, Pancetta, Zucchine, Pecorino Romano, Olio evo", prezzo: 8 },
       { nome: "Cetara", ingredienti: "Mozzarella di bufala DOP, Pomodorini, Alici di Cetara, Olive nere, Olio evo", prezzo: 8, foto: "img/menu/cetara.webp" },
       { nome: "Laura", ingredienti: "Mozzarella di bufala DOP, Salame piccante, Patate al forno, Olio evo, Basilico", prezzo: 8, tag: ["piccante"], foto: "img/menu/laura.webp" },
-      { nome: "Ariccia", ingredienti: "Crema di patate, Provola di Agerola, Porchetta Ariccia artigianale, Parmigiano Reggiano, Olio evo, Basilico", prezzo: 8, foto: "img/menu/ariccia.webp" },
+      { nome: "Ariccia", ingredienti: "Crema di patate, Provola di Agerola, Porchetta Ariccia artigianale, Parmigiano Reggiano, Olio evo, Basilico", prezzo: 8 },
       { nome: "Ninja", ingredienti: "Fior di latte, Gorgonzola DOP, Provola, Parmigiano reggiano, Salame piccante", prezzo: 9, tag: ["piccante"] },
       { nome: "Ross", ingredienti: "Provola, Pomodori gialli e rossi, Pepe", prezzo: 9 },
       { nome: "Giulia", ingredienti: "Fior di latte, Prosciutto crudo, Pomodorini confit, Stracciata di bufala", prezzo: 9 },
@@ -131,10 +131,9 @@ const MENU = [
     nome: "Pizze nel ruoto",
     tipo: "pizza",
     nota: "Tutte le pizze del menù si possono avere anche nel ruoto con 2 € in più: scegli \"Nel ruoto\" quando aggiungi la pizza.",
-    foto: "img/menu/pizze-nel-ruoto.webp",
     piatti: [
       { nome: "Pietro NY", ingredienti: "Pomodoro San Marzano, Fior di latte, Salame piccante, Miele, Olio e basilico", prezzo: 10, tag: ["piccante"] },
-      { nome: "Mary Piennolo", ingredienti: "Pomodorini del piennolo, Alici di Cetara, Olive, Capperi, Aglio, Origano", prezzo: 10, foto: "img/menu/mary-piennolo.webp", disponibile: false },
+      { nome: "Mary Piennolo", ingredienti: "Pomodorini del piennolo, Alici di Cetara, Olive, Capperi, Aglio, Origano", prezzo: 10, disponibile: false },
       { nome: "LA “78”", ingredienti: "Sugo alla puttanesca, Tonno, Mozzarella di bufala, Basilico, Olio evo", prezzo: 10 },
       { nome: "Ciccio", ingredienti: "Salsiccia, Peperoni, Olive, Provola, Origano", prezzo: 10 }
     ]
@@ -144,10 +143,10 @@ const MENU = [
     nome: "I ripieni",
     tipo: "calzone",
     piatti: [
-      { nome: "Napoli", ingredienti: "Pomodoro San Marzano, Fior di latte, Salame dolce, Ricotta, Olio evo, Basilico", prezzo: 7, foto: "img/menu/ripieno-napoli.webp" },
-      { nome: "Classico", ingredienti: "Pomodoro San Marzano, Fior di latte, Prosciutto cotto alla brace, Funghi, Olio evo, Basilico", prezzo: 7, foto: "img/menu/ripieno-classico.webp" },
-      { nome: "Scarola", ingredienti: "Scarola, Capperi, Alici di Cetara, Olive nere, Olio evo, Basilico", prezzo: 6.5, foto: "img/menu/ripieno-scarola.webp" },
-      { nome: "Parmigiana", ingredienti: "Pomodoro San Marzano, Fior di latte, Parmigiana di melanzane, Prosciutto cotto alla brace, Parmigiano Reggiano, Olio evo, Basilico", prezzo: 7, foto: "img/menu/ripieno-parmigiana.webp" }
+      { nome: "Napoli", ingredienti: "Pomodoro San Marzano, Fior di latte, Salame dolce, Ricotta, Olio evo, Basilico", prezzo: 7 },
+      { nome: "Classico", ingredienti: "Pomodoro San Marzano, Fior di latte, Prosciutto cotto alla brace, Funghi, Olio evo, Basilico", prezzo: 7 },
+      { nome: "Scarola", ingredienti: "Scarola, Capperi, Alici di Cetara, Olive nere, Olio evo, Basilico", prezzo: 6.5 },
+      { nome: "Parmigiana", ingredienti: "Pomodoro San Marzano, Fior di latte, Parmigiana di melanzane, Prosciutto cotto alla brace, Parmigiano Reggiano, Olio evo, Basilico", prezzo: 7 }
     ]
   },
   {
@@ -159,8 +158,8 @@ const MENU = [
       { nome: "Scrigno Pulled Pork", ingredienti: "Ripieno aperto in crosta di parmigiano reggiano, Pulled pork, Provola di Agerola, Patate al forno al burro, salsa BBQ", prezzo: 9 },
       { nome: "Scrigno Bandidos", ingredienti: "Ripieno aperto in crosta di parmigiano reggiano, Fior di latte, Patatine Dippers, Bandidos, Salsa cheddar", prezzo: 8 },
       { nome: "Scrigno Bacoli", ingredienti: "Mozzarella di bufala, Pesto, Parmigiana di melanzane, Parmigiano", prezzo: 9 },
-      { nome: "Scrigno Poldo", ingredienti: "Polpettine di chianina, Würstel fritti, Patatine stick, Triplo cheddar, Maionese", prezzo: 9, foto: "img/menu/scrigno-poldo.webp" },
-      { nome: "Scrigno killer", ingredienti: "Fior di latte, Formaggio piccante, Salame piccante, Nuggets, Patatine, Salsa harissa", prezzo: 9, tag: ["piccante"], foto: "img/menu/scrigno-killer.webp" },
+      { nome: "Scrigno Poldo", ingredienti: "Polpettine di chianina, Würstel fritti, Patatine stick, Triplo cheddar, Maionese", prezzo: 9 },
+      { nome: "Scrigno killer", ingredienti: "Fior di latte, Formaggio piccante, Salame piccante, Nuggets, Patatine, Salsa harissa", prezzo: 9, tag: ["piccante"] },
       { nome: "Scrigno Vittorio", ingredienti: "Crema cacio e pepe, Porchetta, Provola, Patate al forno al burro", prezzo: 9 }
     ]
   },
@@ -180,7 +179,7 @@ const MENU = [
       { nome: "Crocchè", ingredienti: "Fatto in casa", prezzo: 1 },
       { nome: "Crocchè Ripieno", prezzo: 2 },
       { nome: "Frittelle alle alghe", ingredienti: "10 pezzi", prezzo: 2 },
-      { nome: "Frittatina fatta in casa", ingredienti: "Scegli il gusto", varianti: [{"nome": "Prosciutto cotto e besciamella", "prezzo": 2.5}, {"nome": "Cacio e pepe", "prezzo": 2.5}, {"nome": "Carne macinata e piselli", "prezzo": 2.5}], foto: "img/menu/frittatina-fatta-in-casa.webp" },
+      { nome: "Frittatina fatta in casa", ingredienti: "Scegli il gusto", varianti: [{"nome": "Prosciutto cotto e besciamella", "prezzo": 2.5}, {"nome": "Cacio e pepe", "prezzo": 2.5}, {"nome": "Carne macinata e piselli", "prezzo": 2.5}] },
       { nome: "Nuggets di pollo", varianti: [{"nome": "5 pezzi", "prezzo": 3}, {"nome": "10 pezzi", "prezzo": 5}] },
       { nome: "Bandidos di pollo", varianti: [{"nome": "5 pezzi", "prezzo": 3}, {"nome": "10 pezzi", "prezzo": 5}] },
       { nome: "Jalapeños piccanti", varianti: [{"nome": "3 pezzi", "prezzo": 3}, {"nome": "6 pezzi", "prezzo": 5}], tag: ["piccante"] },
