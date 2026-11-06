@@ -103,6 +103,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 /* ---------- Appbar ---------- */
 .appbar {
+  padding-inline: max(16px, calc((100% - 980px) / 2 + 16px)) !important;
   position: sticky; top: 0; z-index: 40;
   height: var(--appbar-h);
   display: flex; align-items: center; gap: 10px;
@@ -151,9 +152,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .hero__title { margin: 0; font-size: clamp(1.7rem, 7.4vw, 2.6rem); line-height: 1.08; font-weight: 900; letter-spacing: -.02em; }
 .hero__sub { margin: 10px 0 18px; font-size: .95rem; opacity: .85; max-width: 32ch; }
 .hero__logo {
-  display: none; width: 92px;
-  background: #fff; border-radius: 50%; padding: 34px 26px; box-shadow: var(--shadow-2);
-  aspect-ratio: 1; object-fit: contain;
+  display: none; width: 180px; aspect-ratio: 1; place-items: center;
+  background: #fff; border-radius: 50%; box-shadow: var(--shadow-2);
 }
 .hero__note { margin: 10px 2px 0; font-size: .85rem; opacity: .9; }
 
@@ -265,7 +265,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 .items { list-style: none; margin: 0; padding: 0; }
 .item {
-  position: relative; display: flex; gap: 14px; align-items: center;
+  position: relative; display: flex; gap: 14px; align-items: flex-start;
   padding: 14px 0; border-bottom: 1px solid var(--line);
 }
 .item:last-child { border-bottom: 0; }
@@ -287,7 +287,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 .item__art img { width: 100%; height: 100%; object-fit: cover; }
 .item__art svg { width: 82%; height: 82%; }
-.item__media .add { position: absolute; right: -6px; bottom: -6px; z-index: 2; }
+.item__media .add { position: absolute; right: 6px; bottom: 6px; z-index: 2; }
 
 .item.is-off .item__main, .item.is-off .item__art, .fcard.is-off .fcard__art { opacity: .55; }
 .item__main .badge { margin-left: 6px; vertical-align: 1px; }
@@ -478,11 +478,13 @@ img.is-contain, .is-contain img { object-fit: contain !important; }
 
 /* ---------- Tablet / desktop ---------- */
 @media (min-width: 760px) {
-  body { padding-bottom: 96px; }
+  body { padding-bottom: 0; }
+  body:has(#cartbar:not([hidden])) { padding-bottom: 96px; }
   .hero { padding-top: 20px; }
   .hero__card { padding: 40px; display: grid; grid-template-columns: 1fr 360px; gap: 0 40px; align-items: center; }
   .hero__card::after { width: 420px; height: 420px; right: -120px; top: -160px; }
-  .hero__logo { display: block; position: static; width: 180px; grid-row: span 2; justify-self: center; }
+  .hero__logo { display: grid; grid-row: span 2; justify-self: center; }
+  .hero__logo img { width: 70%; height: auto; }
   .hero__text { max-width: none; }
   .segmented { grid-column: 1; max-width: 420px; }
   .hero__note { grid-column: 1; }
