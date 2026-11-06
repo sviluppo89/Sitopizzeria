@@ -167,6 +167,7 @@
     d.info.ordini = d.info.ordini || { attivi: true, messaggioPausa: "" };
     d.info.consegna = d.info.consegna || { attiva: true, costo: null, minimoOrdine: null, zone: "" };
     d.promo = d.promo || [];
+    d.sconti = d.sconti || [];
     d.categorie = d.categorie || [];
     d.categorie.forEach((c) => { c.prodotti = c.prodotti || []; c.opzioni = c.opzioni || []; });
   }
@@ -234,7 +235,7 @@
     scrollTo(0, 0);
     if (v === "more") renderQR();
   }
-  function renderAll() { renderMenu(); renderPromo(); renderShop(); updateStatus(); }
+  function renderAll() { renderMenu(); renderPromo(); renderSconti(); renderShop(); updateStatus(); }
 
   /* =========================================================
      MENÙ
@@ -384,6 +385,158 @@
     toast(`Offerta "${o.titolo}" ${o.attiva ? "attivata" : "spenta"}`);
   });
   $("#add-promo").addEventListener("click", () => editPromo(-1));
+
+  /* =========================================================
+     SCONTI su prodotti e categorie
+     ========================================================= */
+  const scontoShort = (x) => x.tipo === "percentuale" ? `-${String(x.valore).replace(".", ",")}%` : x.tipo === "meno" ? `-${fmt(x.valore)}` : `a ${fmt(x.valore)}`;
+  const applySconto = (x, price) => {
+    const v = Number(x.valore) || 0;
+    const r = x.tipo === "percentuale" ? price * (1 - v / 100) : x.tipo === "meno" ? price - v : Math.min(price, v);
+    return Math.max(0, Math.round(r * 100) / 100);
+  };
+  // prodotti a cui si applica uno sconto
+  const scontoTargets = (x) => S.draft.categorie.flatMap((c) => c.prodotti
+    .filter((p) => (x.categorie || []).includes(c.id) || (x.prodotti || []).includes(p.id))
+    .map((p) => ({ p, c })));
+  function scontoTargetText(x) {
+    const cats = S.draft.categorie.filter((c) => (x.categorie || []).includes(c.id)).map((c) => c.nome);
+    const n = (x.prodotti || []).length;
+    return [...cats, n ? `${n} prodott${n === 1 ? "o" : "i"}` : ""].filter(Boolean).join(" + ") || "Nessun prodotto";
+  }
+  function renderSconti() {
+    const list = S.draft.sconti;
+    $("#sconti-list").innerHTML = list.length ? list.map((x, i) => {
+      const [st, cls] = promoStatus(x);
+      return `
+      <div class="pcard" data-i="${i}">
+        <button type="button" class="prod__open" data-act="edit">
+          <span class="thumb thumb--deal">${esc(scontoShort(x))}</span>
+          <span class="prod__txt">
+            <span class="prod__name">${esc(x.nome)}</span>
+            <span class="prod__sub"><span>${esc(scontoTargetText(x))}</span><span class="tag ${cls}">${esc(st)}</span></span>
+          </span>
+        </button>
+        <label class="prod__side"><input type="checkbox" class="switch" data-act="on" ${x.attiva !== false ? "checked" : ""} aria-label="Sconto ${esc(x.nome)} attivo"><span>${x.attiva !== false ? "Attivo" : "Spento"}</span></label>
+      </div>`;
+    }).join("") : '<p class="empty-hint">Nessuno sconto. Creane uno, ad esempio "Lunedì classiche a 5 €".</p>';
+  }
+  $("#sconti-list").addEventListener("click", (e) => {
+    const b = e.target.closest('[data-act="edit"]'); if (!b) return;
+    editSconto(+b.closest(".pcard").dataset.i);
+  });
+  $("#sconti-list").addEventListener("change", (e) => {
+    if (e.target.dataset.act !== "on") return;
+    const x = S.draft.sconti[+e.target.closest(".pcard").dataset.i];
+    x.attiva = e.target.checked; saveDraft(); renderSconti();
+    toast(`Sconto "${x.nome}" ${x.attiva ? "attivato" : "spento"}`);
+  });
+  $("#add-sconto").addEventListener("click", () => editSconto(-1));
+
+  function editSconto(i) {
+    const isNew = i < 0;
+    const x = isNew
+      ? { id: uid("sconto"), nome: "", testo: "", tipo: "prezzo", valore: null, categorie: [], prodotti: [], giorni: [], dal: "", al: "", attiva: true }
+      : clone(S.draft.sconti[i]);
+    const TIPO = [["prezzo", "Prezzo fisso", "Es. tutte a 5 €"], ["percentuale", "Sconto %", "Es. -20%"], ["meno", "Sconto €", "Es. -1 € su ognuna"]];
+    const picker = S.draft.categorie.map((c) => {
+      const allOn = (x.categorie || []).includes(c.id);
+      const sel = c.prodotti.filter((p) => allOn || (x.prodotti || []).includes(p.id)).length;
+      return `
+      <details data-cat="${esc(c.id)}">
+        <summary>${esc(c.nome)}<span class="cnt">${allOn ? "Tutta la categoria" : sel ? sel + " scelti" : ""}</span></summary>
+        <label class="pick pick--all"><input type="checkbox" data-allcat="${esc(c.id)}" ${allOn ? "checked" : ""}><span>Tutta la categoria <small>(anche i prodotti aggiunti in futuro)</small></span></label>
+        ${c.prodotti.map((p) => `
+        <label class="pick"><input type="checkbox" data-prod="${esc(p.id)}" ${allOn || (x.prodotti || []).includes(p.id) ? "checked" : ""} ${allOn ? "disabled" : ""}>
+          <span>${esc(p.nome)}</span><small>${priceText(p)}</small></label>`).join("")}
+      </details>`;
+    }).join("");
+    const html = `
+      ${panel("", `
+        ${fieldHTML("Nome dello sconto *", `<input type="text" name="nome" value="${esc(x.nome)}" placeholder="Es. Lunedì classiche a 5 €" required>`, "Lo vedono i clienti, quindi scrivilo in modo chiaro.")}
+        ${fieldHTML("Frase sotto il nome <small>(facoltativa)</small>", `<input type="text" name="testo" value="${esc(x.testo)}" placeholder="Es. Margherita, Marinara, Diavola e tante altre">`)}
+        ${switchHTML("attiva", "Sconto attivo", "", x.attiva !== false)}
+      `)}
+      ${panel("Che sconto?", `
+        <div class="seg" role="radiogroup" aria-label="Tipo di sconto">${TIPO.map(([v, l]) => `<label><input type="radio" name="tipo" value="${v}" ${x.tipo === v ? "checked" : ""}><span>${l}</span></label>`).join("")}</div>
+        ${fieldHTML(`<span id="val-label">Valore</span> *`, `<input type="text" name="valore" inputmode="decimal" value="${moneyInput(x.valore)}">`, '<span id="val-hint"></span>')}
+      `)}
+      ${panel("Su quali prodotti?", `
+        <p class="muted" style="font-size:.86rem">Scegli intere categorie o singoli prodotti.</p>
+        <div class="picker">${picker}</div>
+      `)}
+      ${panel("Quando vale", `
+        <div class="field"><span class="field__label">Giorni della settimana <small>(nessuno = tutti i giorni)</small></span>${chipsHTML("giorni", DAYS, x.giorni || [])}</div>
+        <div class="grid2">
+          ${fieldHTML("Dal <small>(facoltativo)</small>", `<input type="date" name="dal" value="${esc(x.dal)}">`)}
+          ${fieldHTML("Al <small>(facoltativo)</small>", `<input type="date" name="al" value="${esc(x.al)}">`)}
+        </div>
+      `)}
+      <div class="summary-box" id="sc-summary" aria-live="polite"></div>
+      ${isNew ? "" : `<div class="danger-zone">
+        <button type="button" class="btn btn--light" id="dup">Duplica</button>
+        <button type="button" class="btn btn--danger-ghost" id="del">Elimina sconto</button>
+      </div>`}`;
+
+    const read = (root) => {
+      const tipo = ($("input[name=tipo]:checked", root) || {}).value || "prezzo";
+      const categorie = $$("[data-allcat]:checked", root).map((i) => i.dataset.allcat);
+      const prodotti = $$("[data-prod]:checked:not(:disabled)", root).map((i) => i.dataset.prod);
+      return { ...x, tipo, categorie, prodotti, valore: parseMoney($("[name=valore]", root).value), giorni: checked(root, "giorni").map(Number) };
+    };
+    const refresh = (root) => {
+      const y = read(root);
+      $("#val-label", root).textContent = y.tipo === "prezzo" ? "Nuovo prezzo (€)" : y.tipo === "percentuale" ? "Percentuale di sconto (%)" : "Euro di sconto (€)";
+      $("#val-hint", root).textContent = y.tipo === "prezzo" ? "I prodotti che costano già meno restano al loro prezzo." : y.tipo === "percentuale" ? "Es. 20 = 20% in meno." : "Es. 1 = un euro in meno su ogni prodotto.";
+      $("[name=valore]", root).placeholder = y.tipo === "prezzo" ? "Es. 5" : y.tipo === "percentuale" ? "Es. 20" : "Es. 1";
+      $$("details[data-cat]", root).forEach((d) => {
+        const all = $("[data-allcat]", d).checked;
+        $$("[data-prod]", d).forEach((i) => { i.disabled = all; if (all) i.checked = true; });
+        const n = $$("[data-prod]:checked", d).length;
+        $(".cnt", d).textContent = all ? "Tutta la categoria" : n ? `${n} scelti` : "";
+      });
+      const t = scontoTargets(y);
+      const ok = typeof y.valore === "number";
+      const ex = ok ? t.slice(0, 4).map(({ p }) => {
+        const base = p.varianti && p.varianti.length ? p.varianti[0].prezzo : p.prezzo;
+        if (typeof base !== "number") return "";
+        const np = applySconto(y, base);
+        return `<li>${esc(p.nome)}: ${np < base ? `<s>${fmt(base)}</s> → <b>${fmt(np)}</b>` : `${fmt(base)} (resta uguale: costa già così)`}</li>`;
+      }).join("") : "";
+      $("#sc-summary", root).innerHTML = !t.length ? "Scegli almeno una categoria o un prodotto."
+        : `Si applica a <b>${t.length}</b> prodott${t.length === 1 ? "o" : "i"}${y.giorni.length ? ` ogni <b>${daysText(y.giorni)}</b>` : " tutti i giorni"}.${ex ? `<ul>${ex}${t.length > 4 ? "<li>…</li>" : ""}</ul>` : ""}`;
+    };
+
+    openEditor(isNew ? "Nuovo sconto" : x.nome, html, (root) => {
+      const y = read(root);
+      y.nome = $("[name=nome]", root).value.trim();
+      y.testo = $("[name=testo]", root).value.trim();
+      y.attiva = $("[name=attiva]", root).checked;
+      y.dal = $("[name=dal]", root).value; y.al = $("[name=al]", root).value;
+      if (!y.nome) { $("[name=nome]", root).setAttribute("aria-invalid", "true"); $("[name=nome]", root).focus(); toast("Scrivi il nome dello sconto.", true); return false; }
+      if (typeof y.valore !== "number" || (y.tipo === "percentuale" && y.valore > 100)) { $("[name=valore]", root).setAttribute("aria-invalid", "true"); $("[name=valore]", root).focus(); toast("Scrivi un valore valido.", true); return false; }
+      if (!y.categorie.length && !y.prodotti.length) { toast("Scegli almeno una categoria o un prodotto.", true); return false; }
+      if (y.dal && y.al && y.al < y.dal) { toast("La data di fine è prima di quella di inizio.", true); return false; }
+      if (isNew) S.draft.sconti.push(y); else S.draft.sconti[i] = y;
+      saveDraft(); renderSconti(); toast(isNew ? "Sconto creato" : "Modifiche salvate");
+    }, (root) => {
+      refresh(root);
+      root.addEventListener("change", () => refresh(root));
+      $("[name=valore]", root).addEventListener("input", (e) => { e.target.removeAttribute("aria-invalid"); refresh(root); });
+      if (isNew) setTimeout(() => $("[name=nome]", root).focus(), 50);
+      const dup = $("#dup", root), del = $("#del", root);
+      if (dup) dup.addEventListener("click", () => {
+        const copy = clone(S.draft.sconti[i]); copy.id = uid("sconto"); copy.nome += " (copia)"; copy.attiva = false;
+        S.draft.sconti.splice(i + 1, 0, copy); saveDraft(); renderSconti(); ed.close(); toast("Sconto duplicato (spento)");
+      });
+      if (del) del.addEventListener("click", async () => {
+        ed.close();
+        if (await ask(`Eliminare "${x.nome}"?`, "Per toglierlo solo per un po', spegni l'interruttore \"Attivo\".")) {
+          S.draft.sconti.splice(i, 1); saveDraft(); renderSconti(); toast("Sconto eliminato");
+        } else editSconto(i);
+      });
+    });
+  }
 
   /* =========================================================
      NEGOZIO
@@ -649,7 +802,9 @@
       if (del) del.addEventListener("click", async () => {
         ed.close();
         if (await ask(`Eliminare "${p.nome}"?`, "Se vuoi solo toglierlo per un po', usa \"Visibile sul sito\" invece di eliminarlo.")) {
-          cat.prodotti.splice(pi, 1); saveDraft(); renderMenu(); toast("Prodotto eliminato");
+          cat.prodotti.splice(pi, 1);
+          S.draft.sconti.forEach((x) => { x.prodotti = (x.prodotti || []).filter((id) => id !== p.id); });
+          saveDraft(); renderMenu(); renderSconti(); toast("Prodotto eliminato");
         } else editProduct(ci, pi);
       });
     });
@@ -701,7 +856,10 @@
         ed.close();
         const cnt = c.prodotti.length;
         if (await ask(`Eliminare "${c.nome}"?`, cnt ? `Verranno eliminati anche i suoi ${cnt} prodotti. Per nasconderla e basta, spegni "Categoria visibile sul sito".` : "La categoria è vuota.")) {
-          S.draft.categorie.splice(ci, 1); saveDraft(); renderMenu(); toast("Categoria eliminata");
+          const gone = new Set(c.prodotti.map((p) => p.id));
+          S.draft.categorie.splice(ci, 1);
+          S.draft.sconti.forEach((x) => { x.categorie = (x.categorie || []).filter((id) => id !== c.id); x.prodotti = (x.prodotti || []).filter((id) => !gone.has(id)); });
+          saveDraft(); renderMenu(); renderSconti(); toast("Categoria eliminata");
         } else editCategory(ci);
       });
     });

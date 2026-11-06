@@ -52,7 +52,7 @@
   });
   (DATA.categorie || []).filter((c) => c.attiva !== false).forEach((c) => {
     const piatti = c.prodotti.filter((p) => p.attivo !== false).map((p) => ({
-      nome: p.nome, ingredienti: p.ingredienti,
+      uid: p.id, nome: p.nome, ingredienti: p.ingredienti,
       prezzo: p.varianti && p.varianti.length ? undefined : p.prezzo,
       varianti: p.varianti && p.varianti.length ? p.varianti : undefined,
       tag: p.tag, allergeni: p.allergeni, foto: p.foto || undefined,
@@ -62,6 +62,25 @@
     }));
     if (piatti.length) MENU.push({ id: c.id, nome: c.nome, tipo: c.tipo, nota: c.nota, opzioni: c.opzioni && c.opzioni.length ? c.opzioni : undefined, piatti });
   });
+
+  // Sconti su prodotti e categorie (es. "il lunedì le classiche a 5 €")
+  const SCONTI = (DATA.sconti || []).filter((x) => x.attiva !== false && inRange(x)
+    && (!x.giorni || !x.giorni.length || x.giorni.includes(new Date().getDay())));
+  const applySconto = (x, price) => {
+    const v = Number(x.valore) || 0;
+    const r = x.tipo === "percentuale" ? price * (1 - v / 100) : x.tipo === "meno" ? price - v : Math.min(price, v);
+    return Math.max(0, Math.round(r * 100) / 100);
+  };
+  // miglior sconto per un prezzo di un prodotto
+  const bestDeal = (p, price) => {
+    let best = null;
+    SCONTI.forEach((x) => {
+      if (!((x.categorie || []).includes(p.cat) || (x.prodotti || []).includes(p.uid))) return;
+      const np = applySconto(x, price);
+      if (np < price && (!best || np < best.price)) best = { price: np, sconto: x };
+    });
+    return best;
+  };
 
   // Avvisi in cima alla pagina
   const notices = [];
@@ -88,6 +107,10 @@
         varianti: p.varianti || null, opzioni: p.opzioni || cat.opzioni || [],
         disponibile: p.disponibile !== false, offerta: !!cat.offerte
       });
+      const pr = PRODUCTS.get(id);
+      const ref = pr.varianti ? pr.varianti[0].prezzo : pr.prezzo;
+      const deal = typeof ref === "number" ? bestDeal(pr, ref) : null;
+      if (deal) { pr.deal = deal.sconto; pr.tag = [...pr.tag, "promo"]; }
       return id;
     });
   });
@@ -98,16 +121,24 @@
   const daysLabel = (p) => (p.giorni || []).slice().sort((a, b) => ((a + 6) % 7) - ((b + 6) % 7)).map((d) => DAY_SHORT[d]).join(" · ");
   const canOrder = (p) => ORDERS_ON && p.disponibile && validToday(p);
   const needsSheet = (p) => !!(p.varianti || p.segnaposto);
+  // prezzo base (variante) con l'eventuale sconto del giorno
+  const finalPrice = (p, base) => { const d = bestDeal(p, base); return d ? d.price : base; };
   const priceLabel = (p) => {
-    if (!p.varianti) return fmt(p.prezzo);
-    const ps = p.varianti.map((v) => v.prezzo);
+    if (!p.varianti) return fmt(finalPrice(p, p.prezzo));
+    const ps = p.varianti.map((v) => finalPrice(p, v.prezzo));
     const min = Math.min(...ps);
     return ps.every((x) => x === min) ? fmt(min) : `da ${fmt(min)}`;
+  };
+  // come priceLabel ma mostra anche il prezzo pieno barrato
+  const priceHTML = (p) => {
+    if (!p.deal) return priceLabel(p);
+    const full = p.varianti ? Math.min(...p.varianti.map((v) => v.prezzo)) : p.prezzo;
+    return `<s class="price-old">${fmt(full)}</s> <span class="price-promo">${priceLabel(p)}</span>`;
   };
   const descOf = (p) => p.ingredienti && p.ingredienti !== "Scegli il gusto" ? p.ingredienti : (p.varianti ? p.varianti.map((v) => v.nome).join(" · ") : (p.ingredienti || ""));
   const unitPrice = (l) => {
     const p = PRODUCTS.get(l.id);
-    const base = p.varianti ? (p.varianti[l.v] || p.varianti[0]).prezzo : p.prezzo;
+    const base = finalPrice(p, p.varianti ? (p.varianti[l.v] || p.varianti[0]).prezzo : p.prezzo);
     return base + (l.o || []).reduce((a, i) => a + ((p.opzioni[i] || {}).prezzo || 0), 0);
   };
   const lineLabel = (l) => {
@@ -218,7 +249,8 @@
             <div class="item__main">
               <h4 class="item__name">${esc(p.nome)} ${badges(p.tag, true)}</h4>
               ${descOf(p) ? `<p class="item__desc">${esc(descOf(p))}</p>` : ""}
-              <span class="item__price">${priceLabel(p)}</span>
+              <span class="item__price">${priceHTML(p)}</span>
+              ${p.deal ? `<span class="badge badge--promo">🏷️ ${esc(p.deal.nome)}</span>` : ""}
               ${p.tag.includes("novita") ? ` <span class="badge badge--novita">✨ Novità</span>` : ""}
               ${statusBadge(p)}
             </div>
@@ -247,11 +279,21 @@
       <div class="fcard__body">
         <span class="fcard__name">${esc(p.nome)}</span>
         <span class="fcard__desc">${esc(descOf(p))}</span>
-        <span class="fcard__price">${priceLabel(p)}</span>
+        <span class="fcard__price">${priceHTML(p)}</span>
       </div>
       ${addBtn(p.id)}
     </div>`).join("");
 
+  const todayDeals = SCONTI.filter((x) => [...PRODUCTS.values()].some((p) => p.deal === x));
+  if (todayDeals.length) {
+    $("#deals").innerHTML = todayDeals.map((x) => `
+      <button type="button" class="deal" data-deal>
+        <span class="deal__ico" aria-hidden="true">🏷️</span>
+        <span class="deal__txt"><strong>Oggi: ${esc(x.nome)}</strong><small>${esc(x.testo || "Tocca per vedere i prodotti in promo")}</small></span>
+        <span class="deal__go" aria-hidden="true">›</span>
+      </button>`).join("");
+    $("#deals").hidden = false;
+  }
   if (typeof AGGIUNTE !== "undefined" && AGGIUNTE.length) {
     $("#extras-list").innerHTML = AGGIUNTE.map((a) => `<li>${esc(a)}</li>`).join("");
     $("#extras").hidden = false;
@@ -288,6 +330,12 @@
     b.setAttribute("aria-pressed", state.filters.has(f));
     applyFilters();
   }));
+  $("#deals").addEventListener("click", (e) => {
+    if (!e.target.closest("[data-deal]")) return;
+    const b = $('.filter[data-filter="promo"]');
+    if (b && b.getAttribute("aria-pressed") !== "true") b.click();
+    $("#menu").scrollIntoView({ behavior: "smooth" });
+  });
   $("#reset-filters").addEventListener("click", () => {
     state.filters.clear(); state.query = ""; search.value = "";
     $$(".filter").forEach((b) => b.setAttribute("aria-pressed", "false"));
@@ -460,7 +508,7 @@
     $("#ps-art").innerHTML = art(current);
     $("#ps-art").classList.toggle("is-contain", !!current.fotoIntera);
     $("#ps-name").textContent = current.nome;
-    $("#ps-tags").innerHTML = badges(current.tag, false) + statusBadge(current);
+    $("#ps-tags").innerHTML = badges(current.tag, false) + statusBadge(current) + (current.deal ? `<span class="badge badge--promo">🏷️ ${esc(current.deal.nome)}</span>` : "");
     const desc = current.ingredienti && current.ingredienti !== "Scegli il gusto" ? current.ingredienti : "";
     $("#ps-desc").textContent = desc;
     $("#ps-desc").hidden = !desc;
@@ -477,7 +525,7 @@
       $("#ps-variants-title").textContent = same ? "Scegli il gusto" : "Scegli il formato";
       $("#ps-variants-list").innerHTML = current.varianti.map((v, i) => `
         <label class="choice"><input type="radio" name="ps-v" value="${i}"${i === 0 ? " checked" : ""}>
-          <span class="choice__name">${esc(v.nome)}</span>${same ? "" : `<span class="choice__price">${fmt(v.prezzo)}</span>`}</label>`).join("");
+          <span class="choice__name">${esc(v.nome)}</span>${same && !current.deal ? "" : `<span class="choice__price">${finalPrice(current, v.prezzo) < v.prezzo ? `<s class="price-old">${fmt(v.prezzo)}</s> ` : ""}${fmt(finalPrice(current, v.prezzo))}</span>`}</label>`).join("");
     }
     // opzioni (es. nel ruoto)
     const ow = $("#ps-options");
@@ -563,7 +611,7 @@
     if (addr.value.trim()) store.set("pallone-addr", addr.value.trim());
 
     const lines = state.cart.map((l) => {
-      return `• ${l.qty}× ${lineLabel(l)} — ${fmt(unitPrice(l) * l.qty)}${l.note ? `\n   ↳ ${l.note}` : ""}`;
+      return `• ${l.qty}× ${lineLabel(l)} — ${fmt(unitPrice(l) * l.qty)}${PRODUCTS.get(l.id).deal ? ` (promo ${PRODUCTS.get(l.id).deal.nome})` : ""}${l.note ? `\n   ↳ ${l.note}` : ""}`;
     });
     const fee = deliveryFee();
     const text = [

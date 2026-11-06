@@ -87,9 +87,19 @@
 
       <!-- Offerte -->
       <section class="view" id="view-promo" data-title="Offerte" hidden>
-        <p class="muted intro">Le offerte compaiono in cima al sito. Puoi limitarle a certi giorni della settimana o a un periodo.</p>
+        <div class="section-title">
+          <h2>Sconti su prodotti e categorie</h2>
+          <p class="muted">Cambiano il prezzo di prodotti già nel menù. Es. "Il lunedì le pizze classiche a 5 €" oppure "-20% sulle fritture".</p>
+        </div>
+        <div id="sconti-list" class="cards"></div>
+        <button class="btn btn--dashed btn--block" type="button" id="add-sconto">+ Nuovo sconto</button>
+
+        <div class="section-title">
+          <h2>Offerte e menù combo</h2>
+          <p class="muted">Prodotti a sé con un prezzo unico, mostrati in cima al sito. Es. "Pizza + patatine + bibita a 8 €".</p>
+        </div>
         <div id="promo-list" class="cards"></div>
-        <button class="btn btn--dashed btn--block" type="button" id="add-promo">+ Nuova offerta</button>
+        <button class="btn btn--dashed btn--block" type="button" id="add-promo">+ Nuova offerta combo</button>
       </section>
 
       <!-- Negozio -->

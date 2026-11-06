@@ -514,3 +514,21 @@ img.is-contain, .is-contain img { object-fit: contain !important; }
 .notice--pause { background: #fdecec; color: var(--red-700); }
 .notice--preview { background: #e6eefb; color: #2a4f8f; }
 .ps__allergens { margin: -6px 0 16px; font-size: .88rem; color: var(--muted); }
+
+/* ---------- Sconti del giorno ---------- */
+.price-old { color: var(--muted); font-weight: 700; font-size: .88em; }
+.price-promo { color: var(--red); }
+.badge--promo { background: #fdecec; color: var(--red-700); }
+@media (prefers-color-scheme: dark) { .badge--promo { background: #3a1c1d; color: #ff8a8f; } .price-promo { color: #ff6b70; } }
+.deals { max-width: 980px; margin: 22px auto 0; padding: 0 16px; display: grid; gap: 10px; }
+.deal {
+  display: flex; align-items: center; gap: 12px; width: 100%; text-align: left;
+  padding: 14px 16px; border: 0; border-radius: var(--r);
+  background: linear-gradient(135deg, var(--red), #e8462c); color: #fff; box-shadow: 0 8px 22px rgba(215, 20, 29, .25);
+}
+.deal__ico { font-size: 1.6rem; line-height: 1; }
+.deal__txt { flex: 1; display: grid; }
+.deal__txt strong { font-size: 1.02rem; font-weight: 900; }
+.deal__txt small { opacity: .9; font-size: .86rem; }
+.deal__go { font-size: 1.8rem; line-height: 1; opacity: .9; }
+.ps__tags + .choices, .ps__tags + .ps__desc[hidden] + .ps__more[hidden] + .ps__allergens[hidden] + .choices { margin-top: 14px; }

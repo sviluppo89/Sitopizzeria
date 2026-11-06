@@ -303,3 +303,31 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .qr img, .qr canvas { width: 200px; height: 200px; }
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+/* Sconti */
+.section-title { margin: 6px 2px 12px; display: grid; gap: 4px; }
+.section-title:not(:first-child) { margin-top: 30px; }
+.section-title h2 { margin: 0; font-size: 1.1rem; font-weight: 900; }
+.section-title .muted { font-size: .9rem; }
+.thumb--deal { background: #fdecec; color: var(--red-700); font-weight: 900; font-size: .95rem; text-align: center; line-height: 1.05; padding: 4px; }
+@media (prefers-color-scheme: dark) { .thumb--deal { background: #3a1c1d; color: #ff8a8f; } }
+.seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; background: var(--surface-2); padding: 4px; border-radius: 14px; }
+.seg label { position: relative; }
+.seg input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.seg span { display: grid; place-items: center; min-height: 44px; border-radius: 10px; font-weight: 800; font-size: .88rem; text-align: center; padding: 0 4px; color: var(--muted); }
+.seg input:checked + span { background: var(--surface); color: var(--ink); box-shadow: var(--shadow); }
+.seg input:focus-visible + span { outline: 3px solid var(--crust); }
+.picker { border: 1.5px solid var(--line); border-radius: 14px; overflow: hidden; }
+.picker details + details { border-top: 1px solid var(--line); }
+.picker summary { display: flex; align-items: center; gap: 10px; padding: 12px 14px; cursor: pointer; font-weight: 800; list-style: none; }
+.picker summary::-webkit-details-marker { display: none; }
+.picker summary .cnt { margin-left: auto; font-size: .78rem; color: var(--muted); font-weight: 800; }
+.picker summary::before { content: "›"; font-size: 1.3rem; color: var(--muted); transition: transform .2s; width: 10px; }
+.picker details[open] summary::before { transform: rotate(90deg); }
+.pick { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-top: 1px solid var(--line); cursor: pointer; min-height: 48px; }
+.pick input { width: 20px; height: 20px; accent-color: var(--green); margin: 0; flex: none; }
+.pick span { flex: 1; }
+.pick small { color: var(--muted); font-weight: 700; font-variant-numeric: tabular-nums; }
+.pick--all { background: var(--surface-2); font-weight: 800; }
+.summary-box { background: var(--green-50); border-radius: 12px; padding: 12px 14px; font-size: .9rem; }
+.summary-box ul { margin: 6px 0 0; padding-left: 18px; }
