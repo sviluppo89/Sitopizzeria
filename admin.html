@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Gestione menù · Pizzeria Pallone</title>
+  <meta name="theme-color" content="#0b4d2c">
+  <link rel="icon" href="img/icon-192.png">
+  <link rel="apple-touch-icon" href="img/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+  <!-- ===== Accesso ===== -->
+  <section class="login" id="login" hidden>
+    <div class="login__card">
+      <img class="login__logo" src="img/logo.png" alt="Pizzeria Pallone" width="640" height="510">
+      <h1>Gestione menù</h1>
+      <p class="muted">Qui cambi prodotti, prezzi, offerte, orari e contatti del sito.</p>
+
+      <form id="login-form" class="stack">
+        <label class="field">
+          <span class="field__label">Codice di accesso</span>
+          <input id="login-token" type="password" autocomplete="current-password" placeholder="github_pat_…" required>
+          <span class="field__hint">Lo inserisci una sola volta su questo telefono o computer.</span>
+        </label>
+        <details class="advanced">
+          <summary>Impostazioni avanzate</summary>
+          <label class="field"><span class="field__label">Proprietario repository</span><input id="login-owner" type="text"></label>
+          <label class="field"><span class="field__label">Nome repository</span><input id="login-repo" type="text"></label>
+          <label class="field"><span class="field__label">Ramo pubblicato</span><input id="login-branch" type="text"></label>
+        </details>
+        <p class="form-error" id="login-error" role="alert" hidden></p>
+        <button class="btn btn--primary btn--block" type="submit" id="login-submit">Entra</button>
+      </form>
+
+      <button class="btn btn--ghost btn--block" type="button" id="demo">Prova senza codice</button>
+      <p class="fineprint">In prova puoi esplorare tutto e vedere l'anteprima, ma non puoi pubblicare.</p>
+
+      <details class="guide">
+        <summary>Come ottengo il codice di accesso?</summary>
+        <ol>
+          <li>Apri <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com/settings/personal-access-tokens/new</a> ed entra con il tuo account GitHub.</li>
+          <li>In <b>Token name</b> scrivi <i>Menu pizzeria</i>. In <b>Expiration</b> scegli la durata più lunga.</li>
+          <li>In <b>Repository access</b> scegli <b>Only select repositories</b> e seleziona <b>Sitopizzeria</b>.</li>
+          <li>In <b>Permissions → Repository permissions</b> trova <b>Contents</b> e scegli <b>Read and write</b>.</li>
+          <li>Premi <b>Generate token</b>, copia il codice e incollalo qui sopra.</li>
+        </ol>
+        <p class="fineprint">Il codice resta salvato solo su questo dispositivo. Non condividerlo con nessuno.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- ===== App ===== -->
+  <div class="app" id="app" hidden>
+    <header class="topbar">
+      <div class="topbar__title">
+        <img src="img/logo.png" alt="" width="640" height="510">
+        <div>
+          <h1 id="view-title">Menù</h1>
+          <p class="topbar__status" id="sync-status">Tutto pubblicato</p>
+        </div>
+      </div>
+      <a class="iconbtn" id="preview" href="index.html?anteprima" target="_blank" rel="noopener" aria-label="Anteprima del sito" title="Anteprima">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5c5 0 9 4.5 10 7-1 2.5-5 7-10 7S3 14.5 2 12c1-2.5 5-7 10-7zm0 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8zm0 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4z"/></svg>
+      </a>
+      <button class="btn btn--primary btn--sm" id="publish" type="button" disabled>Pubblica</button>
+    </header>
+
+    <main class="views">
+      <!-- Menù -->
+      <section class="view" id="view-menu" data-title="Menù">
+        <div class="toolbar">
+          <label class="search">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 2a8 8 0 0 1 6.3 12.9l5.4 5.4-1.4 1.4-5.4-5.4A8 8 0 1 1 10 2zm0 2a6 6 0 1 0 0 12 6 6 0 0 0 0-12z"/></svg>
+            <span class="sr-only">Cerca prodotto</span>
+            <input id="menu-search" type="search" placeholder="Cerca prodotto" autocomplete="off">
+          </label>
+        </div>
+        <div id="cat-list"></div>
+        <button class="btn btn--dashed btn--block" type="button" id="add-cat">+ Nuova categoria</button>
+      </section>
+
+      <!-- Offerte -->
+      <section class="view" id="view-promo" data-title="Offerte" hidden>
+        <p class="muted intro">Le offerte compaiono in cima al sito. Puoi limitarle a certi giorni della settimana o a un periodo.</p>
+        <div id="promo-list" class="cards"></div>
+        <button class="btn btn--dashed btn--block" type="button" id="add-promo">+ Nuova offerta</button>
+      </section>
+
+      <!-- Negozio -->
+      <section class="view" id="view-shop" data-title="Negozio" hidden>
+        <form id="shop-form" class="stack" novalidate>
+          <div class="panel">
+            <div class="panel__head"><h2>Ordini online</h2></div>
+            <label class="switchrow"><span><b>Accetta ordini dal sito</b><small>Spegnilo se sei troppo pieno o chiuso: il menù resta visibile.</small></span><input type="checkbox" class="switch" data-k="ordini.attivi"></label>
+            <label class="field"><span class="field__label">Messaggio quando gli ordini sono in pausa</span><input type="text" data-k="ordini.messaggioPausa"></label>
+          </div>
+
+          <div class="panel">
+            <div class="panel__head"><h2>Avviso in cima al sito</h2></div>
+            <label class="field"><span class="field__label">Testo dell'avviso <small>(lascia vuoto per non mostrarlo)</small></span><textarea rows="2" data-k="avviso" placeholder="Es. Lunedì 24 chiusi per ferie"></textarea></label>
+          </div>
+
+          <div class="panel">
+            <div class="panel__head"><h2>Orari</h2></div>
+            <label class="switchrow"><span><b>Mostra orari sul sito</b><small>Mostra anche "Aperto" o "Chiuso" in alto.</small></span><input type="checkbox" class="switch" id="hours-on"></label>
+            <div id="hours-editor"></div>
+          </div>
+
+          <div class="panel">
+            <div class="panel__head"><h2>Consegna a domicilio</h2></div>
+            <label class="switchrow"><span><b>Consegna attiva</b><small>Se spenta, il sito offre solo asporto.</small></span><input type="checkbox" class="switch" data-k="consegna.attiva"></label>
+            <div class="grid2">
+              <label class="field"><span class="field__label">Costo consegna (€)</span><input type="text" inputmode="decimal" data-k="consegna.costo" data-type="money" placeholder="Es. 1,50"></label>
+              <label class="field"><span class="field__label">Ordine minimo (€)</span><input type="text" inputmode="decimal" data-k="consegna.minimoOrdine" data-type="money" placeholder="Es. 10"></label>
+            </div>
+            <label class="field"><span class="field__label">Zone servite</span><input type="text" data-k="consegna.zone" placeholder="Es. Casapulla, Curti, San Prisco"></label>
+          </div>
+
+          <div class="panel">
+            <div class="panel__head"><h2>Dati e contatti</h2></div>
+            <label class="field"><span class="field__label">Nome pizzeria</span><input type="text" data-k="nome"></label>
+            <div class="grid2">
+              <label class="field"><span class="field__label">Telefono</span><input type="tel" data-k="telefono"></label>
+              <label class="field"><span class="field__label">WhatsApp per gli ordini</span><input type="tel" data-k="whatsapp" data-type="phone" placeholder="39 388 783 9516"></label>
+            </div>
+            <label class="field"><span class="field__label">Indirizzo</span><input type="text" data-k="indirizzo"></label>
+            <label class="field"><span class="field__label">CAP e città</span><input type="text" data-k="citta"></label>
+            <div class="grid2">
+              <label class="field"><span class="field__label">Instagram (nome utente)</span><input type="text" data-k="instagram" placeholder="pizzeriapallone"></label>
+              <label class="field"><span class="field__label">Facebook (link)</span><input type="url" data-k="facebook" placeholder="https://facebook.com/…"></label>
+            </div>
+            <div class="grid2">
+              <label class="field"><span class="field__label">Email</span><input type="email" data-k="email"></label>
+              <label class="field"><span class="field__label">Partita IVA</span><input type="text" data-k="piva" inputmode="numeric"></label>
+            </div>
+          </div>
+        </form>
+      </section>
+
+      <!-- Altro -->
+      <section class="view" id="view-more" data-title="Altro" hidden>
+        <div class="panel">
+          <div class="panel__head"><h2>Pubblicazione</h2></div>
+          <p class="muted" id="more-status"></p>
+          <div class="btnrow">
+            <button class="btn btn--primary" type="button" id="publish-2">Pubblica modifiche</button>
+            <a class="btn btn--light" href="index.html?anteprima" target="_blank" rel="noopener">Anteprima</a>
+          </div>
+          <button class="btn btn--ghost btn--block" type="button" id="discard">Annulla modifiche non pubblicate</button>
+        </div>
+
+        <div class="panel">
+          <div class="panel__head"><h2>QR code del menù</h2></div>
+          <p class="muted">Stampalo e mettilo sul bancone, sui volantini o sui cartoni delle pizze.</p>
+          <label class="field"><span class="field__label">Indirizzo del sito</span><input type="url" id="site-url" placeholder="https://…"></label>
+          <div class="qr" id="qr"></div>
+          <div class="btnrow">
+            <button class="btn btn--light" type="button" id="qr-download">Scarica QR</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel__head"><h2>Copia di sicurezza</h2></div>
+          <p class="muted">Salva tutto il menù in un file, o ripristinalo da un file salvato prima.</p>
+          <div class="btnrow">
+            <button class="btn btn--light" type="button" id="export">Scarica copia</button>
+            <label class="btn btn--light">Ripristina da file<input type="file" accept="application/json,.json" id="import" hidden></label>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel__head"><h2>Account</h2></div>
+          <p class="muted" id="account-info"></p>
+          <button class="btn btn--ghost btn--block" type="button" id="logout">Esci da questo dispositivo</button>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Sezioni">
+      <button type="button" class="tab is-active" data-view="menu">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v2H4zm0 6h16v2H4zm0 6h10v2H4z"/></svg><span>Menù</span>
+      </button>
+      <button type="button" class="tab" data-view="promo">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.4 11.6 12.4 2.6A2 2 0 0 0 11 2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 .6 1.4l9 9a2 2 0 0 0 2.8 0l7-7a2 2 0 0 0 0-2.8zM6.5 8a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/></svg><span>Offerte</span>
+      </button>
+      <button type="button" class="tab" data-view="shop">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16l1 5a3 3 0 0 1-2 2.8V20H5v-8.2A3 3 0 0 1 3 9zm4 9v5h3v-5zm5 0v3h4v-3z"/></svg><span>Negozio</span>
+      </button>
+      <button type="button" class="tab" data-view="more">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 10a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm7 0a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm7 0a2 2 0 1 1 0 4 2 2 0 0 1 0-4z"/></svg><span>Altro</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- ===== Editor (pannello che sale dal basso) ===== -->
+  <dialog class="sheet" id="editor" aria-labelledby="editor-title">
+    <form method="dialog" class="sheet__inner" id="editor-form" novalidate>
+      <header class="sheet__head">
+        <button type="button" class="linkbtn" data-close>Annulla</button>
+        <h2 id="editor-title">Modifica</h2>
+        <button type="submit" class="linkbtn linkbtn--strong">Salva</button>
+      </header>
+      <div class="sheet__body" id="editor-body"></div>
+    </form>
+  </dialog>
+
+  <!-- Conferma -->
+  <dialog class="confirm" id="confirm">
+    <form method="dialog">
+      <h2 id="confirm-title"></h2>
+      <p id="confirm-text"></p>
+      <div class="confirm__btns">
+        <button value="no" class="btn btn--light">Annulla</button>
+        <button value="yes" class="btn btn--danger" id="confirm-yes">Elimina</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
+  <script src="js/art.js" defer></script>
+  <script src="js/admin.js" defer></script>
+</body>
+</html>

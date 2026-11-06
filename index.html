@@ -25,8 +25,7 @@
   <!-- ===== Barra superiore ===== -->
   <header class="appbar">
     <a href="#top" class="appbar__brand" aria-label="Pizzeria Pallone, torna in cima">
-      <img src="img/logo.png" alt="" width="40" height="32">
-      <span class="appbar__name">Pizzeria Pallone</span>
+      <img src="img/logo.png" alt="Pizzeria Pallone" width="640" height="510">
     </a>
     <span class="status" id="status" hidden></span>
     <button class="iconbtn" id="open-search" type="button" aria-label="Cerca nel menù">
@@ -35,6 +34,7 @@
   </header>
 
   <main id="top">
+    <div class="notices" id="notices" aria-live="polite"></div>
     <!-- ===== Hero ===== -->
     <section class="hero">
       <div class="hero__card">
@@ -156,6 +156,11 @@
           <span class="row__txt"><strong>Instagram</strong><small id="i-ig-name"></small></span>
           <span class="row__chev" aria-hidden="true">›</span>
         </a>
+        <a class="row" id="i-fb" href="#" target="_blank" rel="noopener" hidden>
+          <span class="row__ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 8h3V4h-3a5 5 0 0 0-5 5v2H7v4h2v7h4v-7h3l1-4h-4V9a1 1 0 0 1 1-1z"/></svg></span>
+          <span class="row__txt"><strong>Facebook</strong><small>Pagina ufficiale</small></span>
+          <span class="row__chev" aria-hidden="true">›</span>
+        </a>
       </div>
 
       <ul class="services" aria-label="Servizi">
@@ -166,7 +171,7 @@
 
   <footer class="footer">
     <p class="footer__script">Pizzeria Pallone</p>
-    <p>di Nicola Palma</p>
+    <p id="f-legal"></p>
     <p id="f-mail"></p>
   </footer>
 
@@ -199,6 +204,7 @@
         <div class="ps__tags" id="ps-tags"></div>
         <p class="ps__desc" id="ps-desc"></p>
         <p class="ps__more" id="ps-more" hidden></p>
+        <p class="ps__allergens" id="ps-allergens" hidden></p>
         <fieldset class="choices" id="ps-variants" hidden>
           <legend id="ps-variants-title">Scegli il formato</legend>
           <div id="ps-variants-list"></div>
@@ -275,7 +281,7 @@
     </form>
   </dialog>
 
-  <script src="js/menu.js"></script>
+  <script src="js/art.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

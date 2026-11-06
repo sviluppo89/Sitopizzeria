@@ -1,0 +1,1455 @@
+{
+ "versione": 1,
+ "aggiornato": "2026-11-06T20:43:54.686Z",
+ "info": {
+  "nome": "Pizzeria Pallone",
+  "sottotitolo": "Pizza da asporto e a domicilio a Casapulla",
+  "telefono": "0823 460661",
+  "whatsapp": "393887839516",
+  "indirizzo": "Via Circumvallazione, 21",
+  "citta": "81020 Casapulla (CE)",
+  "instagram": "pizzeriapallone",
+  "facebook": "",
+  "email": "nicolapalma87@libero.it",
+  "piva": "",
+  "orari": null,
+  "consegna": {
+   "attiva": true,
+   "costo": null,
+   "minimoOrdine": null,
+   "zone": ""
+  },
+  "ordini": {
+   "attivi": true,
+   "messaggioPausa": "Al momento non accettiamo ordini online. Chiamaci!"
+  },
+  "avviso": ""
+ },
+ "promo": [
+  {
+   "id": "promo-today-s-special",
+   "titolo": "Today's Special",
+   "testo": "Pizza Classic + patatina o alghe + bibita",
+   "prezzo": 8,
+   "giorni": [
+    1,
+    3,
+    5
+   ],
+   "dal": "",
+   "al": "",
+   "attiva": true,
+   "dettagli": "Pizza Classic a scelta tra: Napoletana, Marinara, Margherita, Bufala, Diavola, Siciliana, 4 Formaggi, Cosacca, USA, Crocchè, Parmigiana, Ripieni.",
+   "richiesta": "Scrivi la pizza, patatina o alghe e la bibita",
+   "foto": ""
+  },
+  {
+   "id": "promo-scrigno-party",
+   "titolo": "Scrigno Party",
+   "testo": "Scrigno o pizza special + patatina o alghe + bibita",
+   "prezzo": 9.99,
+   "giorni": [
+    1,
+    3,
+    5
+   ],
+   "dal": "",
+   "al": "",
+   "attiva": true,
+   "dettagli": "",
+   "richiesta": "Scrivi lo scrigno o la pizza, patatina o alghe e la bibita",
+   "foto": ""
+  },
+  {
+   "id": "promo-crazy-sunday",
+   "titolo": "Crazy Sunday",
+   "testo": "Una selezione di pizze del menù a 5 €",
+   "prezzo": 5,
+   "giorni": [
+    0
+   ],
+   "dal": "",
+   "al": "",
+   "attiva": true,
+   "dettagli": "",
+   "richiesta": "Quale pizza dell'offerta?",
+   "foto": ""
+  },
+  {
+   "id": "promo-give-me-5",
+   "titolo": "Give Me 5",
+   "testo": "Una selezione di pizze del menù a 5 €",
+   "prezzo": 5,
+   "giorni": [
+    4,
+    0
+   ],
+   "dal": "",
+   "al": "",
+   "attiva": true,
+   "dettagli": "",
+   "richiesta": "Quale pizza dell'offerta?",
+   "foto": ""
+  }
+ ],
+ "categorie": [
+  {
+   "id": "pizze",
+   "nome": "Le pizze",
+   "tipo": "pizza",
+   "nota": "",
+   "attiva": true,
+   "opzioni": [
+    {
+     "nome": "Nel ruoto",
+     "prezzo": 2
+    }
+   ],
+   "prodotti": [
+    {
+     "id": "pizze-margherita",
+     "nome": "Margherita",
+     "ingredienti": "Pomodoro San Marzano, Fior di latte, Olio evo, Basilico",
+     "prezzo": 5,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "pizze-focaccia",
+     "nome": "Focaccia",
+     "ingredienti": "Olio evo, Origano",
+     "prezzo": 3,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "pizze-napoletana",
+     "nome": "Napoletana",
+     "ingredienti": "Pomodoro San Marzano, Aglio, Origano, Olio Evo, Basilico",
+     "prezzo": 5,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "pizze-marinara",
+     "nome": "Marinara",
+     "ingredienti": "Pomodoro San Marzano, Alici di Cetara, Olive nere, Aglio, Olio evo, Basilico",
+     "prezzo": 5,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "pizze-cosacca",
+     "nome": "Cosacca",
+     "ingredienti": "Pomodoro San Marzano, Pecorino Romano, Olio evo, Basilico",
+     "prezzo": 6,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "pizze-diavola",
+     "nome": "Diavola",
+     "ingredienti": "Pomodoro San Marzano, Fior di latte, Salame piccante, Olio evo, Basilico",
+     "prezzo": 6,
+     "varianti": [],
+     "tag": [
+      "piccante"
+     ],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "pizze-siciliana",
+     "nome": "Siciliana",
+     "ingredienti": "Pomodoro San Marzano, Fior di latte, Melanzane a funghetto, Grana Padano, Olio evo, Basilico",
+     "prezzo": 6.5,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "pizze-marinara-gialla",
+     "nome": "Marinara Gialla",
+     "ingredienti": "Pomodorini gialli, Capperi, Alici di Cetara, Olive nere, Aglio, Origano, Olio evo, Basilico",
+     "prezzo": 7,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "pizze-bufala",
+     "nome": "Bufala",
+     "ingredienti": "Pomodoro San Marzano, Mozzarella di Bufala DOP, Olio Evo, Basilico",
+     "prezzo": 7,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "pizze-ortolana",
+     "nome": "Ortolana",
+     "ingredienti": "Fior di latte, Melanzane, Zucchine, Peperoni, Olio evo, Basilico",
+     "prezzo": 7,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "pizze-4-formaggi",
+     "nome": "4 Formaggi",
+     "ingredienti": "Fior di latte, Gorgonzola DOP, Provola di Agerola, Parmigiano Reggiano, Olio evo, Basilico",
+     "prezzo": 7,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "pizze-usa",
+     "nome": "USA",
+     "ingredienti": "Fior di latte, Würstel, Patatine stick, Olio evo",
+     "prezzo": null,
+     "varianti": [
+      {
+       "nome": "Piccola",
+       "prezzo": 7
+      },
+      {
+       "nome": "Media",
+       "prezzo": 8
+      },
+      {
+       "nome": "Grande",
+       "prezzo": 8
+      }
+     ],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "pizze-mimosa",
+     "nome": "Mimosa",
+     "ingredienti": "Fior di latte, Prosciutto cotto alla brace, Mais, Panna, Olio evo, Basilico",
+     "prezzo": 7,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "pizze-parmigiana",
+     "nome": "Parmigiana",
+     "ingredienti": "Pomodoro San Marzano, Fior di latte, Parmigiana di melanzane, Parmigiano Reggiano, Olio evo, Basilico",
+     "prezzo": 7,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "pizze-crocche",
+     "nome": "Crocchè",
+     "ingredienti": "Fior di latte, Crocchè Home Made, Prosciutto cotto alla brace, Olio evo, Basilico",
+     "prezzo": 8,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "pizze-o-nonno",
+     "nome": "O' Nonno",
+     "ingredienti": "Fior di latte, Salsiccia fresca, Patate al forno, Olio evo, Basilico",
+     "prezzo": 8,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "pizze-tropea",
+     "nome": "Tropea",
+     "ingredienti": "Fior di latte, Tonno, Cipolla rossa di Tropea IGP, Olio evo, Basilico",
+     "prezzo": 8,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "pizze-doc",
+     "nome": "DOC",
+     "ingredienti": "Datterini rossi, Mozzarella di bufala DOP, Olio evo, Basilico",
+     "prezzo": 8,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "pizze-capricciosa",
+     "nome": "Capricciosa",
+     "ingredienti": "Pomodoro San Marzano, Fior di latte, Prosciutto cotto alla brace, Salame dolce, Olive nere, Carciofini, Funghi, Olio evo, Basilico",
+     "prezzo": 8,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "pizze-carabiniera",
+     "nome": "Carabiniera",
+     "ingredienti": "Pomodoro San Marzano, Mozzarella di bufala DOP, Salame piccante, Olive nere, Origano, Olio evo, Basilico",
+     "prezzo": 8,
+     "varianti": [],
+     "tag": [
+      "piccante"
+     ],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "pizze-mediterranea",
+     "nome": "Mediterranea",
+     "ingredienti": "Fior di latte, Pomodorini, Rucola, Prosciutto crudo, Parmigiano Reggiano, Olio evo",
+     "prezzo": 8,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "pizze-cacio-e-gusto",
+     "nome": "Cacio e Gusto",
+     "ingredienti": "Fior di latte, Pancetta, Zucchine, Pecorino Romano, Olio evo",
+     "prezzo": 8,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "pizze-cetara",
+     "nome": "Cetara",
+     "ingredienti": "Mozzarella di bufala DOP, Pomodorini, Alici di Cetara, Olive nere, Olio evo",
+     "prezzo": 8,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "pizze-laura",
+     "nome": "Laura",
+     "ingredienti": "Mozzarella di bufala DOP, Salame piccante, Patate al forno, Olio evo, Basilico",
+     "prezzo": 8,
+     "varianti": [],
+     "tag": [
+      "piccante"
+     ],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "pizze-ariccia",
+     "nome": "Ariccia",
+     "ingredienti": "Crema di patate, Provola di Agerola, Porchetta Ariccia artigianale, Parmigiano Reggiano, Olio evo, Basilico",
+     "prezzo": 8,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "pizze-ninja",
+     "nome": "Ninja",
+     "ingredienti": "Fior di latte, Gorgonzola DOP, Provola, Parmigiano reggiano, Salame piccante",
+     "prezzo": 9,
+     "varianti": [],
+     "tag": [
+      "piccante"
+     ],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "pizze-ross",
+     "nome": "Ross",
+     "ingredienti": "Provola, Pomodori gialli e rossi, Pepe",
+     "prezzo": 9,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "pizze-giulia",
+     "nome": "Giulia",
+     "ingredienti": "Fior di latte, Prosciutto crudo, Pomodorini confit, Stracciata di bufala",
+     "prezzo": 9,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "pizze-one-piece",
+     "nome": "One Piece",
+     "ingredienti": "Fior di latte, Tonno, Olive nere, Pomodorini confit, Crumble di cipolla",
+     "prezzo": 9,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "pizze-fresella",
+     "nome": "Fresella",
+     "ingredienti": "Focaccia, Tonno, Pomodorini, Olive nere, Pesto, Origano, Mozzarella di bufala, Rucola",
+     "prezzo": 10,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    }
+   ]
+  },
+  {
+   "id": "special",
+   "nome": "Pizze special",
+   "tipo": "pizza",
+   "nota": "",
+   "attiva": true,
+   "opzioni": [
+    {
+     "nome": "Nel ruoto",
+     "prezzo": 2
+    }
+   ],
+   "prodotti": [
+    {
+     "id": "special-la-zingara",
+     "nome": "La Zingara",
+     "ingredienti": "Prosciutto crudo, Insalata, Mozzarella di bufala, Pomodorini, Maionese",
+     "prezzo": 9,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "special-one-piece",
+     "nome": "One Piece",
+     "ingredienti": "Fior di latte, Tonno, Olive, Pomodorini confit, Crumble di cipolla",
+     "prezzo": 9,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "special-scrignuozzo-nic-dan",
+     "nome": "Scrignuozzo Nic&Dan",
+     "ingredienti": "Provola, BBQ, Pulled pork, Patate al forno, Salame piccante, Salsa brasiliana",
+     "prezzo": 10,
+     "varianti": [],
+     "tag": [
+      "piccante"
+     ],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    }
+   ]
+  },
+  {
+   "id": "ruoto",
+   "nome": "Pizze nel ruoto",
+   "tipo": "pizza",
+   "nota": "Tutte le pizze del menù si possono avere anche nel ruoto con 2 € in più: scegli \"Nel ruoto\" quando aggiungi la pizza.",
+   "attiva": true,
+   "opzioni": [],
+   "prodotti": [
+    {
+     "id": "ruoto-pietro-ny",
+     "nome": "Pietro NY",
+     "ingredienti": "Pomodoro San Marzano, Fior di latte, Salame piccante, Miele, Olio e basilico",
+     "prezzo": 10,
+     "varianti": [],
+     "tag": [
+      "piccante"
+     ],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "ruoto-mary-piennolo",
+     "nome": "Mary Piennolo",
+     "ingredienti": "Pomodorini del piennolo, Alici di Cetara, Olive, Capperi, Aglio, Origano",
+     "prezzo": 10,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": false,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "ruoto-la-78",
+     "nome": "LA “78”",
+     "ingredienti": "Sugo alla puttanesca, Tonno, Mozzarella di bufala, Basilico, Olio evo",
+     "prezzo": 10,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "ruoto-ciccio",
+     "nome": "Ciccio",
+     "ingredienti": "Salsiccia, Peperoni, Olive, Provola, Origano",
+     "prezzo": 10,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    }
+   ]
+  },
+  {
+   "id": "ripieni",
+   "nome": "I ripieni",
+   "tipo": "calzone",
+   "nota": "",
+   "attiva": true,
+   "opzioni": [],
+   "prodotti": [
+    {
+     "id": "ripieni-napoli",
+     "nome": "Napoli",
+     "ingredienti": "Pomodoro San Marzano, Fior di latte, Salame dolce, Ricotta, Olio evo, Basilico",
+     "prezzo": 7,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "ripieni-classico",
+     "nome": "Classico",
+     "ingredienti": "Pomodoro San Marzano, Fior di latte, Prosciutto cotto alla brace, Funghi, Olio evo, Basilico",
+     "prezzo": 7,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "ripieni-scarola",
+     "nome": "Scarola",
+     "ingredienti": "Scarola, Capperi, Alici di Cetara, Olive nere, Olio evo, Basilico",
+     "prezzo": 6.5,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "ripieni-parmigiana",
+     "nome": "Parmigiana",
+     "ingredienti": "Pomodoro San Marzano, Fior di latte, Parmigiana di melanzane, Prosciutto cotto alla brace, Parmigiano Reggiano, Olio evo, Basilico",
+     "prezzo": 7,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    }
+   ]
+  },
+  {
+   "id": "scrigni",
+   "nome": "Gli scrigni",
+   "tipo": "calzone",
+   "nota": "",
+   "attiva": true,
+   "opzioni": [],
+   "prodotti": [
+    {
+     "id": "scrigni-scrigno-mediterranea",
+     "nome": "Scrigno Mediterranea",
+     "ingredienti": "Ripieno aperto in crosta di Parmigiano Reggiano, Prosciutto crudo, Mozzarella di bufala DOP, Rucola, Parmigiano Reggiano",
+     "prezzo": 8,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "scrigni-scrigno-pulled-pork",
+     "nome": "Scrigno Pulled Pork",
+     "ingredienti": "Ripieno aperto in crosta di parmigiano reggiano, Pulled pork, Provola di Agerola, Patate al forno al burro, salsa BBQ",
+     "prezzo": 9,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "scrigni-scrigno-bandidos",
+     "nome": "Scrigno Bandidos",
+     "ingredienti": "Ripieno aperto in crosta di parmigiano reggiano, Fior di latte, Patatine Dippers, Bandidos, Salsa cheddar",
+     "prezzo": 8,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "scrigni-scrigno-bacoli",
+     "nome": "Scrigno Bacoli",
+     "ingredienti": "Mozzarella di bufala, Pesto, Parmigiana di melanzane, Parmigiano",
+     "prezzo": 9,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "scrigni-scrigno-poldo",
+     "nome": "Scrigno Poldo",
+     "ingredienti": "Polpettine di chianina, Würstel fritti, Patatine stick, Triplo cheddar, Maionese",
+     "prezzo": 9,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "scrigni-scrigno-killer",
+     "nome": "Scrigno killer",
+     "ingredienti": "Fior di latte, Formaggio piccante, Salame piccante, Nuggets, Patatine, Salsa harissa",
+     "prezzo": 9,
+     "varianti": [],
+     "tag": [
+      "piccante"
+     ],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "scrigni-scrigno-vittorio",
+     "nome": "Scrigno Vittorio",
+     "ingredienti": "Crema cacio e pepe, Porchetta, Provola, Patate al forno al burro",
+     "prezzo": 9,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    }
+   ]
+  },
+  {
+   "id": "panuozzo",
+   "nome": "Panuozzo",
+   "tipo": "calzone",
+   "nota": "",
+   "attiva": true,
+   "opzioni": [],
+   "prodotti": [
+    {
+     "id": "panuozzo-panuozzo-a-scelta",
+     "nome": "Panuozzo a scelta",
+     "ingredienti": "Gli ingredienti li scegli tu!",
+     "prezzo": null,
+     "varianti": [
+      {
+       "nome": "Piccolo",
+       "prezzo": 6
+      },
+      {
+       "nome": "Medio",
+       "prezzo": 7
+      },
+      {
+       "nome": "Grande",
+       "prezzo": 8
+      }
+     ],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": "Scrivi gli ingredienti che vuoi"
+    }
+   ]
+  },
+  {
+   "id": "fritture",
+   "nome": "Le fritture",
+   "tipo": "fritto",
+   "nota": "",
+   "attiva": true,
+   "opzioni": [],
+   "prodotti": [
+    {
+     "id": "fritture-crocche",
+     "nome": "Crocchè",
+     "ingredienti": "Fatto in casa",
+     "prezzo": 1,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "fritture-crocche-ripieno",
+     "nome": "Crocchè Ripieno",
+     "ingredienti": "",
+     "prezzo": 2,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "fritture-frittelle-alle-alghe",
+     "nome": "Frittelle alle alghe",
+     "ingredienti": "10 pezzi",
+     "prezzo": 2,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "fritture-frittatina-fatta-in-casa",
+     "nome": "Frittatina fatta in casa",
+     "ingredienti": "Scegli il gusto",
+     "prezzo": null,
+     "varianti": [
+      {
+       "nome": "Prosciutto cotto e besciamella",
+       "prezzo": 2.5
+      },
+      {
+       "nome": "Cacio e pepe",
+       "prezzo": 2.5
+      },
+      {
+       "nome": "Carne macinata e piselli",
+       "prezzo": 2.5
+      }
+     ],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "fritture-nuggets-di-pollo",
+     "nome": "Nuggets di pollo",
+     "ingredienti": "",
+     "prezzo": null,
+     "varianti": [
+      {
+       "nome": "5 pezzi",
+       "prezzo": 3
+      },
+      {
+       "nome": "10 pezzi",
+       "prezzo": 5
+      }
+     ],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "fritture-bandidos-di-pollo",
+     "nome": "Bandidos di pollo",
+     "ingredienti": "",
+     "prezzo": null,
+     "varianti": [
+      {
+       "nome": "5 pezzi",
+       "prezzo": 3
+      },
+      {
+       "nome": "10 pezzi",
+       "prezzo": 5
+      }
+     ],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "fritture-jalapenos-piccanti",
+     "nome": "Jalapeños piccanti",
+     "ingredienti": "",
+     "prezzo": null,
+     "varianti": [
+      {
+       "nome": "3 pezzi",
+       "prezzo": 3
+      },
+      {
+       "nome": "6 pezzi",
+       "prezzo": 5
+      }
+     ],
+     "tag": [
+      "piccante"
+     ],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "fritture-anelli-di-cipolla",
+     "nome": "Anelli di cipolla",
+     "ingredienti": "",
+     "prezzo": null,
+     "varianti": [
+      {
+       "nome": "5 pezzi",
+       "prezzo": 3
+      },
+      {
+       "nome": "10 pezzi",
+       "prezzo": 5
+      }
+     ],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "fritture-patatine-stick",
+     "nome": "Patatine stick",
+     "ingredienti": "",
+     "prezzo": null,
+     "varianti": [
+      {
+       "nome": "Piccola",
+       "prezzo": 2.5
+      },
+      {
+       "nome": "Grande",
+       "prezzo": 5
+      }
+     ],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "fritture-patatine-dippers-twister",
+     "nome": "Patatine Dippers / Twister",
+     "ingredienti": "",
+     "prezzo": null,
+     "varianti": [
+      {
+       "nome": "Piccola",
+       "prezzo": 3.5
+      },
+      {
+       "nome": "Grande",
+       "prezzo": 6
+      }
+     ],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "fritture-montanara-classica",
+     "nome": "Montanara classica",
+     "ingredienti": "Pomodoro San Marzano, Mozzarella, Parmigiano",
+     "prezzo": 2,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "fritture-montanara-special",
+     "nome": "Montanara special",
+     "ingredienti": "",
+     "prezzo": 2.5,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "fritture-pallone-box",
+     "nome": "Pallone Box",
+     "ingredienti": "Patate Dippers, 5 Bandidos, 10 frittelle alle alghe, 5 anelli di cipolla, 5 nuggets",
+     "prezzo": 13.5,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    }
+   ]
+  },
+  {
+   "id": "dolci",
+   "nome": "I dolci",
+   "tipo": "dolce",
+   "nota": "",
+   "attiva": true,
+   "opzioni": [],
+   "prodotti": [
+    {
+     "id": "dolci-pizza-nutella",
+     "nome": "Pizza Nutella",
+     "ingredienti": "Focaccia, Nutella, Zucchero a velo",
+     "prezzo": 6,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "dolci-pallone-choc",
+     "nome": "Pallone Choc",
+     "ingredienti": "Straccetti di pizza, Nutella, Zucchero a velo",
+     "prezzo": 6,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    }
+   ]
+  },
+  {
+   "id": "bibite",
+   "nome": "Le bibite",
+   "tipo": "bevanda",
+   "nota": "",
+   "attiva": true,
+   "opzioni": [],
+   "prodotti": [
+    {
+     "id": "bibite-acqua",
+     "nome": "Acqua",
+     "ingredienti": "0,5 L",
+     "prezzo": 1,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "bibite-coca-cola",
+     "nome": "Coca-Cola",
+     "ingredienti": "",
+     "prezzo": null,
+     "varianti": [
+      {
+       "nome": "33 cl",
+       "prezzo": 2
+      },
+      {
+       "nome": "1,5 L",
+       "prezzo": 3.5
+      }
+     ],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "bibite-coca-cola-zero",
+     "nome": "Coca-Cola Zero",
+     "ingredienti": "",
+     "prezzo": null,
+     "varianti": [
+      {
+       "nome": "33 cl",
+       "prezzo": 2
+      },
+      {
+       "nome": "1,5 L",
+       "prezzo": 3.5
+      }
+     ],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "bibite-fanta",
+     "nome": "Fanta",
+     "ingredienti": "",
+     "prezzo": null,
+     "varianti": [
+      {
+       "nome": "33 cl",
+       "prezzo": 2
+      },
+      {
+       "nome": "1,5 L",
+       "prezzo": 3.5
+      }
+     ],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "bibite-sprite",
+     "nome": "Sprite",
+     "ingredienti": "33 cl",
+     "prezzo": 2,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "bibite-estathe",
+     "nome": "Estathè",
+     "ingredienti": "33 cl",
+     "prezzo": 2,
+     "varianti": [],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "bibite-peroni",
+     "nome": "Peroni",
+     "ingredienti": "",
+     "prezzo": null,
+     "varianti": [
+      {
+       "nome": "33 cl",
+       "prezzo": 2
+      },
+      {
+       "nome": "66 cl",
+       "prezzo": 3
+      }
+     ],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "bibite-heineken",
+     "nome": "Heineken",
+     "ingredienti": "",
+     "prezzo": null,
+     "varianti": [
+      {
+       "nome": "33 cl",
+       "prezzo": 2
+      },
+      {
+       "nome": "66 cl",
+       "prezzo": 3
+      }
+     ],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    },
+    {
+     "id": "bibite-nastro-azzurro",
+     "nome": "Nastro Azzurro",
+     "ingredienti": "",
+     "prezzo": null,
+     "varianti": [
+      {
+       "nome": "33 cl",
+       "prezzo": 2
+      },
+      {
+       "nome": "66 cl",
+       "prezzo": 3
+      }
+     ],
+     "tag": [],
+     "allergeni": [],
+     "foto": "",
+     "attivo": true,
+     "disponibile": true,
+     "giorni": [],
+     "dettagli": "",
+     "richiesta": ""
+    }
+   ]
+  }
+ ]
+}
