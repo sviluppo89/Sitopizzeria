@@ -288,6 +288,12 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .item__art svg { width: 82%; height: 82%; }
 .item__media .add { position: absolute; right: -6px; bottom: -6px; z-index: 2; }
 
+.item.is-off .item__main, .item.is-off .item__art, .fcard.is-off .fcard__art { opacity: .55; }
+.item__main .badge { margin-left: 6px; vertical-align: 1px; }
+.cat-section__img { width: 100%; aspect-ratio: 3 / 1; object-fit: cover; border-radius: var(--r); margin: 8px 0 4px; }
+.section-head__link { color: var(--red); font-weight: 800; text-decoration: none; font-size: .95rem; }
+img.is-contain, .is-contain img { object-fit: contain !important; }
+.fcard__art img.is-contain { background: #fff; }
 .ico-tag { font-size: .95rem; line-height: 1; }
 
 .add {
@@ -307,6 +313,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 .badge--novita { background: #e6eefb; color: #2a4f8f; }
 .badge--consigliata { background: var(--red); color: #fff; }
+.badge--today { background: #178a43; color: #fff; }
+.badge--days { background: var(--surface-2); color: var(--muted); }
+.badge--off { background: var(--surface-2); color: var(--red-700); }
 @media (prefers-color-scheme: dark) { .badge { color: #e8c48e; } .badge--novita { background: #1d2a40; color: #9dbcf2; } }
 
 .empty { text-align: center; padding: 36px 0; color: var(--muted); }
@@ -412,6 +421,20 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .ps__tags:empty { display: none; }
 .ps__desc { margin: 10px 0 16px; color: var(--muted); }
 
+.ps__more { margin: -6px 0 16px; font-size: .92rem; padding: 12px 14px; border-radius: var(--r-sm); background: var(--crust-50); }
+.choices { border: 0; padding: 0; margin: 0 0 16px; }
+.choices legend { font-weight: 900; font-size: 1rem; margin-bottom: 8px; padding: 0; }
+.choices legend small { font-weight: 600; color: var(--muted); }
+.choice {
+  display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 0 14px;
+  border: 1.5px solid var(--line); border-radius: 14px; margin-bottom: 8px; cursor: pointer;
+  transition: border-color .15s, background-color .15s;
+}
+.choice:has(input:checked) { border-color: var(--green); background: var(--green-50); }
+.choice input { width: 20px; height: 20px; accent-color: var(--green); margin: 0; flex: none; }
+.choice__name { flex: 1; font-weight: 700; }
+.choice__price { font-weight: 800; font-variant-numeric: tabular-nums; }
+.field textarea[aria-invalid="true"] { border-color: var(--red); }
 .field { display: grid; gap: 6px; margin: 0 0 14px; }
 .field__label { font-weight: 800; font-size: .92rem; }
 .field__label small { font-weight: 600; color: var(--muted); }

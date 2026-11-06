@@ -26,14 +26,49 @@
 
   /* ---------- Indice prodotti ---------- */
   const PRODUCTS = new Map();
-  MENU.forEach((cat) => cat.piatti.forEach((p) => {
-    const id = `${cat.id}-${slug(p.nome)}`;
-    PRODUCTS.set(id, { ...p, id, tag: p.tag || [], tipo: cat.tipo || "pizza", cat: cat.id });
-  }));
+  const CAT_IDS = {}; // categoria -> elenco id prodotti, nell'ordine del menù
+  MENU.forEach((cat) => {
+    CAT_IDS[cat.id] = cat.piatti.map((p) => {
+      let id = `${cat.id}-${slug(p.nome)}`;
+      while (PRODUCTS.has(id)) id += "-2";
+      PRODUCTS.set(id, {
+        ...p, id, tag: p.tag || [], tipo: cat.tipo || "pizza", cat: cat.id,
+        varianti: p.varianti || null, opzioni: p.opzioni || cat.opzioni || [],
+        disponibile: p.disponibile !== false, offerta: !!cat.offerte
+      });
+      return id;
+    });
+  });
+
+  /* Prezzi, varianti e offerte */
+  const DAY_SHORT = ["Dom", "Lun", "Mar", "Mer", "Gio", "Ven", "Sab"];
+  const validToday = (p) => !p.giorni || p.giorni.includes(new Date().getDay());
+  const daysLabel = (p) => (p.giorni || []).slice().sort((a, b) => ((a + 6) % 7) - ((b + 6) % 7)).map((d) => DAY_SHORT[d]).join(" · ");
+  const canOrder = (p) => p.disponibile && validToday(p);
+  const needsSheet = (p) => !!(p.varianti || p.segnaposto);
+  const priceLabel = (p) => {
+    if (!p.varianti) return fmt(p.prezzo);
+    const ps = p.varianti.map((v) => v.prezzo);
+    const min = Math.min(...ps);
+    return ps.every((x) => x === min) ? fmt(min) : `da ${fmt(min)}`;
+  };
+  const descOf = (p) => p.ingredienti && p.ingredienti !== "Scegli il gusto" ? p.ingredienti : (p.varianti ? p.varianti.map((v) => v.nome).join(" · ") : (p.ingredienti || ""));
+  const unitPrice = (l) => {
+    const p = PRODUCTS.get(l.id);
+    const base = p.varianti ? (p.varianti[l.v] || p.varianti[0]).prezzo : p.prezzo;
+    return base + (l.o || []).reduce((a, i) => a + ((p.opzioni[i] || {}).prezzo || 0), 0);
+  };
+  const lineLabel = (l) => {
+    const p = PRODUCTS.get(l.id);
+    const bits = [];
+    if (p.varianti) bits.push((p.varianti[l.v] || p.varianti[0]).nome);
+    (l.o || []).forEach((i) => p.opzioni[i] && bits.push(p.opzioni[i].nome.toLowerCase()));
+    return p.nome + (bits.length ? ` (${bits.join(", ")})` : "");
+  };
 
   /* ---------- Illustrazioni SVG (usate se manca la foto) ---------- */
   function art(p) {
-    if (p.foto) return `<img src="${esc(p.foto)}" alt="" loading="lazy" decoding="async">`;
+    if (p.foto) return `<img src="${esc(p.foto)}" alt="" loading="lazy" decoding="async"${p.fotoIntera ? ' class="is-contain"' : ""}>`;
     const ing = norm(p.ingredienti);
     const R = "#d7141d", CR = "#c08e4c", W = "#fffaf0", G = "#2f8a4e";
     const seed = [...p.nome].reduce((a, c) => a + c.charCodeAt(0), 0);
@@ -77,14 +112,15 @@
 
   /* ---------- Stato ---------- */
   const state = {
-    cart: store.get("pallone-cart", []).filter((l) => PRODUCTS.has(l.id)), // [{id, qty, note}]
+    // righe del carrello: { id, qty, note, v: indice variante, o: [indici opzioni] }
+    cart: store.get("pallone-cart", []).filter((l) => PRODUCTS.has(l.id) && (!PRODUCTS.get(l.id).varianti || PRODUCTS.get(l.id).varianti[l.v])),
     mode: store.get("pallone-mode", "asporto"),
     filters: new Set(),
     query: ""
   };
   const save = () => { store.set("pallone-cart", state.cart); store.set("pallone-mode", state.mode); };
   const qtyOf = (id) => state.cart.filter((l) => l.id === id).reduce((a, l) => a + l.qty, 0);
-  const subtotal = () => state.cart.reduce((a, l) => a + PRODUCTS.get(l.id).prezzo * l.qty, 0);
+  const subtotal = () => state.cart.reduce((a, l) => a + unitPrice(l) * l.qty, 0);
   const deliveryFee = () => (state.mode === "domicilio" && C.consegna && typeof C.consegna.costo === "number" ? C.consegna.costo : 0);
 
   /* ---------- Link di contatto ---------- */
@@ -140,25 +176,31 @@
   $("#cats").innerHTML = MENU.map((c) => `<a class="cat" href="#cat-${esc(c.id)}" data-id="${esc(c.id)}">${esc(c.nome)}</a>`).join("");
 
   const addBtn = (id) => {
+    const p = PRODUCTS.get(id);
+    if (!canOrder(p)) return "";
     const q = qtyOf(id);
-    return `<button type="button" class="add${q ? " has-qty" : ""}" data-add="${id}" aria-label="Aggiungi ${esc(PRODUCTS.get(id).nome)}${q ? `, già ${q} nel carrello` : ""}">${q ? q : "+"}</button>`;
+    return `<button type="button" class="add${q ? " has-qty" : ""}" data-add="${id}" aria-label="Aggiungi ${esc(p.nome)}${q ? `, già ${q} nel carrello` : ""}">${q ? q : "+"}</button>`;
   };
+  const statusBadge = (p) => !p.disponibile ? `<span class="badge badge--off">Non disponibile</span>`
+    : p.giorni ? (validToday(p) ? `<span class="badge badge--today">Valida oggi</span>` : `<span class="badge badge--days">${daysLabel(p)}</span>`) : "";
 
   $("#menu-list").innerHTML = MENU.map((c) => `
     <section class="cat-section" id="cat-${esc(c.id)}" data-id="${esc(c.id)}" aria-labelledby="h-${esc(c.id)}">
       <h3 class="cat-section__title" id="h-${esc(c.id)}">${esc(c.nome)}</h3>
       ${c.nota ? `<p class="cat-section__note">${esc(c.nota)}</p>` : ""}
+      ${c.foto ? `<img class="cat-section__img" src="${esc(c.foto)}" alt="" loading="lazy" decoding="async">` : ""}
       <ul class="items">
-        ${c.piatti.map((raw) => {
-          const p = PRODUCTS.get(`${c.id}-${slug(raw.nome)}`);
+        ${CAT_IDS[c.id].map((pid) => {
+          const p = PRODUCTS.get(pid);
           return `
-          <li class="item" data-id="${p.id}" data-tags="${p.tag.join(" ")}" data-search="${esc(norm(p.nome + " " + (p.ingredienti || "")))}">
-            <button type="button" class="item__open" data-open="${p.id}" aria-label="${esc(p.nome)}, ${fmt(p.prezzo)}. Dettagli"></button>
+          <li class="item${canOrder(p) ? "" : " is-off"}" data-id="${p.id}" data-tags="${p.tag.join(" ")}" data-search="${esc(norm([p.nome, p.ingredienti, c.nome, ...(p.varianti || []).map((v) => v.nome)].join(" ")))}">
+            <button type="button" class="item__open" data-open="${p.id}" aria-label="${esc(p.nome)}, ${priceLabel(p)}. Dettagli"></button>
             <div class="item__main">
               <h4 class="item__name">${esc(p.nome)} ${badges(p.tag, true)}</h4>
-              ${p.ingredienti ? `<p class="item__desc">${esc(p.ingredienti)}</p>` : ""}
-              <span class="item__price">${fmt(p.prezzo)}</span>
+              ${descOf(p) ? `<p class="item__desc">${esc(descOf(p))}</p>` : ""}
+              <span class="item__price">${priceLabel(p)}</span>
               ${p.tag.includes("novita") ? ` <span class="badge badge--novita">✨ Novità</span>` : ""}
+              ${statusBadge(p)}
             </div>
             <div class="item__media">
               <div class="item__art">${art(p)}</div>
@@ -169,18 +211,23 @@
       </ul>
     </section>`).join("");
 
-  // I più amati
-  const featured = [...PRODUCTS.values()].filter((p) => p.tag.includes("consigliata") || p.tag.includes("novita"));
-  const featuredList = featured.length ? featured : [...PRODUCTS.values()].slice(0, 4);
+  // Carosello: le offerte (quelle valide oggi per prime), altrimenti i prodotti consigliati
+  const offers = [...PRODUCTS.values()].filter((p) => p.offerta);
+  const featuredList = offers.length
+    ? offers.sort((a, b) => validToday(b) - validToday(a))
+    : [...PRODUCTS.values()].filter((p) => p.tag.includes("consigliata") || p.tag.includes("novita"));
+  if (offers.length) $("#featured-title").textContent = "Le offerte";
+  else $(".section-head__link").remove();
+  if (!featuredList.length) $("#featured-wrap").remove();
   $("#featured").innerHTML = featuredList.map((p) => `
-    <div class="fcard" data-id="${p.id}">
-      <button type="button" class="item__open" data-open="${p.id}" aria-label="${esc(p.nome)}, ${fmt(p.prezzo)}. Dettagli"></button>
+    <div class="fcard${canOrder(p) ? "" : " is-off"}" data-id="${p.id}">
+      <button type="button" class="item__open" data-open="${p.id}" aria-label="${esc(p.nome)}, ${priceLabel(p)}. Dettagli"></button>
       <div class="fcard__art">${art(p)}</div>
-      ${p.tag.includes("consigliata") ? `<span class="badge badge--consigliata">★ La più amata</span>` : p.tag.includes("novita") ? `<span class="badge badge--novita">✨ Novità</span>` : ""}
+      ${p.giorni ? statusBadge(p) : p.tag.includes("consigliata") ? `<span class="badge badge--consigliata">★ La più amata</span>` : p.tag.includes("novita") ? `<span class="badge badge--novita">✨ Novità</span>` : ""}
       <div class="fcard__body">
         <span class="fcard__name">${esc(p.nome)}</span>
-        <span class="fcard__desc">${esc(p.ingredienti || "")}</span>
-        <span class="fcard__price">${fmt(p.prezzo)}</span>
+        <span class="fcard__desc">${esc(descOf(p))}</span>
+        <span class="fcard__price">${priceLabel(p)}</span>
       </div>
       ${addBtn(p.id)}
     </div>`).join("");
@@ -205,13 +252,16 @@
     });
     const filtering = !!q || state.filters.size > 0;
     $("#empty").hidden = total > 0;
-    $("#featured-wrap").hidden = filtering;
+    if ($("#featured-wrap")) $("#featured-wrap").hidden = filtering;
     $("#search-clear").hidden = !q;
     $$(".cat").forEach((l) => (l.hidden = $("#cat-" + l.dataset.id).hidden));
   }
   const search = $("#search");
   search.addEventListener("input", () => { state.query = search.value; applyFilters(); });
   $("#search-clear").addEventListener("click", () => { search.value = ""; state.query = ""; applyFilters(); search.focus(); });
+  // nasconde i filtri senza prodotti corrispondenti
+  $$(".filter").forEach((b) => { if (![...PRODUCTS.values()].some((p) => p.tag.includes(b.dataset.filter))) b.remove(); });
+  if (!$$(".filter").length) $(".filters").remove();
   $$(".filter").forEach((b) => b.addEventListener("click", () => {
     const f = b.dataset.filter;
     state.filters.has(f) ? state.filters.delete(f) : state.filters.add(f);
@@ -283,12 +333,14 @@
   }));
 
   /* ---------- Carrello ---------- */
-  function addToCart(id, qty = 1, note = "") {
+  function addToCart(id, qty = 1, note = "", v = 0, o = []) {
     note = note.trim();
-    const line = state.cart.find((l) => l.id === id && l.note === note);
-    line ? (line.qty += qty) : state.cart.push({ id, qty, note });
+    const key = (l) => [l.id, l.note, l.v || 0, (l.o || []).join(",")].join("|");
+    const nl = { id, qty, note, v, o };
+    const line = state.cart.find((l) => key(l) === key(nl));
+    line ? (line.qty += qty) : state.cart.push(nl);
     save(); renderCart(true); vibrate();
-    live(`${qty} × ${PRODUCTS.get(id).nome} aggiunta all'ordine`);
+    live(`${qty} × ${lineLabel(nl)} aggiunto all'ordine`);
   }
   function renderAddButtons() {
     $$("[data-add]").forEach((b) => { b.outerHTML = addBtn(b.dataset.add); });
@@ -313,7 +365,7 @@
     $("#cart-list").innerHTML = state.cart.map((l, i) => {
       const p = PRODUCTS.get(l.id);
       return `<li class="cart__item">
-        <span class="cart__name">${esc(p.nome)}</span>
+        <span class="cart__name">${esc(lineLabel(l))}</span>
         <div class="cart__side">
           <div class="stepper stepper--sm" aria-label="Quantità ${esc(p.nome)}">
             <button type="button" class="stepper__btn" data-line="${i}" data-delta="-1" aria-label="${l.qty === 1 ? "Rimuovi" : "Diminuisci"} ${esc(p.nome)}">${l.qty === 1 ? "🗑" : "−"}</button>
@@ -321,7 +373,7 @@
             <button type="button" class="stepper__btn" data-line="${i}" data-delta="1" aria-label="Aumenta ${esc(p.nome)}">+</button>
           </div>
         </div>
-        <span class="cart__price">${fmt(p.prezzo * l.qty)}</span>
+        <span class="cart__price">${fmt(unitPrice(l) * l.qty)}</span>
         ${l.note ? `<span class="cart__note">“${esc(l.note)}”</span>` : ""}
       </li>`;
     }).join("");
@@ -367,33 +419,76 @@
   /* Scheda prodotto */
   let current = null, qty = 1;
   const ps = $("#product-sheet");
+  let selV = 0, selO = [];
   function updateAddLabel() {
     $("#ps-qty").textContent = qty;
-    $("#ps-add").textContent = `Aggiungi · ${fmt(current.prezzo * qty)}`;
     $("#ps-minus").disabled = qty <= 1;
+    const add = $("#ps-add");
+    if (!current.disponibile) { add.textContent = "Al momento non disponibile"; add.disabled = true; }
+    else if (!validToday(current)) { add.textContent = `Valida solo ${daysLabel(current)}`; add.disabled = true; }
+    else { add.textContent = `Aggiungi · ${fmt(unitPrice({ id: current.id, v: selV, o: selO }) * qty)}`; add.disabled = false; }
   }
   function openProduct(id) {
-    current = PRODUCTS.get(id); qty = 1;
+    current = PRODUCTS.get(id); qty = 1; selV = 0; selO = [];
     $("#ps-art").innerHTML = art(current);
+    $("#ps-art").classList.toggle("is-contain", !!current.fotoIntera);
     $("#ps-name").textContent = current.nome;
-    $("#ps-tags").innerHTML = badges(current.tag, false);
-    $("#ps-desc").textContent = current.ingredienti || "";
-    $("#ps-desc").hidden = !current.ingredienti;
+    $("#ps-tags").innerHTML = badges(current.tag, false) + statusBadge(current);
+    const desc = current.ingredienti && current.ingredienti !== "Scegli il gusto" ? current.ingredienti : "";
+    $("#ps-desc").textContent = desc;
+    $("#ps-desc").hidden = !desc;
+    $("#ps-more").textContent = current.dettagli || "";
+    $("#ps-more").hidden = !current.dettagli;
+    // varianti (formato / gusto)
+    const vw = $("#ps-variants");
+    vw.hidden = !current.varianti;
+    if (current.varianti) {
+      const same = current.varianti.every((v) => v.prezzo === current.varianti[0].prezzo);
+      $("#ps-variants-title").textContent = same ? "Scegli il gusto" : "Scegli il formato";
+      $("#ps-variants-list").innerHTML = current.varianti.map((v, i) => `
+        <label class="choice"><input type="radio" name="ps-v" value="${i}"${i === 0 ? " checked" : ""}>
+          <span class="choice__name">${esc(v.nome)}</span>${same ? "" : `<span class="choice__price">${fmt(v.prezzo)}</span>`}</label>`).join("");
+    }
+    // opzioni (es. nel ruoto)
+    const ow = $("#ps-options");
+    ow.hidden = !current.opzioni.length;
+    $("#ps-options-list").innerHTML = current.opzioni.map((o, i) => `
+      <label class="choice"><input type="checkbox" name="ps-o" value="${i}">
+        <span class="choice__name">${esc(o.nome)}</span><span class="choice__price">+ ${fmt(o.prezzo)}</span></label>`).join("");
     $("#ps-note").value = "";
+    $("#ps-note").placeholder = current.segnaposto || "Es. ben cotta, senza origano…";
+    $("#ps-note-label").firstChild.textContent = current.segnaposto ? "La tua scelta " : "Richieste particolari ";
+    $("#ps-note-label small").hidden = !!current.segnaposto;
+    $("#ps-note-wrap").hidden = !canOrder(current);
+    $(".stepper", ps).hidden = !canOrder(current);
     updateAddLabel();
     openSheet(ps);
+    $(".sheet__body", ps).scrollTop = 0;
   }
+  ps.addEventListener("change", (e) => {
+    if (e.target.name === "ps-v") selV = +e.target.value;
+    if (e.target.name === "ps-o") selO = $$('input[name="ps-o"]:checked', ps).map((i) => +i.value);
+    updateAddLabel();
+  });
   $("#ps-minus").addEventListener("click", () => { qty = Math.max(1, qty - 1); updateAddLabel(); });
   $("#ps-plus").addEventListener("click", () => { qty = Math.min(20, qty + 1); updateAddLabel(); });
   $("#product-form").addEventListener("submit", (e) => {
     e.preventDefault();
-    addToCart(current.id, qty, $("#ps-note").value);
+    if (!canOrder(current)) return;
+    if (current.segnaposto && !$("#ps-note").value.trim()) {
+      $("#ps-note").setAttribute("aria-invalid", "true"); $("#ps-note").focus(); return;
+    }
+    addToCart(current.id, qty, $("#ps-note").value, current.varianti ? selV : 0, selO);
     closeSheet(ps);
   });
 
   document.addEventListener("click", (e) => {
     const add = e.target.closest("[data-add]");
-    if (add) { addToCart(add.dataset.add); return; }
+    if (add) {
+      const p = PRODUCTS.get(add.dataset.add);
+      needsSheet(p) ? openProduct(p.id) : addToCart(p.id);
+      return;
+    }
     const open = e.target.closest("[data-open]");
     if (open) openProduct(open.dataset.open);
   });
@@ -421,6 +516,7 @@
   });
   $("#cart-more").addEventListener("click", () => { closeSheet(cs); setTimeout(() => $("#menu").scrollIntoView(), 250); });
 
+  $("#ps-note").addEventListener("input", (e) => e.target.removeAttribute("aria-invalid"));
   ["#c-name", "#c-addr"].forEach((s) => $(s).addEventListener("input", (e) => { e.target.removeAttribute("aria-invalid"); $("#c-error").hidden = true; }));
   $("#send-wa").addEventListener("click", () => {
     const name = $("#c-name"), addr = $("#c-addr"), err = $("#c-error");
@@ -437,8 +533,7 @@
     if (addr.value.trim()) store.set("pallone-addr", addr.value.trim());
 
     const lines = state.cart.map((l) => {
-      const p = PRODUCTS.get(l.id);
-      return `• ${l.qty}× ${p.nome} — ${fmt(p.prezzo * l.qty)}${l.note ? `\n   ↳ ${l.note}` : ""}`;
+      return `• ${l.qty}× ${lineLabel(l)} — ${fmt(unitPrice(l) * l.qty)}${l.note ? `\n   ↳ ${l.note}` : ""}`;
     });
     const fee = deliveryFee();
     const text = [

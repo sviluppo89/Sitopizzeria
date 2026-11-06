@@ -82,6 +82,7 @@
     <section class="featured" aria-labelledby="featured-title" id="featured-wrap">
       <div class="section-head">
         <h2 id="featured-title">I più amati</h2>
+        <a class="section-head__link" href="#cat-offerte">Vedi tutte</a>
       </div>
       <div class="featured__track" id="featured"></div>
     </section>
@@ -100,8 +101,8 @@
       </div>
 
       <div class="filters" role="group" aria-label="Filtri">
-        <button type="button" class="filter" data-filter="vegetariana" aria-pressed="false">🌱 Vegetariane</button>
         <button type="button" class="filter" data-filter="piccante" aria-pressed="false">🌶️ Piccanti</button>
+        <button type="button" class="filter" data-filter="vegetariana" aria-pressed="false">🌱 Vegetariane</button>
         <button type="button" class="filter" data-filter="novita" aria-pressed="false">✨ Novità</button>
       </div>
 
@@ -197,9 +198,18 @@
         <h2 class="ps__name" id="ps-name"></h2>
         <div class="ps__tags" id="ps-tags"></div>
         <p class="ps__desc" id="ps-desc"></p>
-        <label class="field">
-          <span class="field__label">Richieste particolari <small>(facoltativo)</small></span>
-          <textarea id="ps-note" rows="2" maxlength="140" placeholder="Es. ben cotta, senza origano…"></textarea>
+        <p class="ps__more" id="ps-more" hidden></p>
+        <fieldset class="choices" id="ps-variants" hidden>
+          <legend id="ps-variants-title">Scegli il formato</legend>
+          <div id="ps-variants-list"></div>
+        </fieldset>
+        <fieldset class="choices" id="ps-options" hidden>
+          <legend>Vuoi aggiungere? <small>(facoltativo)</small></legend>
+          <div id="ps-options-list"></div>
+        </fieldset>
+        <label class="field" id="ps-note-wrap">
+          <span class="field__label" id="ps-note-label">Richieste particolari <small>(facoltativo)</small></span>
+          <textarea id="ps-note" rows="2" maxlength="160" placeholder="Es. ben cotta, senza origano…"></textarea>
         </label>
       </div>
       <div class="sheet__footer">

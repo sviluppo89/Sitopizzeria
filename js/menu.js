@@ -2,27 +2,33 @@
    MENÙ DI PIZZERIA PALLONE
    ---------------------------------------------------------
    Per modificare il menù cambia solo questo file.
+   (Menù importato da go.nordqr.com/pizzeria-pallone)
 
-   Ogni categoria ha:
-     id      -> parola breve senza spazi (serve per i link)
-     nome    -> titolo mostrato sul sito
-     nota    -> (facoltativo) frase sotto il titolo
-     tipo    -> illustrazione: "pizza", "calzone", "fritto", "bevanda", "dolce"
-     piatti  -> elenco dei prodotti
+   CATEGORIA
+     id       -> parola breve senza spazi (serve per i link)
+     nome     -> titolo mostrato sul sito
+     tipo     -> illustrazione se manca la foto:
+                 "pizza", "calzone", "fritto", "bevanda", "dolce"
+     nota     -> (facoltativo) frase sotto il titolo
+     foto     -> (facoltativo) foto sotto il titolo
+     opzioni  -> (facoltativo) aggiunte con sovrapprezzo che il cliente
+                 può scegliere, es. [{ nome: "Nel ruoto", prezzo: 2 }]
+     offerte  -> true = i prodotti vanno nel carosello "Le offerte"
+     piatti   -> elenco dei prodotti
 
-   Ogni prodotto ha:
+   PRODOTTO
      nome         -> nome del prodotto
      ingredienti  -> (facoltativo) descrizione
-     prezzo       -> numero con il punto per i decimali (es. 6.5 = € 6,50)
-     tag          -> (facoltativo) uno o più tra:
-                     "novita", "piccante", "vegetariana", "consigliata"
-
-   Facoltativo per ogni prodotto:
-     foto         -> percorso di una foto, es. "img/margherita.jpg"
-                     (se manca viene mostrata un'illustrazione)
-
-   ATTENZIONE: prodotti e prezzi qui sotto sono di ESEMPIO.
-   Sostituiscili con quelli reali della pizzeria.
+     prezzo       -> numero con il punto per i decimali (6.5 = 6,50 €)
+     varianti     -> (al posto di prezzo) formati/gusti con prezzo diverso,
+                     es. [{ nome: "33 cl", prezzo: 2 }, { nome: "66 cl", prezzo: 3 }]
+     tag          -> (facoltativo) ["piccante"], ["novita"], ["consigliata"], ["vegetariana"]
+     foto         -> (facoltativo) es. "img/menu/margherita.webp"
+     fotoIntera   -> true = mostra la foto senza ritagli (volantini)
+     disponibile  -> false = prodotto visibile ma non ordinabile
+     giorni       -> (offerte) giorni validi: 0 = domenica ... 6 = sabato
+     dettagli     -> (facoltativo) testo in più nella scheda del prodotto
+     segnaposto   -> (facoltativo) suggerimento nel campo note
    ========================================================= */
 
 /* ---------- DATI DELLA PIZZERIA ---------- */
@@ -60,82 +66,158 @@ const CONFIG = {
 
 const MENU = [
   {
-    id: "classiche",
+    id: "offerte",
+    nome: "Le offerte",
     tipo: "pizza",
-    nome: "Pizze Classiche",
+    offerte: true,
     piatti: [
-      { nome: "Marinara", ingredienti: "Pomodoro, aglio, origano, olio EVO", prezzo: 4.0, tag: ["vegetariana"] },
-      { nome: "Margherita", ingredienti: "Pomodoro, fior di latte, basilico, olio EVO", prezzo: 5.0, tag: ["vegetariana"] },
-      { nome: "Napoli", ingredienti: "Pomodoro, fior di latte, alici, origano", prezzo: 6.0 },
-      { nome: "Diavola", ingredienti: "Pomodoro, fior di latte, salame piccante", prezzo: 6.5, tag: ["piccante"] },
-      { nome: "Prosciutto e Funghi", ingredienti: "Pomodoro, fior di latte, prosciutto cotto, funghi champignon", prezzo: 7.0 },
-      { nome: "Capricciosa", ingredienti: "Pomodoro, fior di latte, prosciutto cotto, funghi, carciofi, olive", prezzo: 7.5 },
-      { nome: "Quattro Formaggi", ingredienti: "Fior di latte, gorgonzola, provola, parmigiano", prezzo: 7.0, tag: ["vegetariana"] },
-      { nome: "Wurstel e Patatine", ingredienti: "Fior di latte, wurstel, patatine fritte", prezzo: 6.5 }
+      { nome: "Today's Special", ingredienti: "Pizza Classic + patatina o alghe + bibita", prezzo: 8, giorni: [1, 3, 5], fotoIntera: true, dettagli: "Pizza Classic a scelta tra: Napoletana, Marinara, Margherita, Bufala, Diavola, Siciliana, 4 Formaggi, Cosacca, USA, Crocchè, Parmigiana, Ripieni.", segnaposto: "Scrivi la pizza, patatina o alghe e la bibita", foto: "img/menu/today-s-special.webp" },
+      { nome: "Scrigno Party", ingredienti: "Scrigno o pizza special + patatina o alghe + bibita", prezzo: 9.99, giorni: [1, 3, 5], fotoIntera: true, segnaposto: "Scrivi lo scrigno o la pizza, patatina o alghe e la bibita", foto: "img/menu/scrigno-party.webp" },
+      { nome: "Crazy Sunday", ingredienti: "Una selezione di pizze del menù a 5 €", prezzo: 5, giorni: [0], fotoIntera: true, segnaposto: "Quale pizza dell'offerta?", foto: "img/menu/crazy-sunday.webp" },
+      { nome: "Give Me 5", ingredienti: "Una selezione di pizze del menù a 5 €", prezzo: 5, giorni: [4, 0], fotoIntera: true, segnaposto: "Quale pizza dell'offerta?", foto: "img/menu/give-me-5.webp" }
     ]
   },
   {
-    id: "speciali",
+    id: "pizze",
+    nome: "Le pizze",
     tipo: "pizza",
-    nome: "Pizze Speciali",
-    nota: "Le creazioni della casa.",
+    opzioni: [{"nome": "Nel ruoto", "prezzo": 2}],
     piatti: [
-      { nome: "Pallone", ingredienti: "Pomodorino giallo, bufala, pancetta croccante, basilico", prezzo: 9.0, tag: ["consigliata"] },
-      { nome: "Salsiccia e Friarielli", ingredienti: "Fior di latte, salsiccia, friarielli, peperoncino", prezzo: 8.0, tag: ["piccante"] },
-      { nome: "Bufalina", ingredienti: "Pomodoro, mozzarella di bufala campana DOP, basilico", prezzo: 8.0, tag: ["vegetariana"] },
-      { nome: "Patate e Provola", ingredienti: "Provola affumicata, patate al forno, pepe, rosmarino", prezzo: 7.0, tag: ["vegetariana"] },
-      { nome: "Ortolana", ingredienti: "Fior di latte, melanzane, zucchine, peperoni grigliati", prezzo: 7.5, tag: ["vegetariana"] },
-      { nome: "Crudo e Rucola", ingredienti: "Fior di latte, prosciutto crudo, rucola, scaglie di grana", prezzo: 8.5 },
-      { nome: "Tonno e Cipolla", ingredienti: "Pomodoro, fior di latte, tonno, cipolla di Tropea", prezzo: 7.5, tag: ["novita"] }
+      { nome: "Margherita", ingredienti: "Pomodoro San Marzano, Fior di latte, Olio evo, Basilico", prezzo: 5, foto: "img/menu/margherita.webp" },
+      { nome: "Focaccia", ingredienti: "Olio evo, Origano", prezzo: 3 },
+      { nome: "Napoletana", ingredienti: "Pomodoro San Marzano, Aglio, Origano, Olio Evo, Basilico", prezzo: 5 },
+      { nome: "Marinara", ingredienti: "Pomodoro San Marzano, Alici di Cetara, Olive nere, Aglio, Olio evo, Basilico", prezzo: 5 },
+      { nome: "Cosacca", ingredienti: "Pomodoro San Marzano, Pecorino Romano, Olio evo, Basilico", prezzo: 6, foto: "img/menu/cosacca.webp" },
+      { nome: "Diavola", ingredienti: "Pomodoro San Marzano, Fior di latte, Salame piccante, Olio evo, Basilico", prezzo: 6, tag: ["piccante"], foto: "img/menu/diavola.webp" },
+      { nome: "Siciliana", ingredienti: "Pomodoro San Marzano, Fior di latte, Melanzane a funghetto, Grana Padano, Olio evo, Basilico", prezzo: 6.5, foto: "img/menu/siciliana.webp" },
+      { nome: "Marinara Gialla", ingredienti: "Pomodorini gialli, Capperi, Alici di Cetara, Olive nere, Aglio, Origano, Olio evo, Basilico", prezzo: 7, foto: "img/menu/marinara-gialla.webp" },
+      { nome: "Bufala", ingredienti: "Pomodoro San Marzano, Mozzarella di Bufala DOP, Olio Evo, Basilico", prezzo: 7, foto: "img/menu/bufala.webp" },
+      { nome: "Ortolana", ingredienti: "Fior di latte, Melanzane, Zucchine, Peperoni, Olio evo, Basilico", prezzo: 7, foto: "img/menu/ortolana.webp" },
+      { nome: "4 Formaggi", ingredienti: "Fior di latte, Gorgonzola DOP, Provola di Agerola, Parmigiano Reggiano, Olio evo, Basilico", prezzo: 7, foto: "img/menu/4-formaggi.webp" },
+      { nome: "USA", ingredienti: "Fior di latte, Würstel, Patatine stick, Olio evo", varianti: [{"nome": "Piccola", "prezzo": 7}, {"nome": "Media", "prezzo": 8}, {"nome": "Grande", "prezzo": 8}], foto: "img/menu/usa.webp" },
+      { nome: "Mimosa", ingredienti: "Fior di latte, Prosciutto cotto alla brace, Mais, Panna, Olio evo, Basilico", prezzo: 7, foto: "img/menu/mimosa.webp" },
+      { nome: "Parmigiana", ingredienti: "Pomodoro San Marzano, Fior di latte, Parmigiana di melanzane, Parmigiano Reggiano, Olio evo, Basilico", prezzo: 7 },
+      { nome: "Crocchè", ingredienti: "Fior di latte, Crocchè Home Made, Prosciutto cotto alla brace, Olio evo, Basilico", prezzo: 8 },
+      { nome: "O' Nonno", ingredienti: "Fior di latte, Salsiccia fresca, Patate al forno, Olio evo, Basilico", prezzo: 8 },
+      { nome: "Tropea", ingredienti: "Fior di latte, Tonno, Cipolla rossa di Tropea IGP, Olio evo, Basilico", prezzo: 8, foto: "img/menu/tropea.webp" },
+      { nome: "DOC", ingredienti: "Datterini rossi, Mozzarella di bufala DOP, Olio evo, Basilico", prezzo: 8, foto: "img/menu/doc.webp" },
+      { nome: "Capricciosa", ingredienti: "Pomodoro San Marzano, Fior di latte, Prosciutto cotto alla brace, Salame dolce, Olive nere, Carciofini, Funghi, Olio evo, Basilico", prezzo: 8, foto: "img/menu/capricciosa.webp" },
+      { nome: "Carabiniera", ingredienti: "Pomodoro San Marzano, Mozzarella di bufala DOP, Salame piccante, Olive nere, Origano, Olio evo, Basilico", prezzo: 8, tag: ["piccante"], foto: "img/menu/carabiniera.webp" },
+      { nome: "Mediterranea", ingredienti: "Fior di latte, Pomodorini, Rucola, Prosciutto crudo, Parmigiano Reggiano, Olio evo", prezzo: 8, foto: "img/menu/mediterranea.webp" },
+      { nome: "Cacio e Gusto", ingredienti: "Fior di latte, Pancetta, Zucchine, Pecorino Romano, Olio evo", prezzo: 8 },
+      { nome: "Cetara", ingredienti: "Mozzarella di bufala DOP, Pomodorini, Alici di Cetara, Olive nere, Olio evo", prezzo: 8, foto: "img/menu/cetara.webp" },
+      { nome: "Laura", ingredienti: "Mozzarella di bufala DOP, Salame piccante, Patate al forno, Olio evo, Basilico", prezzo: 8, tag: ["piccante"], foto: "img/menu/laura.webp" },
+      { nome: "Ariccia", ingredienti: "Crema di patate, Provola di Agerola, Porchetta Ariccia artigianale, Parmigiano Reggiano, Olio evo, Basilico", prezzo: 8, foto: "img/menu/ariccia.webp" },
+      { nome: "Ninja", ingredienti: "Fior di latte, Gorgonzola DOP, Provola, Parmigiano reggiano, Salame piccante", prezzo: 9, tag: ["piccante"] },
+      { nome: "Ross", ingredienti: "Provola, Pomodori gialli e rossi, Pepe", prezzo: 9 },
+      { nome: "Giulia", ingredienti: "Fior di latte, Prosciutto crudo, Pomodorini confit, Stracciata di bufala", prezzo: 9 },
+      { nome: "One Piece", ingredienti: "Fior di latte, Tonno, Olive nere, Pomodorini confit, Crumble di cipolla", prezzo: 9 },
+      { nome: "Fresella", ingredienti: "Focaccia, Tonno, Pomodorini, Olive nere, Pesto, Origano, Mozzarella di bufala, Rucola", prezzo: 10 }
     ]
   },
   {
-    id: "calzoni",
+    id: "special",
+    nome: "Pizze special",
+    tipo: "pizza",
+    opzioni: [{"nome": "Nel ruoto", "prezzo": 2}],
+    piatti: [
+      { nome: "La Zingara", ingredienti: "Prosciutto crudo, Insalata, Mozzarella di bufala, Pomodorini, Maionese", prezzo: 9 },
+      { nome: "One Piece", ingredienti: "Fior di latte, Tonno, Olive, Pomodorini confit, Crumble di cipolla", prezzo: 9 },
+      { nome: "Scrignuozzo Nic&Dan", ingredienti: "Provola, BBQ, Pulled pork, Patate al forno, Salame piccante, Salsa brasiliana", prezzo: 10, tag: ["piccante"] }
+    ]
+  },
+  {
+    id: "ruoto",
+    nome: "Pizze nel ruoto",
+    tipo: "pizza",
+    nota: "Tutte le pizze del menù si possono avere anche nel ruoto con 2 € in più: scegli \"Nel ruoto\" quando aggiungi la pizza.",
+    foto: "img/menu/pizze-nel-ruoto.webp",
+    piatti: [
+      { nome: "Pietro NY", ingredienti: "Pomodoro San Marzano, Fior di latte, Salame piccante, Miele, Olio e basilico", prezzo: 10, tag: ["piccante"] },
+      { nome: "Mary Piennolo", ingredienti: "Pomodorini del piennolo, Alici di Cetara, Olive, Capperi, Aglio, Origano", prezzo: 10, foto: "img/menu/mary-piennolo.webp", disponibile: false },
+      { nome: "LA “78”", ingredienti: "Sugo alla puttanesca, Tonno, Mozzarella di bufala, Basilico, Olio evo", prezzo: 10 },
+      { nome: "Ciccio", ingredienti: "Salsiccia, Peperoni, Olive, Provola, Origano", prezzo: 10 }
+    ]
+  },
+  {
+    id: "ripieni",
+    nome: "I ripieni",
     tipo: "calzone",
-    nome: "Calzoni e Fritte",
     piatti: [
-      { nome: "Calzone al Forno", ingredienti: "Ricotta, salame, fior di latte, pomodoro", prezzo: 7.0 },
-      { nome: "Ripieno Fritto", ingredienti: "Ricotta, cicoli, provola, pepe", prezzo: 7.0 },
-      { nome: "Montanara", ingredienti: "Pizzetta fritta con pomodoro, parmigiano e basilico", prezzo: 3.5, tag: ["vegetariana"] }
+      { nome: "Napoli", ingredienti: "Pomodoro San Marzano, Fior di latte, Salame dolce, Ricotta, Olio evo, Basilico", prezzo: 7, foto: "img/menu/ripieno-napoli.webp" },
+      { nome: "Classico", ingredienti: "Pomodoro San Marzano, Fior di latte, Prosciutto cotto alla brace, Funghi, Olio evo, Basilico", prezzo: 7, foto: "img/menu/ripieno-classico.webp" },
+      { nome: "Scarola", ingredienti: "Scarola, Capperi, Alici di Cetara, Olive nere, Olio evo, Basilico", prezzo: 6.5, foto: "img/menu/ripieno-scarola.webp" },
+      { nome: "Parmigiana", ingredienti: "Pomodoro San Marzano, Fior di latte, Parmigiana di melanzane, Prosciutto cotto alla brace, Parmigiano Reggiano, Olio evo, Basilico", prezzo: 7, foto: "img/menu/ripieno-parmigiana.webp" }
     ]
   },
   {
-    id: "fritti",
+    id: "scrigni",
+    nome: "Gli scrigni",
+    tipo: "calzone",
+    piatti: [
+      { nome: "Scrigno Mediterranea", ingredienti: "Ripieno aperto in crosta di Parmigiano Reggiano, Prosciutto crudo, Mozzarella di bufala DOP, Rucola, Parmigiano Reggiano", prezzo: 8 },
+      { nome: "Scrigno Pulled Pork", ingredienti: "Ripieno aperto in crosta di parmigiano reggiano, Pulled pork, Provola di Agerola, Patate al forno al burro, salsa BBQ", prezzo: 9 },
+      { nome: "Scrigno Bandidos", ingredienti: "Ripieno aperto in crosta di parmigiano reggiano, Fior di latte, Patatine Dippers, Bandidos, Salsa cheddar", prezzo: 8 },
+      { nome: "Scrigno Bacoli", ingredienti: "Mozzarella di bufala, Pesto, Parmigiana di melanzane, Parmigiano", prezzo: 9 },
+      { nome: "Scrigno Poldo", ingredienti: "Polpettine di chianina, Würstel fritti, Patatine stick, Triplo cheddar, Maionese", prezzo: 9, foto: "img/menu/scrigno-poldo.webp" },
+      { nome: "Scrigno killer", ingredienti: "Fior di latte, Formaggio piccante, Salame piccante, Nuggets, Patatine, Salsa harissa", prezzo: 9, tag: ["piccante"], foto: "img/menu/scrigno-killer.webp" },
+      { nome: "Scrigno Vittorio", ingredienti: "Crema cacio e pepe, Porchetta, Provola, Patate al forno al burro", prezzo: 9 }
+    ]
+  },
+  {
+    id: "panuozzo",
+    nome: "Panuozzo",
+    tipo: "calzone",
+    piatti: [
+      { nome: "Panuozzo a scelta", ingredienti: "Gli ingredienti li scegli tu!", varianti: [{"nome": "Piccolo", "prezzo": 6}, {"nome": "Medio", "prezzo": 7}, {"nome": "Grande", "prezzo": 8}], segnaposto: "Scrivi gli ingredienti che vuoi" }
+    ]
+  },
+  {
+    id: "fritture",
+    nome: "Le fritture",
     tipo: "fritto",
-    nome: "Fritti",
     piatti: [
-      { nome: "Crocchè di Patate", prezzo: 1.5, tag: ["vegetariana"] },
-      { nome: "Frittatina di Pasta", ingredienti: "Bucatini, besciamella, piselli, prosciutto", prezzo: 2.5 },
-      { nome: "Arancino", ingredienti: "Riso, ragù, fior di latte", prezzo: 2.5 },
-      { nome: "Zeppoline", ingredienti: "Pasta cresciuta, 6 pezzi", prezzo: 2.5, tag: ["vegetariana"] },
-      { nome: "Patatine Fritte", ingredienti: "Porzione", prezzo: 3.0, tag: ["vegetariana"] }
-    ]
-  },
-  {
-    id: "bevande",
-    tipo: "bevanda",
-    nome: "Bevande",
-    piatti: [
-      { nome: "Acqua naturale / frizzante", ingredienti: "0,5 L", prezzo: 1.0 },
-      { nome: "Coca-Cola, Fanta, Sprite", ingredienti: "Lattina 33 cl", prezzo: 2.0 },
-      { nome: "Birra Peroni", ingredienti: "Bottiglia 66 cl", prezzo: 3.0 },
-      { nome: "Birra artigianale", ingredienti: "Bottiglia 33 cl", prezzo: 4.0 }
+      { nome: "Crocchè", ingredienti: "Fatto in casa", prezzo: 1 },
+      { nome: "Crocchè Ripieno", prezzo: 2 },
+      { nome: "Frittelle alle alghe", ingredienti: "10 pezzi", prezzo: 2 },
+      { nome: "Frittatina fatta in casa", ingredienti: "Scegli il gusto", varianti: [{"nome": "Prosciutto cotto e besciamella", "prezzo": 2.5}, {"nome": "Cacio e pepe", "prezzo": 2.5}, {"nome": "Carne macinata e piselli", "prezzo": 2.5}], foto: "img/menu/frittatina-fatta-in-casa.webp" },
+      { nome: "Nuggets di pollo", varianti: [{"nome": "5 pezzi", "prezzo": 3}, {"nome": "10 pezzi", "prezzo": 5}] },
+      { nome: "Bandidos di pollo", varianti: [{"nome": "5 pezzi", "prezzo": 3}, {"nome": "10 pezzi", "prezzo": 5}] },
+      { nome: "Jalapeños piccanti", varianti: [{"nome": "3 pezzi", "prezzo": 3}, {"nome": "6 pezzi", "prezzo": 5}], tag: ["piccante"] },
+      { nome: "Anelli di cipolla", varianti: [{"nome": "5 pezzi", "prezzo": 3}, {"nome": "10 pezzi", "prezzo": 5}] },
+      { nome: "Patatine stick", varianti: [{"nome": "Piccola", "prezzo": 2.5}, {"nome": "Grande", "prezzo": 5}] },
+      { nome: "Patatine Dippers / Twister", varianti: [{"nome": "Piccola", "prezzo": 3.5}, {"nome": "Grande", "prezzo": 6}] },
+      { nome: "Montanara classica", ingredienti: "Pomodoro San Marzano, Mozzarella, Parmigiano", prezzo: 2 },
+      { nome: "Montanara special", prezzo: 2.5 },
+      { nome: "Pallone Box", ingredienti: "Patate Dippers, 5 Bandidos, 10 frittelle alle alghe, 5 anelli di cipolla, 5 nuggets", prezzo: 13.5 }
     ]
   },
   {
     id: "dolci",
+    nome: "I dolci",
     tipo: "dolce",
-    nome: "Dolci",
     piatti: [
-      { nome: "Pizza alla Nutella", ingredienti: "Disco di pizza con Nutella e zucchero a velo", prezzo: 5.0, tag: ["vegetariana"] },
-      { nome: "Graffa", ingredienti: "Ciambella fritta zuccherata", prezzo: 1.5, tag: ["vegetariana"] }
+      { nome: "Pizza Nutella", ingredienti: "Focaccia, Nutella, Zucchero a velo", prezzo: 6 },
+      { nome: "Pallone Choc", ingredienti: "Straccetti di pizza, Nutella, Zucchero a velo", prezzo: 6 }
+    ]
+  },
+  {
+    id: "bibite",
+    nome: "Le bibite",
+    tipo: "bevanda",
+    piatti: [
+      { nome: "Acqua", ingredienti: "0,5 L", prezzo: 1 },
+      { nome: "Coca-Cola", varianti: [{"nome": "33 cl", "prezzo": 2}, {"nome": "1,5 L", "prezzo": 3.5}] },
+      { nome: "Coca-Cola Zero", varianti: [{"nome": "33 cl", "prezzo": 2}, {"nome": "1,5 L", "prezzo": 3.5}] },
+      { nome: "Fanta", varianti: [{"nome": "33 cl", "prezzo": 2}, {"nome": "1,5 L", "prezzo": 3.5}] },
+      { nome: "Sprite", ingredienti: "33 cl", prezzo: 2 },
+      { nome: "Estathè", ingredienti: "33 cl", prezzo: 2 },
+      { nome: "Peroni", varianti: [{"nome": "33 cl", "prezzo": 2}, {"nome": "66 cl", "prezzo": 3}] },
+      { nome: "Heineken", varianti: [{"nome": "33 cl", "prezzo": 2}, {"nome": "66 cl", "prezzo": 3}] },
+      { nome: "Nastro Azzurro", varianti: [{"nome": "33 cl", "prezzo": 2}, {"nome": "66 cl", "prezzo": 3}] }
     ]
   }
 ];
 
-/* Aggiunte: mostrate in fondo al menù. Lascia [] per nasconderle. */
-const AGGIUNTE = [
-  "Mozzarella di bufala +€ 2,00",
-  "Ogni ingrediente extra +€ 1,00",
-  "Impasto integrale +€ 1,00"
-];
+/* Aggiunte mostrate in fondo al menù. Lascia [] per nasconderle. */
+const AGGIUNTE = [];
