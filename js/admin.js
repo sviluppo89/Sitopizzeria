@@ -68,6 +68,8 @@
   let toastTimer;
   function toast(msg, err) {
     const t = $("#toast");
+    // dopo una modifica ricordo sempre di pubblicare
+    if (!err && !S.demo && isDirty() && !/^Pubblicato|annullate/.test(msg)) msg = `${msg}. Ora tocca «Pubblica» per mandarlo sul sito.`;
     t.textContent = msg; t.hidden = false; t.classList.toggle("toast--err", !!err);
     clearTimeout(toastTimer); toastTimer = setTimeout(() => (t.hidden = true), err ? 5000 : 2600);
   }
@@ -120,9 +122,28 @@
     if (!ok) toast("Memoria del dispositivo piena: pubblica le modifiche o usa foto più piccole.", true);
     updateStatus();
   }
+  // quante cose sono cambiate rispetto al sito pubblicato (prodotti, offerte, sconti, categorie, negozio)
+  function countChanges() {
+    if (!S.base || !S.draft) return 0;
+    const a = S.base.data, b = S.draft; let n = 0;
+    const cmp = (x, y) => { const m = new Map((x || []).map((o) => [o.id, JSON.stringify(o)])); let k = 0;
+      (y || []).forEach((o) => { if (m.get(o.id) !== JSON.stringify(o)) k++; m.delete(o.id); }); return k + m.size; };
+    n += cmp(a.categorie.flatMap((c) => c.prodotti), b.categorie.flatMap((c) => c.prodotti));
+    const meta = (cats) => (cats || []).map((c) => ({ ...c, prodotti: c.prodotti.map((p) => p.id) }));
+    n += cmp(meta(a.categorie), meta(b.categorie)) ? 1 : 0;
+    n += cmp(a.promo, b.promo) + cmp(a.sconti, b.sconti);
+    if (JSON.stringify(a.info) !== JSON.stringify(b.info)) n++;
+    if (JSON.stringify(a.aggiunte || []) !== JSON.stringify(b.aggiunte || [])) n++;
+    return Math.max(n, isDirty() ? 1 : 0);
+  }
   function updateStatus() {
     const st = $("#sync-status");
     const dirty = isDirty();
+    const n = dirty ? countChanges() : 0;
+    $("#pubbar").hidden = !dirty || S.demo;
+    $("#pubbar-title").textContent = n === 1 ? "1 modifica non pubblicata" : `${n} modifiche non pubblicate`;
+    document.body.classList.toggle("has-pubbar", dirty && !S.demo);
+    $("#publish").classList.toggle("is-due", dirty && !S.demo);
     st.classList.toggle("is-dirty", dirty);
     st.classList.toggle("is-demo", S.demo);
     st.innerHTML = S.demo ? (dirty ? "Prova · modifiche solo qui" : "Modalità prova") : (dirty ? `${ic("dot")} Modifiche da pubblicare` : `${ic("check")} Tutto pubblicato`);
@@ -1114,7 +1135,7 @@
     if (S.demo) return toast("In modalità prova non puoi pubblicare.", true);
     if (publishing || !isDirty()) return;
     publishing = true;
-    const btns = [$("#publish"), $("#publish-2")];
+    const btns = [$("#publish"), $("#publish-2"), $("#publish-3")];
     btns.forEach((b) => { b.disabled = true; b.textContent = "Pubblico…"; });
     try {
       const data = clone(S.draft);
@@ -1149,11 +1170,12 @@
       if (!e.quiet) toast(e.status === 401 ? "Codice di accesso scaduto: esci ed entra di nuovo." : "Pubblicazione non riuscita. Le modifiche restano salvate qui: riprova.", true);
     } finally {
       publishing = false;
-      btns.forEach((b) => (b.textContent = b.id === "publish" ? "Pubblica" : "Pubblica modifiche"));
+      btns.forEach((b) => (b.textContent = { publish: "Pubblica", "publish-2": "Pubblica modifiche", "publish-3": "Pubblica ora" }[b.id]));
       updateStatus();
     }
   }
   $("#publish").addEventListener("click", publish);
+  $("#publish-3").addEventListener("click", publish);
   $("#publish-2").addEventListener("click", publish);
   $("#discard").addEventListener("click", async () => {
     if (!(await ask("Annullare le modifiche?", "Torni all'ultima versione pubblicata. Le modifiche non pubblicate andranno perse.", "Annulla modifiche", true, "No"))) return;

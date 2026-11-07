@@ -426,3 +426,22 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .pkrow input:focus-visible ~ .pkrow__check { outline: 3px solid var(--crust); outline-offset: 2px; }
 .pk__foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 14px calc(10px + var(--safe-b)); background: var(--surface); border-top: 1px solid var(--line); }
 .pk__count { font-weight: 800; }
+
+/* ---------- Barra "modifiche da pubblicare" ---------- */
+.pubbar {
+  position: fixed; left: 8px; right: 8px; bottom: calc(76px + var(--safe-b)); z-index: 45;
+  max-width: 744px; margin: 0 auto; display: flex; align-items: center; gap: 12px;
+  padding: 10px 10px 10px 16px; border-radius: 18px; background: #1f2a24; color: #fff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .3); animation: pubin .3s var(--ease);
+}
+.pubbar__txt { flex: 1; min-width: 0; display: grid; }
+.pubbar__txt b { font-size: .98rem; }
+.pubbar__txt small { opacity: .75; font-size: .8rem; }
+.btn--publish { background: var(--red); color: #fff; min-height: 46px; padding: 0 18px; flex: none; }
+.btn--publish:hover { background: var(--red-700); }
+@keyframes pubin { from { transform: translateY(20px); opacity: 0; } }
+body.has-pubbar .app { padding-bottom: calc(150px + var(--safe-b)); }
+body.has-pubbar .toast { bottom: calc(160px + var(--safe-b)); }
+#publish.is-due { background: var(--red); animation: due 1.8s ease-in-out infinite; }
+@keyframes due { 0%, 100% { box-shadow: 0 0 0 0 rgba(215, 20, 29, .45); } 50% { box-shadow: 0 0 0 7px rgba(215, 20, 29, 0); } }
+@media (prefers-reduced-motion: reduce) { #publish.is-due { animation: none; } }
