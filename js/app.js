@@ -41,7 +41,8 @@
   const inRange = (o) => (!o.dal || day(o.dal) <= today0) && (!o.al || day(o.al) >= today0);
   const ORDERS_ON = !C.ordini || C.ordini.attivi !== false;
   const MENU = [];
-  const promos = (DATA.promo || []).filter((o) => o.attiva !== false && inRange(o));
+  const todayOk = (o) => !o.giorni || !o.giorni.length || o.giorni.includes(new Date().getDay());
+  const promos = (DATA.promo || []).filter((o) => o.attiva !== false && inRange(o) && (!C.offerteSoloOggi || todayOk(o)));
   if (promos.length) MENU.push({
     id: "offerte", nome: "Le offerte", tipo: "offerta", offerte: true,
     piatti: promos.map((o) => ({
@@ -485,6 +486,7 @@
     }).join("");
     renderTotals();
     renderAddButtons();
+    updateMore($("#cart-sheet"));
   }
   function saveNote(i) {
     const input = $(`[data-note-input="${i}"]`); const line = state.cart[i];
@@ -523,6 +525,7 @@
   function openSheet(d) {
     lastFocus = document.activeElement;
     d.showModal(); document.body.classList.add("is-locked");
+    requestAnimationFrame(() => updateMore(d));
   }
   function closeSheet(d) {
     if (!d.open) return;
@@ -533,7 +536,19 @@
     d.addEventListener("animationend", done, { once: true });
     setTimeout(() => d.open && done(), 300);
   }
+  // Se sotto c'è altro da vedere: sfumatura in fondo + pulsante "Scorri per continuare"
+  function updateMore(d) {
+    const body = d && $(".sheet__body", d), btn = d && $(".sheet__more", d);
+    if (!body || !btn) return;
+    const more = body.scrollHeight - body.scrollTop - body.clientHeight > 24;
+    btn.hidden = !more;
+  }
   $$(".sheet").forEach((d) => {
+    const foot = $(".sheet__footer", d), body = $(".sheet__body", d);
+    foot.insertAdjacentHTML("afterbegin", `<div class="sheet__more" hidden><button type="button" class="sheet__morebtn">Scorri per continuare ${ic("chev", "ic--down")}</button></div>`);
+    $(".sheet__morebtn", d).addEventListener("click", () => body.scrollBy({ top: body.clientHeight * 0.75, behavior: "smooth" }));
+    body.addEventListener("scroll", () => updateMore(d), { passive: true });
+    new ResizeObserver(() => updateMore(d)).observe(body);
     d.addEventListener("close", () => { document.body.classList.remove("is-locked"); lastFocus && lastFocus.focus && lastFocus.focus({ preventScroll: true }); });
     d.addEventListener("cancel", (e) => { e.preventDefault(); closeSheet(d); }); // tasto Esc
     d.addEventListener("click", (e) => { if (e.target === d) closeSheet(d); }); // tap sullo sfondo

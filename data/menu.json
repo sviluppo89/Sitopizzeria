@@ -23,7 +23,8 @@
    "attivi": true,
    "messaggioPausa": "Al momento non accettiamo ordini online. Chiamaci!"
   },
-  "avviso": ""
+  "avviso": "",
+  "offerteSoloOggi": false
  },
  "promo": [
   {

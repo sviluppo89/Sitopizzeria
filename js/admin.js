@@ -378,10 +378,16 @@
     if (o.giorni && o.giorni.length && !o.giorni.includes(new Date().getDay())) return [`Solo ${daysText(o.giorni)}`, ""];
     return ["Attiva oggi", "tag--ok"];
   }
+  $("#promo-today").addEventListener("change", (e) => {
+    S.draft.info.offerteSoloOggi = e.target.checked; saveDraft(); renderPromo();
+    toast(e.target.checked ? "Le offerte degli altri giorni non si vedranno sul sito" : "Tutte le offerte attive si vedranno sul sito");
+  });
   function renderPromo() {
     const list = S.draft.promo;
+    $("#promo-today").checked = S.draft.info.offerteSoloOggi === true;
     $("#promo-list").innerHTML = list.length ? list.map((o, i) => {
-      const [st, cls] = promoStatus(o);
+      let [st, cls] = promoStatus(o);
+      if (S.draft.info.offerteSoloOggi && st.startsWith("Solo ")) { st = `Nascosta oggi · ${st.slice(5)}`; cls = "tag--off"; }
       return `
       <div class="pcard" data-i="${i}">
         <button type="button" class="prod__open" data-act="edit">
