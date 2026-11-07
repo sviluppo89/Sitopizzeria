@@ -226,7 +226,7 @@
   renderHours();
 
   /* ---------- Render menù ---------- */
-  $("#cats").innerHTML = MENU.map((c) => `<a class="cat" href="#cat-${esc(c.id)}" data-id="${esc(c.id)}">${esc(c.nome)}</a>`).join("");
+  $("#cats").innerHTML = MENU.map((c) => `<a class="cat" href="#${c.offerte ? "featured-wrap" : "cat-" + esc(c.id)}" data-id="${esc(c.id)}">${esc(c.nome)}</a>`).join("");
 
   const addBtn = (id) => {
     const p = PRODUCTS.get(id);
@@ -292,7 +292,6 @@
     ? offers.sort((a, b) => validToday(b) - validToday(a))
     : [...PRODUCTS.values()].filter((p) => p.tag.includes("consigliata") || p.tag.includes("novita"));
   if (offers.length) $("#featured-title").textContent = "Le offerte";
-  else $(".section-head__link").remove();
   if (!featuredList.length) $("#featured-wrap").remove();
   $("#featured").innerHTML = featuredList.map((p) => `
     <div class="fcard${canOrder(p) ? "" : " is-off"}" data-id="${p.id}">
@@ -334,6 +333,8 @@
         const ok = (!q || it.dataset.search.includes(q)) && [...state.filters].every((f) => tags.includes(f));
         it.hidden = !ok; if (ok) n++;
       });
+      // le offerte stanno nel carosello in alto: nell'elenco compaiono solo come risultato di una ricerca
+      if (sec.dataset.id === "offerte" && !q && !state.filters.size) { sec.hidden = true; return; }
       sec.hidden = n === 0; total += n;
     });
     const filtering = !!q || state.filters.size > 0;
@@ -341,7 +342,8 @@
     if ($("#featured-wrap")) $("#featured-wrap").hidden = filtering;
     if ($("#spot-wrap")) $("#spot-wrap").hidden = filtering || !SPOT.length;
     $("#search-clear").hidden = !q;
-    $$(".cat").forEach((l) => (l.hidden = $("#cat-" + l.dataset.id).hidden));
+    $$(".cat").forEach((l) => (l.hidden = l.dataset.id === "offerte" ? (filtering ? $("#cat-offerte").hidden : !$("#featured-wrap")) : $("#cat-" + l.dataset.id).hidden));
+    $$('.cat[data-id="offerte"]').forEach((l) => (l.href = filtering ? "#cat-offerte" : "#featured-wrap"));
   }
   const search = $("#search");
   search.addEventListener("input", () => { state.query = search.value; applyFilters(); });
@@ -389,6 +391,9 @@
     const line = $(".cats").getBoundingClientRect().bottom + 24; // margine: la sezione si ferma appena sotto la barra delle categorie
     let cur = null;
     $$(".cat-section:not([hidden])").forEach((s) => { if (s.getBoundingClientRect().top <= line) cur = s.dataset.id; });
+    const fw = $("#featured-wrap");
+    // finché il carosello delle offerte è sullo schermo, è attivo "Le offerte"
+    if (fw && !fw.hidden && $('.cat[data-id="offerte"]') && fw.getBoundingClientRect().bottom > 140) cur = "offerte";
     setActive(cur || ($$(".cat-section:not([hidden])")[0] || {}).dataset?.id);
     $(".cats").classList.toggle("is-stuck", $(".cats").getBoundingClientRect().top <= parseInt(getComputedStyle(document.documentElement).getPropertyValue("--appbar-h")) + 1);
   }
