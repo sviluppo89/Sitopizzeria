@@ -536,3 +536,23 @@ img.is-contain, .is-contain img { object-fit: contain !important; }
 .ps__tags + .choices, .ps__tags + .ps__desc[hidden] + .ps__more[hidden] + .ps__allergens[hidden] + .choices { margin-top: 14px; }
 .footer__admin { font-size: .78rem; opacity: .6; text-decoration: none; display: inline-block; padding: 8px; }
 .footer__admin:hover { opacity: 1; text-decoration: underline; }
+
+/* ---------- In evidenza ---------- */
+.spotlight { max-width: 980px; margin: 26px auto 0; padding: 0 16px; }
+.spot-list { display: grid; gap: 12px; }
+.spot {
+  position: relative; display: flex; gap: 14px; align-items: center;
+  background: var(--surface); border-radius: var(--r); padding: 12px; box-shadow: var(--shadow-1);
+  border: 1.5px solid var(--crust);
+}
+.spot.is-off { opacity: .6; }
+.spot__art { width: 96px; height: 96px; flex: none; border-radius: 14px; background: var(--crust-50); overflow: hidden; display: grid; place-items: center; }
+.spot__art svg, .spot__art img { width: 100%; height: 100%; object-fit: cover; }
+.spot__body { display: grid; gap: 2px; min-width: 0; padding-right: 44px; }
+.spot__name { font-weight: 900; font-size: 1.08rem; }
+.spot__desc { color: var(--muted); font-size: .88rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.spot__price { font-weight: 900; margin-top: 2px; }
+.spot .add { position: absolute; right: 12px; bottom: 12px; z-index: 2; }
+.badge--star { background: #fff4d6; color: #7a4e00; justify-self: start; }
+@media (prefers-color-scheme: dark) { .badge--star { background: #3a2c12; color: #f2c25c; } }
+@media (min-width: 760px) { .spot-list { grid-template-columns: repeat(3, 1fr); } }

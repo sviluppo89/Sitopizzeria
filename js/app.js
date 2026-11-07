@@ -55,7 +55,7 @@
       uid: p.id, nome: p.nome, ingredienti: p.ingredienti,
       prezzo: p.varianti && p.varianti.length ? undefined : p.prezzo,
       varianti: p.varianti && p.varianti.length ? p.varianti : undefined,
-      tag: p.tag, allergeni: p.allergeni, foto: p.foto || undefined,
+      tag: p.tag, allergeni: p.allergeni, foto: p.foto || undefined, evidenza: p.evidenza === true,
       disponibile: p.disponibile !== false,
       giorni: p.giorni && p.giorni.length ? p.giorni : undefined,
       dettagli: p.dettagli || undefined, segnaposto: p.richiesta || undefined
@@ -254,6 +254,7 @@
               ${p.deal ? `<span class="badge badge--promo">🏷️ ${esc(p.deal.nome)}</span>` : ""}
               ${p.tag.includes("novita") ? ` <span class="badge badge--novita">✨ Novità</span>` : ""}
               ${statusBadge(p)}
+              ${p.evidenza ? `<span class="badge badge--star">⭐ In evidenza</span>` : ""}
             </div>
             <div class="item__media">
               <div class="item__art">${art(p)}</div>
@@ -265,6 +266,25 @@
     </section>`).join("");
 
   // Carosello: le offerte (quelle valide oggi per prime), altrimenti i prodotti consigliati
+  // In evidenza: al massimo 3, in cima al sito
+  const SPOT = [...PRODUCTS.values()].filter((p) => p.evidenza).slice(0, 3);
+  if (SPOT.length) {
+    $("#spot-title").textContent = SPOT.length > 1 ? "In evidenza" : "Il nostro consiglio";
+    $("#spot-list").innerHTML = SPOT.map((p) => `
+      <div class="spot${canOrder(p) ? "" : " is-off"}" data-id="${p.id}">
+        <button type="button" class="item__open" data-open="${p.id}" aria-label="${esc(p.nome)}, ${priceLabel(p)}. Dettagli"></button>
+        <div class="spot__art">${art(p)}</div>
+        <div class="spot__body">
+          <span class="badge badge--star">⭐ In evidenza</span>
+          <span class="spot__name">${esc(p.nome)}</span>
+          <span class="spot__desc">${esc(descOf(p))}</span>
+          <span class="spot__price">${priceHTML(p)}</span>
+        </div>
+        ${addBtn(p.id)}
+      </div>`).join("");
+    $("#spot-wrap").hidden = false;
+  }
+
   const offers = [...PRODUCTS.values()].filter((p) => p.offerta);
   const featuredList = offers.length
     ? offers.sort((a, b) => validToday(b) - validToday(a))
@@ -317,6 +337,7 @@
     const filtering = !!q || state.filters.size > 0;
     $("#empty").hidden = total > 0;
     if ($("#featured-wrap")) $("#featured-wrap").hidden = filtering;
+    if ($("#spot-wrap")) $("#spot-wrap").hidden = filtering || !SPOT.length;
     $("#search-clear").hidden = !q;
     $$(".cat").forEach((l) => (l.hidden = $("#cat-" + l.dataset.id).hidden));
   }

@@ -287,6 +287,7 @@
                     ${p.attivo === false ? '<span class="tag">Nascosto</span>' : ""}
                     ${p.disponibile === false ? '<span class="tag tag--off">Esaurito</span>' : ""}
                     ${p.giorni && p.giorni.length ? `<span class="tag">${daysText(p.giorni)}</span>` : ""}
+                    ${p.evidenza ? '<span class="tag tag--warn">⭐ In evidenza</span>' : ""}
                     ${p.foto && p.foto.startsWith("data:") ? '<span class="tag tag--warn">Foto nuova</span>' : ""}
                   </span>
                 </span>
@@ -760,6 +761,7 @@
       ${panel("Sul sito", `
         ${switchHTML("attivo", "Visibile sul sito", "Spegnilo per nasconderlo senza cancellarlo.", p.attivo !== false)}
         ${switchHTML("disponibile", "Disponibile", "Se è finito, spegnilo: resta visibile ma non si può ordinare.", p.disponibile !== false)}
+        ${switchHTML("evidenza", "⭐ In evidenza", "Compare in cima al sito (massimo 3 pizze) e con il badge nel menù.", p.evidenza === true)}
         <div class="field"><span class="field__label">Etichette</span>${chipsHTML("tag", TAGS, p.tag || [])}</div>
         <div class="field"><span class="field__label">Ordinabile solo in questi giorni <small>(nessuno = tutti i giorni)</small></span>${chipsHTML("giorni", DAYS, p.giorni || [])}</div>
       `)}
@@ -790,8 +792,10 @@
         attivo: $("[name=attivo]", root).checked, disponibile: $("[name=disponibile]", root).checked,
         tag: checked(root, "tag"), giorni: checked(root, "giorni").map(Number), allergeni: checked(root, "allergeni"),
         richiesta: $("[name=richiesta]", root).value.trim(), dettagli: $("[name=dettagli]", root).value.trim(),
-        foto: holder.foto
+        foto: holder.foto, evidenza: $("[name=evidenza]", root).checked
       });
+      const others = S.draft.categorie.flatMap((c) => c.prodotti).filter((x) => x.evidenza && x.id !== p.id).length;
+      if (p.evidenza && others >= 3) { toast("Ci sono già 3 pizze in evidenza: togline una prima.", true); return false; }
       const newCi = +$("[name=cat]", root).value;
       if (isNew) S.draft.categorie[newCi].prodotti.push(p);
       else if (newCi !== ci) { cat.prodotti.splice(pi, 1); S.draft.categorie[newCi].prodotti.push(p); }
