@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Allura&family=Nunito:wght@500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=20261107c">
+  <link rel="stylesheet" href="css/style.css?v=20261107e">
 </head>
 <body>
   <a class="skip" href="#menu">Vai al menù</a>
@@ -261,7 +261,12 @@
         </div>
         <p class="cart-hint">Tocca <b><i data-icon="pencil"></i> Aggiungi nota</b> sotto una pizza per chiedere modifiche (es. ben cotta, senza origano).</p>
         <ul class="cart" id="cart-list"></ul>
-        <button type="button" class="linkbtn" id="cart-more" value="cancel">+ Aggiungi altro</button>
+        <section class="upsell" id="upsell" hidden aria-labelledby="upsell-title">
+          <h3 class="upsell__title" id="upsell-title">Ci aggiungi qualcosa?</h3>
+          <p class="upsell__sub">Le più scelte insieme alla pizza</p>
+          <div class="upsell__track" id="upsell-track"></div>
+        </section>
+        <button type="button" class="linkbtn" id="cart-more" value="cancel">+ Aggiungi altro dal menù</button>
 
         <h3 class="cs__sub">Come lo vuoi?</h3>
         <div class="segmented segmented--light" role="radiogroup" aria-label="Modalità">
@@ -308,8 +313,8 @@
     </form>
   </dialog>
 
-  <script src="js/icons.js?v=20261107c"></script>
-  <script src="js/art.js?v=20261107c"></script>
-  <script src="js/app.js?v=20261107c"></script>
+  <script src="js/icons.js?v=20261107e"></script>
+  <script src="js/art.js?v=20261107e"></script>
+  <script src="js/app.js?v=20261107e"></script>
 </body>
 </html>

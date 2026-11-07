@@ -355,6 +355,26 @@
   $("#add-cat").addEventListener("click", () => editCategory(-1));
   $("#edit-extras").addEventListener("click", () => editExtras());
 
+  // Prodotti proposti al cliente in "Il tuo ordine" (bibite, fritture…) per aumentare le vendite
+  const DEFAULT_SUGG = ["fritture-patatine-stick", "fritture-crocche", "fritture-frittatina-fatta-in-casa", "fritture-frittelle-alle-alghe",
+    "fritture-nuggets-di-pollo", "bibite-coca-cola", "bibite-coca-cola-zero", "bibite-fanta", "bibite-peroni", "bibite-acqua"];
+  $("#edit-sugg").addEventListener("click", () => {
+    const sel = new Set(S.draft.info.suggeriti && S.draft.info.suggeriti.length ? S.draft.info.suggeriti : DEFAULT_SUGG);
+    const html = panel("", `<p class="muted" style="font-size:.9rem">Prima di inviare l'ordine il cliente vede questi prodotti con il "+" per aggiungerli in un tocco. Scegli quelli che vuoi vendere di più: bibite, fritture, dolci. Ne vengono mostrati al massimo 8, prima quelli che mancano nell'ordine (es. la bibita se non ce n'è una).</p>`)
+      + `<div class="picker">${S.draft.categorie.map((c) => `
+        <details data-cat="${esc(c.id)}" ${["fritture", "bibite"].includes(c.id) ? "open" : ""}>
+          <summary>${esc(c.nome)}<span class="cnt"></span></summary>
+          ${c.prodotti.map((p) => `<label class="pick"><input type="checkbox" data-sugg="${esc(p.id)}" ${sel.has(p.id) ? "checked" : ""}><span>${esc(p.nome)}</span><small>${priceText(p)}</small></label>`).join("")}
+        </details>`).join("")}</div>
+      <p class="muted" id="sugg-count" style="text-align:center"></p>`;
+    const count = (root) => { const n = $$("[data-sugg]:checked", root).length; $("#sugg-count", root).textContent = `${n} prodotti scelti`;
+      $$("details[data-cat]", root).forEach((d) => { const k = $$("[data-sugg]:checked", d).length; $(".cnt", d).textContent = k ? `${k} scelti` : ""; }); };
+    openEditor("Suggerimenti", html, (root) => {
+      S.draft.info.suggeriti = $$("[data-sugg]:checked", root).map((i) => i.dataset.sugg);
+      saveDraft(); toast("Suggerimenti salvati");
+    }, (root) => { count(root); root.addEventListener("change", () => count(root)); });
+  });
+
   // Aggiunte valide per tutto il menù (es. Mozzarella di bufala +2 €)
   function editExtras() {
     const html = panel("", `<p class="muted" style="font-size:.9rem">Le aggiunte che il cliente può mettere su qualsiasi pizza, con il prezzo in più. Compaiono in fondo al menù. Per le aggiunte di una sola categoria (es. "Nel ruoto") apri la categoria con la matita.</p>${rowsHTML(S.draft.aggiunte || [], "Es. Mozzarella di bufala", "€")}`);

@@ -431,6 +431,39 @@
     $(`.segmented__opt[data-mode="${state.mode}"]`, g).focus();
   }));
 
+  /* ---------- Suggerimenti in "Il tuo ordine" (bibite, fritture…) ---------- */
+  const BY_UID = new Map([...PRODUCTS.values()].filter((p) => p.uid).map((p) => [p.uid, p]));
+  const DEFAULT_SUGG = ["fritture-patatine-stick", "fritture-crocche", "fritture-frittatina-fatta-in-casa", "fritture-frittelle-alle-alghe",
+    "fritture-nuggets-di-pollo", "bibite-coca-cola", "bibite-coca-cola-zero", "bibite-fanta", "bibite-peroni", "bibite-acqua"];
+  let suggList = [];
+  function buildSuggestions() {
+    const chosen = Array.isArray(C.suggeriti) && C.suggeriti.length ? C.suggeriti : DEFAULT_SUGG;
+    const inOrder = new Set(state.cart.map((l) => l.id));
+    let list = chosen.map((u) => BY_UID.get(u)).filter((p) => p && canOrder(p) && !p.offerta && !inOrder.has(p.id));
+    // prima quello che manca: se non c'è una bibita, le bibite vanno avanti (e lo stesso per i fritti)
+    const has = (tipo) => state.cart.some((l) => PRODUCTS.get(l.id).tipo === tipo);
+    const rank = (p) => (p.tipo === "bevanda" && !has("bevanda")) || (p.tipo === "fritto" && !has("fritto")) ? 0 : 1;
+    const groups = [list.filter((p) => rank(p) === 0), list.filter((p) => rank(p) === 1)];
+    // alterna fritto / bibita per varietà
+    const mix = (arr) => { const a = arr.filter((p) => p.tipo === "fritto"), b = arr.filter((p) => p.tipo !== "fritto"), out = [];
+      while (a.length || b.length) { if (a.length) out.push(a.shift()); if (b.length) out.push(b.shift()); } return out; };
+    suggList = [...mix(groups[0]), ...mix(groups[1])].slice(0, 8).map((p) => p.id);
+  }
+  function renderSuggestions() {
+    const box = $("#upsell");
+    if (!suggList.length) { box.hidden = true; return; }
+    box.hidden = false;
+    $("#upsell-track").innerHTML = suggList.map((id) => {
+      const p = PRODUCTS.get(id);
+      return `<div class="ucard">
+        <button type="button" class="item__open" data-open="${p.id}" aria-label="${esc(p.nome)}, ${priceLabel(p)}. Dettagli"></button>
+        <div class="ucard__art">${art(p)}${addBtn(p.id)}</div>
+        <span class="ucard__name">${esc(p.nome)}</span>
+        <span class="ucard__price">${priceHTML(p)}</span>
+      </div>`;
+    }).join("");
+  }
+
   /* ---------- Carrello ---------- */
   let editingNote = -1; // riga del carrello di cui si sta scrivendo la nota
   function addToCart(id, qty = 1, note = "", v = 0, o = []) {
@@ -485,6 +518,7 @@
       </li>`;
     }).join("");
     renderTotals();
+    renderSuggestions();
     renderAddButtons();
     updateMore($("#cart-sheet"));
   }
@@ -549,7 +583,7 @@
     $(".sheet__morebtn", d).addEventListener("click", () => body.scrollBy({ top: body.clientHeight * 0.75, behavior: "smooth" }));
     body.addEventListener("scroll", () => updateMore(d), { passive: true });
     new ResizeObserver(() => updateMore(d)).observe(body);
-    d.addEventListener("close", () => { document.body.classList.remove("is-locked"); lastFocus && lastFocus.focus && lastFocus.focus({ preventScroll: true }); });
+    d.addEventListener("close", () => { if (!$$(".sheet[open]").length) document.body.classList.remove("is-locked"); lastFocus && lastFocus.focus && lastFocus.focus({ preventScroll: true }); });
     d.addEventListener("cancel", (e) => { e.preventDefault(); closeSheet(d); }); // tasto Esc
     d.addEventListener("click", (e) => { if (e.target === d) closeSheet(d); }); // tap sullo sfondo
     $(".sheet__close", d).addEventListener("click", (e) => { e.preventDefault(); closeSheet(d); });
@@ -673,6 +707,7 @@
     const prev = sel.value; sel.innerHTML = opts.join(""); sel.value = prev;
   }
   $("#cartbar").addEventListener("click", () => {
+    buildSuggestions(); renderSuggestions();
     fillTimes();
     $("#c-name").value = $("#c-name").value || store.get("pallone-name", "");
     $("#c-addr").value = $("#c-addr").value || store.get("pallone-addr", "");

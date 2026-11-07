@@ -652,3 +652,18 @@ img.is-contain, .is-contain img { object-fit: contain !important; }
 .sheet__morebtn .ic { width: 16px; height: 16px; }
 .ic--down { transform: rotate(90deg); }
 @keyframes nudge { 50% { transform: translateY(3px); } }
+
+/* ---------- Suggerimenti in "Il tuo ordine" ---------- */
+.upsell { margin: 18px -20px 4px; padding: 16px 20px 6px; background: var(--crust-50); }
+.upsell__title { margin: 0; font-size: 1.08rem; font-weight: 900; }
+.upsell__sub { margin: 2px 0 12px; color: var(--muted); font-size: .88rem; }
+.upsell__track { display: grid; grid-auto-flow: column; grid-auto-columns: 132px; gap: 10px; overflow-x: auto; scrollbar-width: none; margin: 0 -20px; padding: 2px 20px 12px; scroll-snap-type: x mandatory; }
+.upsell__track::-webkit-scrollbar { display: none; }
+.ucard { position: relative; scroll-snap-align: start; display: grid; gap: 2px; background: var(--surface); border-radius: var(--r-sm); padding: 8px 8px 10px; box-shadow: var(--shadow-1); }
+.ucard__art { position: relative; aspect-ratio: 4 / 3; border-radius: 10px; background: var(--crust-50); display: grid; place-items: center; overflow: hidden; margin-bottom: 4px; }
+.ucard__art svg { width: 78%; height: 78%; }
+.ucard__art img { width: 100%; height: 100%; object-fit: cover; }
+.ucard__name { font-weight: 800; font-size: .9rem; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; padding-right: 2px; }
+.ucard__price { font-weight: 900; font-size: .9rem; }
+.ucard .add { position: absolute; right: 6px; bottom: 6px; z-index: 2; min-width: 34px; height: 34px; font-size: 1.2rem; }
+.ucard { align-content: start; }
