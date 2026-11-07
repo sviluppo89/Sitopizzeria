@@ -667,3 +667,6 @@ img.is-contain, .is-contain img { object-fit: contain !important; }
 .ucard__price { font-weight: 900; font-size: .9rem; }
 .ucard .add { position: absolute; right: 6px; bottom: 6px; z-index: 2; min-width: 34px; height: 34px; font-size: 1.2rem; }
 .ucard { align-content: start; }
+.addr-grid { display: grid; grid-template-columns: 1.6fr 1fr; gap: 10px; }
+@media (max-width: 380px) { .addr-grid { grid-template-columns: 1fr; } }
+.addr-grid .field { margin-bottom: 14px; }

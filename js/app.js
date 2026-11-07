@@ -711,6 +711,7 @@
     fillTimes();
     $("#c-name").value = $("#c-name").value || store.get("pallone-name", "");
     $("#c-addr").value = $("#c-addr").value || store.get("pallone-addr", "");
+    $("#c-city").value = $("#c-city").value || store.get("pallone-city", "");
     $("#c-error").hidden = true;
     $("#cs-sent").hidden = true;
     openSheet(cs);
@@ -732,21 +733,19 @@
     ta.value = parts.join(", ");
     $$("[data-quick]", $("#ps-note-chips")).forEach((b) => b.setAttribute("aria-pressed", parts.some((x) => x.toLowerCase() === b.dataset.quick.toLowerCase())));
   });
-  ["#c-name", "#c-addr"].forEach((s) => $(s).addEventListener("input", (e) => { e.target.removeAttribute("aria-invalid"); $("#c-error").hidden = true; }));
-  // Link Google Maps per l'indirizzo di consegna (cliccabile dentro WhatsApp).
-  // Se il cliente non scrive il paese (niente virgola), aggiungo quello della pizzeria.
-  function mapsLink(a) {
-    const town = String(C.citta || "").replace(/^\d+\s*/, "");
-    const q = a.includes(",") ? a : `${a}, ${town}`;
+  ["#c-name", "#c-addr", "#c-city"].forEach((s) => $(s).addEventListener("input", (e) => { e.target.removeAttribute("aria-invalid"); $("#c-error").hidden = true; }));
+  // Link Google Maps per l'indirizzo di consegna (cliccabile dentro WhatsApp)
+  function mapsLink(q) {
     // niente parentesi o spazi nel link: WhatsApp lo renderebbe cliccabile solo a metà
     return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q.replace(/[()]/g, " ").replace(/\s+/g, " ").trim()).replace(/%20/g, "+");
   }
   $("#send-wa").addEventListener("click", () => {
-    const name = $("#c-name"), addr = $("#c-addr"), err = $("#c-error");
-    [name, addr].forEach((i) => i.removeAttribute("aria-invalid"));
+    const name = $("#c-name"), addr = $("#c-addr"), city = $("#c-city"), err = $("#c-error");
+    [name, addr, city].forEach((i) => i.removeAttribute("aria-invalid"));
     let msg = "";
     if (!name.value.trim()) { msg = "Inserisci il tuo nome."; name.setAttribute("aria-invalid", "true"); name.focus(); }
-    else if (state.mode === "domicilio" && !addr.value.trim()) { msg = "Inserisci l'indirizzo di consegna."; addr.setAttribute("aria-invalid", "true"); addr.focus(); }
+    else if (state.mode === "domicilio" && !addr.value.trim()) { msg = "Inserisci via e numero civico."; addr.setAttribute("aria-invalid", "true"); addr.focus(); }
+    else if (state.mode === "domicilio" && !city.value.trim()) { msg = "Inserisci la città."; city.setAttribute("aria-invalid", "true"); city.focus(); }
     else if (state.mode === "domicilio" && C.consegna && typeof C.consegna.minimoOrdine === "number" && subtotal() < C.consegna.minimoOrdine) {
       msg = `Per la consegna l'ordine minimo è ${fmt(C.consegna.minimoOrdine)}.`;
     }
@@ -754,6 +753,8 @@
     err.hidden = true;
     store.set("pallone-name", name.value.trim());
     if (addr.value.trim()) store.set("pallone-addr", addr.value.trim());
+    if (city.value.trim()) store.set("pallone-city", city.value.trim());
+    const fullAddr = `${addr.value.trim()}, ${city.value.trim()}`;
 
     const lines = state.cart.map((l) => {
       return `• ${l.qty}× ${lineLabel(l)} — ${fmt(unitPrice(l) * l.qty)}${PRODUCTS.get(l.id).deal ? ` (promo ${PRODUCTS.get(l.id).deal.nome})` : ""}${l.note ? `\n   ↳ ${l.note}` : ""}`;
@@ -768,7 +769,7 @@
       `*Totale: ${fmt(subtotal() + fee)}*`,
       "",
       `👤 Nome: ${name.value.trim()}`,
-      state.mode === "domicilio" ? `🛵 Consegna a domicilio: ${addr.value.trim()}\n📍 Apri in Maps: ${mapsLink(addr.value.trim())}` : "🥡 Ritiro in pizzeria (asporto)",
+      state.mode === "domicilio" ? `🛵 Consegna a domicilio: ${fullAddr}\n📍 Apri in Maps: ${mapsLink(fullAddr)}` : "🥡 Ritiro in pizzeria (asporto)",
       `🕒 Orario richiesto: ${$("#c-time").value || "prima possibile"} (da confermare)`,
       $("#c-note").value.trim() ? `📝 Note: ${$("#c-note").value.trim()}` : null,
       "",

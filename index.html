@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Allura&family=Nunito:wght@500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=20261107f">
+  <link rel="stylesheet" href="css/style.css?v=20261107g">
 </head>
 <body>
   <a class="skip" href="#menu">Vai al menù</a>
@@ -278,10 +278,16 @@
           <span class="field__label">Il tuo nome</span>
           <input id="c-name" type="text" autocomplete="given-name" required placeholder="Es. Mario">
         </label>
-        <label class="field" id="c-addr-wrap" hidden>
-          <span class="field__label">Indirizzo di consegna</span>
-          <input id="c-addr" type="text" autocomplete="street-address" placeholder="Via e numero, paese (es. Via Roma 10, Curti)">
-        </label>
+        <div id="c-addr-wrap" class="addr-grid" hidden>
+          <label class="field">
+            <span class="field__label">Via e numero civico</span>
+            <input id="c-addr" type="text" autocomplete="address-line1" placeholder="Es. Via Roma 10, citofono Rossi">
+          </label>
+          <label class="field">
+            <span class="field__label">Città</span>
+            <input id="c-city" type="text" autocomplete="address-level2" placeholder="Es. Casapulla">
+          </label>
+        </div>
         <label class="field">
           <span class="field__label">Orario preferito <small>(da confermare)</small></span>
           <select id="c-time"></select>
@@ -313,8 +319,8 @@
     </form>
   </dialog>
 
-  <script src="js/icons.js?v=20261107f"></script>
-  <script src="js/art.js?v=20261107f"></script>
-  <script src="js/app.js?v=20261107f"></script>
+  <script src="js/icons.js?v=20261107g"></script>
+  <script src="js/art.js?v=20261107g"></script>
+  <script src="js/app.js?v=20261107g"></script>
 </body>
 </html>
