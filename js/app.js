@@ -216,7 +216,16 @@
     if (cur) { const e = cur[1] % 1440; return { open: true, text: `Aperto · chiude alle ${e === 0 ? "24:00" : `${String(Math.floor(e / 60)).padStart(2, "0")}:${String(e % 60).padStart(2, "0")}`}` }; }
     const next = (O[d] || []).map(([a]) => toMin(a)).find((s) => s > mins);
     if (next != null) return { open: false, text: `Chiuso · apre alle ${String(Math.floor(next / 60)).padStart(2, "0")}:${String(next % 60).padStart(2, "0")}` };
-    return { open: false, text: "Chiuso ora" };
+    // nessuna apertura oggi più tardi: cerco il prossimo giorno aperto
+    for (let k = 1; k <= 7; k++) {
+      const nd = (d + k) % 7, f = O[nd] || [];
+      if (f.length) {
+        const when = k === 1 ? "domani" : DAYS[nd].toLowerCase();
+        const closedToday = !(O[d] || []).length;
+        return { open: false, text: `${closedToday ? "Chiuso oggi" : "Chiuso"} · riapre ${when} alle ${f[0][0]}`, reopen: `${when} alle ${f[0][0]}`, closedToday };
+      }
+    }
+    return { open: false, text: "Chiuso" };
   }
   function renderHours() {
     const info = openInfo();
@@ -794,7 +803,11 @@
   function fillTimes() {
     const sel = $("#c-time");
     const slots = timeSlots();
-    const opts = ['<option value="">Prima possibile (ti diciamo noi l\'orario)</option>']
+    const info = openInfo();
+    const first = !slots.length && info && info.reopen
+      ? `<option value="">${info.closedToday ? "Oggi siamo chiusi" : "Per oggi abbiamo chiuso"}: riapriamo ${info.reopen}</option>`
+      : '<option value="">Prima possibile (ti diciamo noi l\'orario)</option>';
+    const opts = [first]
       .concat(slots.map((t) => `<option>${t}</option>`));
     const prev = sel.value; sel.innerHTML = opts.join(""); sel.value = slots.includes(prev) ? prev : "";
   }
