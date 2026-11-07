@@ -168,6 +168,7 @@
     d.info.consegna = d.info.consegna || { attiva: true, costo: null, minimoOrdine: null, zone: "" };
     d.promo = d.promo || [];
     d.sconti = d.sconti || [];
+    d.aggiunte = d.aggiunte || [];
     d.categorie = d.categorie || [];
     d.categorie.forEach((c) => { c.prodotti = c.prodotti || []; c.opzioni = c.opzioni || []; });
   }
@@ -344,6 +345,18 @@
     toast(`${p.nome}: ${p.disponibile ? "di nuovo disponibile" : "segnato come esaurito"}`);
   });
   $("#add-cat").addEventListener("click", () => editCategory(-1));
+  $("#edit-extras").addEventListener("click", () => editExtras());
+
+  // Aggiunte valide per tutto il menù (es. Mozzarella di bufala +2 €)
+  function editExtras() {
+    const html = panel("", `<p class="muted" style="font-size:.9rem">Le aggiunte che il cliente può mettere su qualsiasi pizza, con il prezzo in più. Compaiono in fondo al menù. Per le aggiunte di una sola categoria (es. "Nel ruoto") apri la categoria con la matita.</p>${rowsHTML(S.draft.aggiunte || [], "Es. Mozzarella di bufala", "€")}`);
+    openEditor("Aggiunte a pagamento", html, (root) => {
+      const rows = readRows(root);
+      if (rows.some((r) => !r.nome || typeof r.prezzo !== "number")) { toast("Ogni aggiunta deve avere nome e prezzo.", true); return false; }
+      S.draft.aggiunte = rows.map((r) => ({ nome: r.nome, prezzo: r.prezzo }));
+      saveDraft(); toast("Aggiunte salvate");
+    }, (root) => bindRows(root));
+  }
 
   /* =========================================================
      OFFERTE
