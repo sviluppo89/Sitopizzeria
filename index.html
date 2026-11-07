@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Allura&family=Nunito:wght@500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=20261108a">
+  <link rel="stylesheet" href="css/style.css?v=20261108c">
 </head>
 <body>
   <a class="skip" href="#menu">Vai al menù</a>
@@ -183,23 +183,16 @@
     </section>
   </main>
 
-  <!-- Solo al tavolo: passaggio all'ordine online (asporto/consegna) -->
-  <section class="to-online only-table" aria-labelledby="to-online-title">
-    <div class="to-online__card">
-      <span class="to-online__ico" aria-hidden="true"><i data-icon="bag"></i></span>
-      <div class="to-online__txt">
-        <h2 id="to-online-title">Vuoi ordinare da asporto o a domicilio?</h2>
-        <p>Ordina online e ricevi la conferma su WhatsApp.</p>
-      </div>
-      <a class="btn btn--primary" id="to-online" href="./">Ordina online</a>
-    </div>
-  </section>
-
   <footer class="footer">
     <p class="footer__script">Pizzeria Pallone</p>
     <p id="f-legal"></p>
     <p id="f-mail"></p>
-    <p><a class="footer__admin" href="admin.html" rel="nofollow">Area riservata</a></p>
+    <p class="footer__links">
+      <a class="footer__admin only-out" href="?tavolo">Passa al menù al tavolo</a>
+      <a class="footer__admin only-table" href="./">Passa all'ordine online</a>
+      <span class="footer__sep" aria-hidden="true">·</span>
+      <a class="footer__admin" href="admin.html" rel="nofollow">Area riservata</a>
+    </p>
   </footer>
 
   <!-- ===== Barra in basso: contatti oppure "Vedi ordine" ===== -->
@@ -363,8 +356,8 @@
     </form>
   </dialog>
 
-  <script src="js/icons.js?v=20261108a"></script>
-  <script src="js/art.js?v=20261108a"></script>
-  <script src="js/app.js?v=20261108a"></script>
+  <script src="js/icons.js?v=20261108c"></script>
+  <script src="js/art.js?v=20261108c"></script>
+  <script src="js/app.js?v=20261108c"></script>
 </body>
 </html>
