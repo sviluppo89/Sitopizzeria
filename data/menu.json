@@ -15,7 +15,7 @@
   "orari": null,
   "consegna": {
    "attiva": true,
-   "costo": null,
+   "costo": 1,
    "minimoOrdine": null,
    "zone": ""
   },
