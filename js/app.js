@@ -231,7 +231,7 @@
     const p = PRODUCTS.get(id);
     if (!canOrder(p)) return "";
     const q = qtyOf(id);
-    return `<button type="button" class="add${q ? " has-qty" : ""}" data-add="${id}" aria-label="Aggiungi ${esc(p.nome)}${q ? `, già ${q} nel carrello` : ""}">${q ? q : "+"}</button>`;
+    return `<button type="button" class="add${q ? " has-qty" : ""}" data-add="${id}" aria-label="Aggiungi ${esc(p.nome)}${q ? `, già ${q} nel tuo ordine` : ""}">${q ? q : "+"}</button>`;
   };
   const statusBadge = (p) => !p.disponibile ? `<span class="badge badge--off">Non disponibile</span>`
     : p.giorni ? (validToday(p) ? `<span class="badge badge--today">Valida oggi</span>` : `<span class="badge badge--days">${daysLabel(p)}</span>`) : "";
@@ -628,7 +628,7 @@
         addToCart(p.id);
         if (!store.get("pallone-notehint", false)) {
           store.set("pallone-notehint", true);
-          siteToast("Aggiunta! Per una nota (es. ben cotta) tocca la pizza, oppure scrivila nel carrello.");
+          siteToast("Aggiunta! Per una nota (es. ben cotta) tocca la pizza, oppure scrivila in «Vedi ordine».");
         }
       }
       return;

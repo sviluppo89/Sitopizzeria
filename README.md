@@ -8,7 +8,7 @@ e la pagina admin lo aggiorna tramite GitHub.
 - Menù con categorie fisse in alto, ricerca e filtri
 - Carosello "Le offerte" con validità per giorni della settimana o per periodo
 - Formati e gusti, extra a pagamento (es. "Nel ruoto +2 €"), allergeni
-- Carrello e **invio dell'ordine già scritto su WhatsApp**
+- Riepilogo "Il tuo ordine" e **invio dell'ordine già scritto su WhatsApp**
 - Stato "Aperto / Chiuso", avvisi in cima, pausa degli ordini online
 - Modalità scura automatica, installabile come app
 
