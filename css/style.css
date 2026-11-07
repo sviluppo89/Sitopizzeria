@@ -639,7 +639,7 @@ img.is-contain, .is-contain img { object-fit: contain !important; }
 /* ---------- "Scorri per continuare" nei pannelli ---------- */
 .sheet__footer { position: relative; }
 .sheet__more {
-  position: absolute; left: 0; right: 0; bottom: 100%; height: 72px; pointer-events: none;
+  position: absolute; left: 0; right: 0; bottom: 100%; height: 72px; pointer-events: none; z-index: 5; /* sopra le schede dei suggerimenti */
   display: flex; align-items: flex-end; justify-content: center; padding-bottom: 10px;
   background: linear-gradient(to bottom, color-mix(in srgb, var(--surface) 0%, transparent), var(--surface) 85%);
 }
