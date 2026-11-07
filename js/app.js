@@ -250,7 +250,7 @@
     <section class="cat-section" id="cat-${esc(c.id)}" data-id="${esc(c.id)}" aria-labelledby="h-${esc(c.id)}">
       <h3 class="cat-section__title" id="h-${esc(c.id)}">${esc(c.nome)}</h3>
       ${c.nota ? `<p class="cat-section__note">${esc(c.nota)}</p>` : ""}
-      ${c.opzioni && c.opzioni.length ? `<p class="cat-section__note cat-section__extras">Aggiunte: ${c.opzioni.map((o) => `${esc(o.nome)} <b>+${fmt(o.prezzo)}</b>`).join(" · ")}</p>` : ""}
+      ${c.opzioni && c.opzioni.length ? `<div class="cat-section__extras">${c.opzioni.map((o) => `<span class="xpill">${ic("plus")}${esc(o.nome)}<b>+${fmt(o.prezzo)}</b></span>`).join("")}</div>` : ""}
       ${c.foto ? `<img class="cat-section__img" src="${esc(c.foto)}" alt="" loading="lazy" decoding="async">` : ""}
       <ul class="items">
         ${CAT_IDS[c.id].map((pid) => {
@@ -327,7 +327,7 @@
   }
   const EXTRAS = EXTRA_LIST;
   if (EXTRAS.length && EXTRA_CATS.length) {
-    $("#extras-list").innerHTML = EXTRAS.map((a) => `<li>${esc(a.nome)} <b>+${fmt(a.prezzo)}</b></li>`).join("");
+    $("#extras-list").innerHTML = EXTRAS.map((a) => `<li><span>${esc(a.nome)}</span><b>+${fmt(a.prezzo)}</b></li>`).join("");
     $("#extras").hidden = false;
   }
 

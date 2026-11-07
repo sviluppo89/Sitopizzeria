@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Allura&family=Nunito:wght@500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=20261107t">
+  <link rel="stylesheet" href="css/style.css?v=20261107u">
 </head>
 <body>
   <a class="skip" href="#menu">Vai al menù</a>
@@ -127,10 +127,15 @@
         <button type="button" class="btn btn--ghost" id="reset-filters">Mostra tutto il menù</button>
       </div>
 
-      <aside class="extras" id="extras" hidden>
-        <h3>Ingredienti in più</h3>
-        <p class="extras__hint">Li scegli toccando la pizza, in «Vuoi aggiungere?»</p>
-        <ul id="extras-list"></ul>
+      <aside class="extras" id="extras" hidden aria-labelledby="extras-title">
+        <div class="extras__head">
+          <span class="extras__ico" aria-hidden="true"><i data-icon="plus"></i></span>
+          <div>
+            <h3 id="extras-title">Ingredienti in più</h3>
+            <p class="extras__hint">Li aggiungi toccando la pizza</p>
+          </div>
+        </div>
+        <ul class="extras__list" id="extras-list"></ul>
       </aside>
       <p class="fineprint">Prezzi IVA inclusa. Per allergeni e intolleranze chiedi al personale.</p>
     </section>
@@ -320,8 +325,8 @@
     </form>
   </dialog>
 
-  <script src="js/icons.js?v=20261107t"></script>
-  <script src="js/art.js?v=20261107t"></script>
-  <script src="js/app.js?v=20261107t"></script>
+  <script src="js/icons.js?v=20261107u"></script>
+  <script src="js/art.js?v=20261107u"></script>
+  <script src="js/app.js?v=20261107u"></script>
 </body>
 </html>

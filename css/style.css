@@ -740,3 +740,31 @@ img.is-contain, .is-contain img { object-fit: contain !important; }
 
 .choices__sub { margin: 14px 2px 8px; font-weight: 800; font-size: .82rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
 .choices--step.is-missing .optlist { border-color: var(--red); box-shadow: 0 0 0 3px color-mix(in srgb, var(--red) 15%, transparent); }
+
+/* ---------- Aggiunte nel menù ---------- */
+.cat-section__extras { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 4px; }
+.xpill {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 34px; padding: 0 12px 0 10px;
+  border-radius: 999px; background: var(--green-50); color: var(--green); font-weight: 800; font-size: .86rem;
+}
+.xpill .ic { width: 15px; height: 15px; stroke-width: 2.4; }
+.xpill b { font-weight: 900; color: var(--ink); font-variant-numeric: tabular-nums; }
+@media (prefers-color-scheme: dark) { .xpill { color: #5fd38c; } }
+
+.extras { margin-top: 24px; padding: 0; border-radius: var(--r); background: var(--surface); border: 1.5px solid var(--line); overflow: hidden; }
+.extras__head { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: var(--green-50); }
+.extras__ico { width: 38px; height: 38px; border-radius: 12px; background: var(--green); color: #fff; display: grid; place-items: center; flex: none; }
+.extras__ico .ic { width: 20px; height: 20px; stroke-width: 2.4; }
+.extras h3 { margin: 0; font-size: 1.02rem; font-weight: 900; }
+.extras .extras__hint { margin: 1px 0 0; font-size: .85rem; color: var(--muted); }
+.extras .extras__list { list-style: none; margin: 0; padding: 0; }
+.extras__list li {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  min-height: 48px; padding: 0 16px; border-top: 1px solid var(--line);
+}
+.extras__list li span { font-weight: 700; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.extras__list li b { flex: none; font-weight: 800; color: var(--muted); font-variant-numeric: tabular-nums; }
+@media (min-width: 760px) {
+  .extras__list { display: grid; grid-template-columns: 1fr 1fr; column-gap: 0; }
+  .extras__list li:nth-child(odd) { border-right: 1px solid var(--line); }
+}
