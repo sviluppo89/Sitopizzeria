@@ -1,6 +1,6 @@
 {
  "versione": 1,
- "aggiornato": "2026-11-07T00:08:53.755Z",
+ "aggiornato": "2026-11-07T08:40:59.416Z",
  "info": {
   "nome": "Pizzeria Pallone",
   "sottotitolo": "Pizza da asporto e a domicilio a Casapulla",
@@ -24,7 +24,7 @@
    "messaggioPausa": "Al momento non accettiamo ordini online. Chiamaci!"
   },
   "avviso": "",
-  "offerteSoloOggi": false
+  "offerteSoloOggi": true
  },
  "promo": [
   {
