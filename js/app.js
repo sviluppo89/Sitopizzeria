@@ -213,7 +213,7 @@
     (O[d] || []).forEach(([a, b]) => { let e = toMin(b); const s = toMin(a); if (e <= s) e += 1440; check.push([s, e]); });
     (O[(d + 6) % 7] || []).forEach(([a, b]) => { const s = toMin(a); const e = toMin(b); if (e <= s) check.push([s - 1440, e]); });
     const cur = check.find(([s, e]) => mins >= s && mins < e);
-    if (cur) { const e = cur[1] % 1440; return { open: true, text: `Aperto · chiude alle ${String(Math.floor(e / 60)).padStart(2, "0")}:${String(e % 60).padStart(2, "0")}` }; }
+    if (cur) { const e = cur[1] % 1440; return { open: true, text: `Aperto · chiude alle ${e === 0 ? "24:00" : `${String(Math.floor(e / 60)).padStart(2, "0")}:${String(e % 60).padStart(2, "0")}`}` }; }
     const next = (O[d] || []).map(([a]) => toMin(a)).find((s) => s > mins);
     if (next != null) return { open: false, text: `Chiuso · apre alle ${String(Math.floor(next / 60)).padStart(2, "0")}:${String(next % 60).padStart(2, "0")}` };
     return { open: false, text: "Chiuso ora" };
@@ -228,7 +228,7 @@
     const today = new Date().getDay();
     $("#hours").innerHTML = [1, 2, 3, 4, 5, 6, 0].map((d) => {
       const f = C.orari[d] || [];
-      return `<li class="${d === today ? "is-today" : ""}"><span>${DAYS[d]}</span><span>${f.length ? f.map(([a, b]) => `${a}–${b}`).join(", ") : "Chiuso"}</span></li>`;
+      return `<li class="${d === today ? "is-today" : ""}"><span>${DAYS[d]}</span><span>${f.length ? f.map(([a, b]) => `${a}–${b === "00:00" ? "24:00" : b}`).join(", ") : "Chiuso"}</span></li>`;
     }).join("");
     $("#hours-card").hidden = false;
   }
