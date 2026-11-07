@@ -445,3 +445,4 @@ body.has-pubbar .toast { bottom: calc(160px + var(--safe-b)); }
 #publish.is-due { background: var(--red); animation: due 1.8s ease-in-out infinite; }
 @keyframes due { 0%, 100% { box-shadow: 0 0 0 0 rgba(215, 20, 29, .45); } 50% { box-shadow: 0 0 0 7px rgba(215, 20, 29, 0); } }
 @media (prefers-reduced-motion: reduce) { #publish.is-due { animation: none; } }
+html:has(body.has-pubbar) { scroll-padding-bottom: 180px; } /* i campi in fondo non finiscono sotto la barra */
