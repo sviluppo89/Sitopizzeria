@@ -816,3 +816,7 @@ img.is-contain, .is-contain img { object-fit: contain !important; }
 .waiter__foot { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 16px calc(14px + var(--safe-b)); }
 @media (min-width: 680px) { .waiter { height: auto; max-height: 92vh; margin: auto; border-radius: 26px; overflow: hidden; } .waiter__inner { max-height: 92vh; } }
 .is-table .dock:has(.cartbar[hidden]) { display: none; }
+
+/* Al tavolo niente totali (barra, riepilogo) */
+.is-table .cartbar__total, .is-table .summary { display: none !important; }
+.is-table .cartbar__label { text-align: center; padding-right: 36px; }

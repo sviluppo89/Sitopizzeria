@@ -520,7 +520,7 @@
     $("#dock-contacts").hidden = count > 0;
     $("#cart-count").textContent = count;
     $("#cart-total").textContent = fmt(subtotal());
-    bar.setAttribute("aria-label", `Vedi ordine: ${count} prodotti, ${fmt(subtotal())}`);
+    bar.setAttribute("aria-label", TABLE ? `La mia ordinazione: ${count} prodotti` : `Vedi ordine: ${count} prodotti, ${fmt(subtotal())}`);
     if (bump && count) { bar.classList.remove("bump"); void bar.offsetWidth; bar.classList.add("bump"); }
 
     $("#cart-list").innerHTML = state.cart.map((l, i) => {
@@ -898,8 +898,8 @@
   /* ---------- Modalità tavolo ---------- */
   if (TABLE) {
     $(".hero__eyebrow").textContent = "Benvenuto al tavolo";
-    $(".hero__title").innerHTML = "Scegli con calma,<br>mostra al cameriere.";
-    $(".hero__sub").textContent = "Componi la tua ordinazione dal menù e mostrala a chi passa al tavolo.";
+    $(".hero__title").textContent = "Scegli con calma.";
+    $(".hero__sub").textContent = "Sfoglia il menù e componi la tua ordinazione.";
     $(".cartbar__label").textContent = "La mia ordinazione";
     $("#cs-title").textContent = "La mia ordinazione";
     $("#cart-more").textContent = "+ Aggiungi altro dal menù";
@@ -922,7 +922,6 @@
         <span class="wt-price">${fmt(unitPrice(l) * l.qty)}</span>
       </li>`;
     }).join("");
-    $("#wt-total").textContent = fmt(subtotal());
   }
   $("#show-waiter").addEventListener("click", async () => {
     if (!state.cart.length) return;
