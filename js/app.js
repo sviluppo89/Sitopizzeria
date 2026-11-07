@@ -99,6 +99,13 @@
     consigliata: { ico: "star", label: "La più amata" }
   };
 
+  /* Aggiunte per tutto il menù (es. bufala +1 €): valgono per le categorie scelte in admin.
+     Se non è stato scelto nulla, valgono per pizze, calzoni, scrigni e panuozzo. */
+  const EXTRA_LIST = (DATA.aggiunte || []).filter((a) => a && a.nome && typeof a.prezzo === "number");
+  const EXTRA_CATS = Array.isArray(DATA.aggiunteCategorie) ? DATA.aggiunteCategorie
+    : (DATA.categorie || []).filter((c) => ["pizza", "calzone"].includes(c.tipo)).map((c) => c.id);
+  const extrasFor = (catId) => (EXTRA_CATS.includes(catId) ? EXTRA_LIST.map((a) => ({ ...a, g: true })) : []);
+
   /* ---------- Indice prodotti ---------- */
   const PRODUCTS = new Map();
   const CAT_IDS = {}; // categoria -> elenco id prodotti, nell'ordine del menù
@@ -108,7 +115,7 @@
       while (PRODUCTS.has(id)) id += "-2";
       PRODUCTS.set(id, {
         ...p, id, tag: p.tag || [], tipo: cat.tipo || "pizza", cat: cat.id,
-        varianti: p.varianti || null, opzioni: p.opzioni || cat.opzioni || [],
+        varianti: p.varianti || null, opzioni: [...(p.opzioni || cat.opzioni || []), ...(cat.offerte ? [] : extrasFor(cat.id))],
         disponibile: p.disponibile !== false, offerta: !!cat.offerte
       });
       const pr = PRODUCTS.get(id);
@@ -318,8 +325,8 @@
       </button>`).join("");
     $("#deals").hidden = false;
   }
-  const EXTRAS = (DATA.aggiunte || []).filter((a) => a && a.nome);
-  if (EXTRAS.length) {
+  const EXTRAS = EXTRA_LIST;
+  if (EXTRAS.length && EXTRA_CATS.length) {
     $("#extras-list").innerHTML = EXTRAS.map((a) => `<li>${esc(a.nome)} <b>+${fmt(a.prezzo)}</b></li>`).join("");
     $("#extras").hidden = false;
   }
@@ -658,9 +665,13 @@
     // opzioni (es. nel ruoto)
     const ow = $("#ps-options");
     ow.hidden = !current.opzioni.length;
-    $("#ps-options-list").innerHTML = current.opzioni.map((o, i) => `
-      <label class="choice"><input type="checkbox" name="ps-o" value="${i}">
-        <span class="choice__name">${esc(o.nome)}</span><span class="choice__price">+ ${fmt(o.prezzo)}</span></label>`).join("");
+    const optRow = (o, i, compact) => `
+      <label class="choice${compact ? " choice--compact" : ""}"><input type="checkbox" name="ps-o" value="${i}">
+        <span class="choice__name">${esc(o.nome)}</span><span class="choice__price">+${fmt(o.prezzo)}</span></label>`;
+    const own = current.opzioni.map((o, i) => [o, i]).filter(([o]) => !o.g);
+    const glob = current.opzioni.map((o, i) => [o, i]).filter(([o]) => o.g);
+    $("#ps-options-list").innerHTML = own.map(([o, i]) => optRow(o, i)).join("")
+      + (glob.length ? `<p class="choices__sub">Ingredienti in più</p><div class="choices__grid">${glob.map(([o, i]) => optRow(o, i, true)).join("")}</div>` : "");
     $("#ps-note").value = "";
     $("#ps-note").placeholder = current.segnaposto || "Es. ben cotta, senza origano…";
     $("#ps-note-label").firstChild.textContent = current.segnaposto ? "La tua scelta " : "Vuoi cambiare qualcosa? ";
@@ -715,7 +726,7 @@
         addToCart(p.id);
         if (!store.get("pallone-notehint", false)) {
           store.set("pallone-notehint", true);
-          siteToast("Aggiunta! Per una nota (es. ben cotta) tocca la pizza, oppure scrivila in «Vedi ordine».");
+          siteToast("Aggiunta! Per ingredienti in più o una nota (es. ben cotta) tocca la pizza.");
         }
       }
       return;

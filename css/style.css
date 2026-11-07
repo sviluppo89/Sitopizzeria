@@ -683,3 +683,9 @@ img.is-contain, .is-contain img { object-fit: contain !important; }
 .choice.is-off { opacity: .5; }
 .cart__choices { grid-column: 1 / -1; margin: 2px 0 0; padding: 8px 10px 8px 26px; background: var(--surface-2); border-radius: 10px; font-size: .88rem; }
 .cart__choices li { margin: 1px 0; }
+
+/* Ingredienti in più nella scheda */
+.choices__sub { margin: 12px 0 8px; font-weight: 800; font-size: .9rem; color: var(--muted); }
+#ps-options-list > .choice { margin-bottom: 8px; }
+.choice--compact .choice__price { font-size: .85rem; white-space: nowrap; }
+.extras__hint { margin: 0 0 6px; font-size: .86rem; color: var(--muted); }

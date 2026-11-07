@@ -398,11 +398,16 @@
 
   // Aggiunte valide per tutto il menù (es. Mozzarella di bufala +2 €)
   function editExtras() {
-    const html = panel("", `<p class="muted" style="font-size:.9rem">Le aggiunte che il cliente può mettere su qualsiasi pizza, con il prezzo in più. Compaiono in fondo al menù. Per le aggiunte di una sola categoria (es. "Nel ruoto") apri la categoria con la matita.</p>${rowsHTML(S.draft.aggiunte || [], "Es. Mozzarella di bufala", "€")}`);
+    const cats = Array.isArray(S.draft.aggiunteCategorie) ? S.draft.aggiunteCategorie
+      : S.draft.categorie.filter((c) => ["pizza", "calzone"].includes(c.tipo)).map((c) => c.id);
+    const html = panel("", `<p class="muted" style="font-size:.9rem">Ingredienti che il cliente può aggiungere con il prezzo in più. Li spunta nella scheda della pizza e il prezzo si somma da solo.</p>${rowsHTML(S.draft.aggiunte || [], "Es. Mozzarella di bufala", "€")}`)
+      + panel("Su quali prodotti", `<p class="muted" style="font-size:.86rem">Le aggiunte compaiono su tutti i prodotti di queste categorie.</p>${chipsHTML("xcat", S.draft.categorie.map((c) => [c.id, c.nome]), cats)}`)
+      + `<p class="muted" style="font-size:.84rem;text-align:center">Per un'aggiunta di una sola categoria (es. "Nel ruoto") usa la matita della categoria.</p>`;
     openEditor("Aggiunte a pagamento", html, (root) => {
       const rows = readRows(root);
       if (rows.some((r) => !r.nome || !isPrice(r.prezzo))) { toast("Ogni aggiunta deve avere nome e prezzo.", true); return false; }
       S.draft.aggiunte = rows.map((r) => ({ nome: r.nome, prezzo: r.prezzo }));
+      S.draft.aggiunteCategorie = checked(root, "xcat");
       saveDraft(); toast("Aggiunte salvate");
     }, (root) => bindRows(root));
   }
