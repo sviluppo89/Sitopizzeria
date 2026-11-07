@@ -1,6 +1,6 @@
 {
  "versione": 1,
- "aggiornato": "2026-11-07T08:40:59.416Z",
+ "aggiornato": "2026-11-07T16:37:13.908Z",
  "info": {
   "nome": "Pizzeria Pallone",
   "sottotitolo": "Pizza da asporto e a domicilio a Casapulla",
@@ -1565,5 +1565,34 @@
   }
  ],
  "sconti": [],
- "aggiunte": []
+ "aggiunte": [
+  {
+   "nome": "Bufala",
+   "prezzo": 1
+  },
+  {
+   "nome": "Patatine stick",
+   "prezzo": 1
+  },
+  {
+   "nome": "Patatine dippers",
+   "prezzo": 2
+  },
+  {
+   "nome": "Salsiccia",
+   "prezzo": 1
+  },
+  {
+   "nome": "Crudo",
+   "prezzo": 1
+  },
+  {
+   "nome": "Cotto",
+   "prezzo": 1
+  },
+  {
+   "nome": "Doppia mozzarella",
+   "prezzo": 1
+  }
+ ]
 }
