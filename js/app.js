@@ -733,6 +733,14 @@
     $$("[data-quick]", $("#ps-note-chips")).forEach((b) => b.setAttribute("aria-pressed", parts.some((x) => x.toLowerCase() === b.dataset.quick.toLowerCase())));
   });
   ["#c-name", "#c-addr"].forEach((s) => $(s).addEventListener("input", (e) => { e.target.removeAttribute("aria-invalid"); $("#c-error").hidden = true; }));
+  // Link Google Maps per l'indirizzo di consegna (cliccabile dentro WhatsApp).
+  // Se il cliente non scrive il paese (niente virgola), aggiungo quello della pizzeria.
+  function mapsLink(a) {
+    const town = String(C.citta || "").replace(/^\d+\s*/, "");
+    const q = a.includes(",") ? a : `${a}, ${town}`;
+    // niente parentesi o spazi nel link: WhatsApp lo renderebbe cliccabile solo a metà
+    return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(q.replace(/[()]/g, " ").replace(/\s+/g, " ").trim()).replace(/%20/g, "+");
+  }
   $("#send-wa").addEventListener("click", () => {
     const name = $("#c-name"), addr = $("#c-addr"), err = $("#c-error");
     [name, addr].forEach((i) => i.removeAttribute("aria-invalid"));
@@ -760,7 +768,7 @@
       `*Totale: ${fmt(subtotal() + fee)}*`,
       "",
       `👤 Nome: ${name.value.trim()}`,
-      state.mode === "domicilio" ? `🛵 Consegna a domicilio: ${addr.value.trim()}` : "🥡 Ritiro in pizzeria (asporto)",
+      state.mode === "domicilio" ? `🛵 Consegna a domicilio: ${addr.value.trim()}\n📍 Apri in Maps: ${mapsLink(addr.value.trim())}` : "🥡 Ritiro in pizzeria (asporto)",
       `🕒 Orario richiesto: ${$("#c-time").value || "prima possibile"} (da confermare)`,
       $("#c-note").value.trim() ? `📝 Note: ${$("#c-note").value.trim()}` : null,
       "",
