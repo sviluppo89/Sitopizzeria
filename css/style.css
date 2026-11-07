@@ -820,3 +820,18 @@ img.is-contain, .is-contain img { object-fit: contain !important; }
 /* Al tavolo niente totali (barra, riepilogo) */
 .is-table .cartbar__total, .is-table .summary { display: none !important; }
 .is-table .cartbar__label { text-align: center; padding-right: 36px; }
+
+/* Al tavolo: invito all'ordine online, in fondo */
+.to-online { max-width: 980px; margin: 0 auto; padding: 0 16px 28px; }
+.is-table .to-online { display: block !important; }
+.to-online__card {
+  display: grid; grid-template-columns: auto 1fr; gap: 12px 14px; align-items: center;
+  padding: 16px; border-radius: var(--r); background: var(--surface); border: 1.5px solid var(--line); box-shadow: var(--shadow-1);
+}
+.to-online__ico { width: 44px; height: 44px; border-radius: 14px; background: var(--green-50); color: var(--green); display: grid; place-items: center; }
+.to-online__ico .ic { width: 22px; height: 22px; }
+@media (prefers-color-scheme: dark) { .to-online__ico { color: #5fd38c; } }
+.to-online__txt h2 { margin: 0; font-size: 1.02rem; font-weight: 900; }
+.to-online__txt p { margin: 2px 0 0; color: var(--muted); font-size: .88rem; }
+.to-online__card .btn { grid-column: 1 / -1; width: 100%; }
+@media (min-width: 760px) { .to-online__card { grid-template-columns: auto 1fr auto; } .to-online__card .btn { grid-column: auto; width: auto; } }
