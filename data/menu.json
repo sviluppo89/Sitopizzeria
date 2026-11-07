@@ -227,7 +227,10 @@
      "tag": [
       "vegetariana"
      ],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -244,7 +247,9 @@
      "tag": [
       "vegetariana"
      ],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -261,7 +266,9 @@
      "tag": [
       "vegetariana"
      ],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -276,7 +283,10 @@
      "prezzo": 5,
      "varianti": [],
      "tag": [],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Pesce"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -293,7 +303,10 @@
      "tag": [
       "vegetariana"
      ],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -310,7 +323,10 @@
      "tag": [
       "piccante"
      ],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -327,7 +343,10 @@
      "tag": [
       "vegetariana"
      ],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -342,7 +361,10 @@
      "prezzo": 7,
      "varianti": [],
      "tag": [],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Pesce"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -359,7 +381,10 @@
      "tag": [
       "vegetariana"
      ],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -376,7 +401,10 @@
      "tag": [
       "vegetariana"
      ],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -393,7 +421,10 @@
      "tag": [
       "vegetariana"
      ],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -421,7 +452,10 @@
       }
      ],
      "tag": [],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -436,7 +470,10 @@
      "prezzo": 7,
      "varianti": [],
      "tag": [],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -453,7 +490,10 @@
      "tag": [
       "vegetariana"
      ],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -468,7 +508,11 @@
      "prezzo": 8,
      "varianti": [],
      "tag": [],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte",
+      "Uova"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -483,7 +527,10 @@
      "prezzo": 8,
      "varianti": [],
      "tag": [],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -498,7 +545,11 @@
      "prezzo": 8,
      "varianti": [],
      "tag": [],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte",
+      "Pesce"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -515,7 +566,10 @@
      "tag": [
       "vegetariana"
      ],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -530,7 +584,10 @@
      "prezzo": 8,
      "varianti": [],
      "tag": [],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -547,7 +604,10 @@
      "tag": [
       "piccante"
      ],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -562,7 +622,10 @@
      "prezzo": 8,
      "varianti": [],
      "tag": [],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -577,7 +640,10 @@
      "prezzo": 8,
      "varianti": [],
      "tag": [],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -592,7 +658,11 @@
      "prezzo": 8,
      "varianti": [],
      "tag": [],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte",
+      "Pesce"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -609,7 +679,10 @@
      "tag": [
       "piccante"
      ],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -624,7 +697,10 @@
      "prezzo": 8,
      "varianti": [],
      "tag": [],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -641,7 +717,10 @@
      "tag": [
       "piccante"
      ],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -658,7 +737,10 @@
      "tag": [
       "vegetariana"
      ],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -673,7 +755,10 @@
      "prezzo": 9,
      "varianti": [],
      "tag": [],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -688,7 +773,11 @@
      "prezzo": 9,
      "varianti": [],
      "tag": [],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte",
+      "Pesce"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -703,7 +792,12 @@
      "prezzo": 10,
      "varianti": [],
      "tag": [],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte",
+      "Pesce",
+      "Frutta a guscio"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -733,7 +827,11 @@
      "prezzo": 9,
      "varianti": [],
      "tag": [],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte",
+      "Uova"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -748,7 +846,11 @@
      "prezzo": 9,
      "varianti": [],
      "tag": [],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte",
+      "Pesce"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -765,7 +867,10 @@
      "tag": [
       "piccante"
      ],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -792,7 +897,10 @@
      "tag": [
       "piccante"
      ],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -807,7 +915,10 @@
      "prezzo": 10,
      "varianti": [],
      "tag": [],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Pesce"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": false,
@@ -822,7 +933,11 @@
      "prezzo": 10,
      "varianti": [],
      "tag": [],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte",
+      "Pesce"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -837,7 +952,10 @@
      "prezzo": 10,
      "varianti": [],
      "tag": [],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -862,7 +980,10 @@
      "prezzo": 7,
      "varianti": [],
      "tag": [],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -877,7 +998,10 @@
      "prezzo": 7,
      "varianti": [],
      "tag": [],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -892,7 +1016,10 @@
      "prezzo": 6.5,
      "varianti": [],
      "tag": [],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Pesce"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -907,7 +1034,10 @@
      "prezzo": 7,
      "varianti": [],
      "tag": [],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -932,7 +1062,10 @@
      "prezzo": 8,
      "varianti": [],
      "tag": [],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -947,7 +1080,10 @@
      "prezzo": 9,
      "varianti": [],
      "tag": [],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -962,7 +1098,10 @@
      "prezzo": 8,
      "varianti": [],
      "tag": [],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -979,7 +1118,11 @@
      "tag": [
       "vegetariana"
      ],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte",
+      "Frutta a guscio"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -994,7 +1137,11 @@
      "prezzo": 9,
      "varianti": [],
      "tag": [],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte",
+      "Uova"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -1011,7 +1158,10 @@
      "tag": [
       "piccante"
      ],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -1026,7 +1176,10 @@
      "prezzo": 9,
      "varianti": [],
      "tag": [],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -1064,7 +1217,9 @@
       }
      ],
      "tag": [],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -1089,7 +1244,11 @@
      "prezzo": 1,
      "varianti": [],
      "tag": [],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte",
+      "Uova"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -1104,7 +1263,11 @@
      "prezzo": 2,
      "varianti": [],
      "tag": [],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte",
+      "Uova"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -1121,7 +1284,9 @@
      "tag": [
       "vegetariana"
      ],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -1149,7 +1314,10 @@
       }
      ],
      "tag": [],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -1173,7 +1341,9 @@
       }
      ],
      "tag": [],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -1197,7 +1367,9 @@
       }
      ],
      "tag": [],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -1223,7 +1395,9 @@
      "tag": [
       "piccante"
      ],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -1249,7 +1423,9 @@
      "tag": [
       "vegetariana"
      ],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -1318,7 +1494,10 @@
      "tag": [
       "vegetariana"
      ],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -1333,7 +1512,9 @@
      "prezzo": 2.5,
      "varianti": [],
      "tag": [],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -1348,7 +1529,9 @@
      "prezzo": 13.5,
      "varianti": [],
      "tag": [],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -1375,7 +1558,12 @@
      "tag": [
       "vegetariana"
      ],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte",
+      "Frutta a guscio",
+      "Soia"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -1392,7 +1580,12 @@
      "tag": [
       "vegetariana"
      ],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine",
+      "Latte",
+      "Frutta a guscio",
+      "Soia"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -1543,7 +1736,9 @@
       }
      ],
      "tag": [],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -1567,7 +1762,9 @@
       }
      ],
      "tag": [],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,
@@ -1591,7 +1788,9 @@
       }
      ],
      "tag": [],
-     "allergeni": [],
+     "allergeni": [
+      "Glutine"
+     ],
      "foto": "",
      "attivo": true,
      "disponibile": true,

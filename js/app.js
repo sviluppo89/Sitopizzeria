@@ -667,7 +667,7 @@
     $("#ps-desc").textContent = desc;
     $("#ps-desc").hidden = !desc;
     const al = current.allergeni || [];
-    $("#ps-allergens").textContent = al.length ? "Allergeni: " + al.join(", ") : "";
+    $("#ps-allergens-list").innerHTML = al.map((a) => `<span class="allergen">${esc(a)}</span>`).join("");
     $("#ps-allergens").hidden = !al.length;
     $("#ps-more").textContent = current.dettagli || "";
     $("#ps-more").hidden = !current.dettagli;
