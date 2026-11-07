@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Allura&family=Nunito:wght@500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=20261108d">
+  <link rel="stylesheet" href="css/style.css?v=20261108e">
 </head>
 <body>
   <a class="skip" href="#menu">Vai al menù</a>
@@ -244,11 +244,6 @@
         <div class="ps__tags" id="ps-tags"></div>
         <p class="ps__desc" id="ps-desc"></p>
         <p class="ps__more" id="ps-more" hidden></p>
-        <div class="ps__allergens" id="ps-allergens" hidden>
-          <p class="ps__allergens-title">Allergeni</p>
-          <div class="ps__allergens-list" id="ps-allergens-list"></div>
-          <p class="ps__allergens-note">Per allergie o intolleranze chiedi al personale: in cucina usiamo anche altri allergeni.</p>
-        </div>
         <div id="ps-steps"></div>
         <fieldset class="choices" id="ps-variants" hidden>
           <legend id="ps-variants-title">Scegli il formato</legend>
@@ -263,7 +258,9 @@
           <div class="note-chips" id="ps-note-chips" role="group" aria-label="Scelte rapide"></div>
           <textarea id="ps-note" rows="2" maxlength="160" placeholder="Es. senza origano, aggiungi olive…"></textarea>
           <span class="field__hint" id="ps-note-hint">La nota arriva alla pizzeria insieme all'ordine.</span>
+          <div class="note-extra" id="ps-note-extra" role="status" hidden></div>
         </div>
+        <p class="ps__allergens" id="ps-allergens" hidden></p>
       </div>
       <div class="sheet__footer">
         <div class="stepper" aria-label="Quantità">
@@ -360,8 +357,8 @@
     </form>
   </dialog>
 
-  <script src="js/icons.js?v=20261108d"></script>
-  <script src="js/art.js?v=20261108d"></script>
-  <script src="js/app.js?v=20261108d"></script>
+  <script src="js/icons.js?v=20261108e"></script>
+  <script src="js/art.js?v=20261108e"></script>
+  <script src="js/app.js?v=20261108e"></script>
 </body>
 </html>

@@ -164,6 +164,39 @@
     return p.nome + (bits.length ? ` (${bits.join(", ")})` : "");
   };
 
+  // Aggiunte a pagamento scritte nella nota (es. "patatine"): le riconosco
+  // per proporre di sceglierle con il prezzo, e le segnalo nel messaggio.
+  const NOTE_SKIP = new Set(["doppia", "doppio", "tripla", "extra", "aggiunta", "porzione", "della", "delle", "alla", "alle", "con"]);
+  const NOTE_NEG = new Set(["senza", "no", "niente", "togli", "togliere", "meno", "poca", "poco", "poche", "pochi", "ben", "piu", "molto"]);
+  // stessa parola anche al plurale (patatina/patatine, salsiccia/salsicce), ma non cotto/cotta
+  const stem = (w) => w.replace(/[aeio]$/, "").replace(/([cg])i$/, "$1");
+  const sameWord = (a, b) => a === b || (a.length > 3 && /[aeio]$/.test(a) && /[aeio]$/.test(b)
+    && stem(a) === stem(b) && "ae".includes(a.slice(-1)) === "ae".includes(b.slice(-1)));
+  function noteExtras(p, note, sel) {
+    const words = norm(note).split(/[^a-z]+/).filter(Boolean);
+    if (!words.length) return [];
+    const pool = (p.opzioni || []).map((o, i) => ({ o, i })).filter(({ o }) => o.prezzo > 0);
+    if (!pool.length) EXTRA_LIST.forEach((o) => pool.push({ o, i: -1 }));
+    const taken = (sel || []).map((i) => p.opzioni[i]).filter(Boolean).map((o) => norm(o.nome));
+    const found = new Map();
+    words.forEach((w, k) => {
+      if (k > 0 && NOTE_NEG.has(words[k - 1])) return;
+      pool.forEach(({ o, i }) => {
+        const keys = norm(o.nome).split(/[^a-z]+/).filter((t) => t.length >= 4 && !NOTE_SKIP.has(t));
+        const key = keys.find((t) => sameWord(t, w));
+        if (!key) return;
+        if (taken.some((n) => n.split(/[^a-z]+/).some((t) => sameWord(t, w)))) return; // già scelta
+        if (!found.has(w)) found.set(w, []);
+        if (!found.get(w).some((x) => x.o === o)) found.get(w).push({ o, i });
+      });
+    });
+    return [...found].map(([word, opts]) => ({ word, opts }));
+  }
+  const noteWarn = (p, l) => {
+    const hits = noteExtras(p, l.note, l.o);
+    return hits.length ? `\n   ⚠️ Nella nota: ${hits.map((h) => h.word).join(", ")} (aggiunta a pagamento non scelta)` : "";
+  };
+
   const art = window.pallonArt;
 
   const badges = (tags, onlyIcons) => tags.map((t) => {
@@ -640,6 +673,19 @@
     else { add.textContent = `${editLine >= 0 ? "Aggiorna" : "Aggiungi"} · ${fmt(unitPrice({ id: current.id, v: selV, o: selO }) * qty)}`; add.disabled = false; }
   }
   let editLine = -1; // riga dell'ordine che si sta modificando (-1 = nuovo prodotto)
+  let noteWarned = ""; // parole già segnalate: avviso una volta sola, poi si può aggiungere
+  function renderNoteExtra(alert) {
+    const box = $("#ps-note-extra");
+    const hits = current && !current.segnaposto && current.opzioni.length ? noteExtras(current, $("#ps-note").value, selO) : [];
+    box.hidden = !hits.length;
+    box.classList.toggle("is-alert", !!alert && !!hits.length);
+    if (!hits.length) { box.innerHTML = ""; return hits; }
+    const names = hits.map((h) => `«${esc(h.word)}»`).join(", ");
+    box.innerHTML = `<p>${ic("tag")} Hai scritto ${names}: ${hits.length > 1 ? "sono aggiunte" : "è un'aggiunta"} a pagamento. Sceglila qui, così il prezzo è giusto:</p>
+      <div class="note-extra__btns">${hits.flatMap((h) => h.opts).filter((x, k, a) => x.i >= 0 && a.findIndex((y) => y.i === x.i) === k)
+        .map(({ o, i }) => `<button type="button" class="note-extra__btn" data-note-opt="${i}">${ic("plus")} ${esc(o.nome)} <b>+${fmt(o.prezzo)}</b></button>`).join("")}</div>`;
+    return hits;
+  }
   function openProduct(id, lineIndex = -1) {
     current = PRODUCTS.get(id); qty = 1; selV = 0; selO = []; selC = [];
     editLine = lineIndex;
@@ -667,7 +713,7 @@
     $("#ps-desc").textContent = desc;
     $("#ps-desc").hidden = !desc;
     const al = current.allergeni || [];
-    $("#ps-allergens-list").innerHTML = al.map((a) => `<span class="allergen">${esc(a)}</span>`).join("");
+    $("#ps-allergens").innerHTML = al.length ? `<b>Allergeni:</b> ${al.map(esc).join(", ")}. Per allergie o intolleranze rivolgiti al personale.` : "";
     $("#ps-allergens").hidden = !al.length;
     $("#ps-more").textContent = current.dettagli || "";
     $("#ps-more").hidden = !current.dettagli;
@@ -716,6 +762,7 @@
       });
       $("#ps-note").value = l.note || "";
     }
+    noteWarned = ""; renderNoteExtra();
     updateAddLabel();
     openSheet(ps);
     $(".sheet__body", ps).scrollTop = 0;
@@ -723,7 +770,7 @@
   ps.addEventListener("close", () => { editLine = -1; });
   ps.addEventListener("change", (e) => {
     if (e.target.name === "ps-v") selV = +e.target.value;
-    if (e.target.name === "ps-o") selO = $$('input[name="ps-o"]:checked', ps).map((i) => +i.value);
+    if (e.target.name === "ps-o") { selO = $$('input[name="ps-o"]:checked', ps).map((i) => +i.value); renderNoteExtra(); }
     if (/^ps-c\d+$/.test(e.target.name)) {
       const k = +e.target.name.slice(4); selC[k] = e.target.value;
       e.target.closest(".choices--step").classList.remove("is-missing");
@@ -745,6 +792,14 @@
       steps.forEach((s, k) => { if (!selC[k]) $(`[data-step="${k}"]`, ps).classList.add("is-missing"); });
       fs.scrollIntoView({ behavior: "smooth", block: "center" });
       live(`Scegli: ${steps[missing].titolo}`);
+      return;
+    }
+    // aggiunta scritta solo nella nota: lo faccio notare una volta prima di aggiungere
+    const nHits = renderNoteExtra(true).map((h) => h.word).join(",");
+    if (nHits && nHits !== noteWarned) {
+      noteWarned = nHits;
+      $("#ps-note-extra").scrollIntoView({ behavior: "smooth", block: "center" });
+      live("Hai scritto un'aggiunta a pagamento nella nota: sceglila dall'elenco.");
       return;
     }
     const choices = steps.map((s, k) => `${s.titolo}: ${selC[k]}`);
@@ -827,7 +882,26 @@
   });
   $("#cart-more").addEventListener("click", () => { closeSheet(cs); setTimeout(() => $("#menu").scrollIntoView(), 250); });
 
-  $("#ps-note").addEventListener("input", (e) => e.target.removeAttribute("aria-invalid"));
+  $("#ps-note").addEventListener("input", (e) => { e.target.removeAttribute("aria-invalid"); renderNoteExtra(); });
+  // tocco su "+ Patatine stick": spunta l'aggiunta e la tolgo dalla nota
+  $("#ps-note-extra").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-note-opt]"); if (!b) return;
+    const i = +b.dataset.noteOpt;
+    const c = $(`input[name="ps-o"][value="${i}"]`, ps); if (!c) return;
+    const hits = noteExtras(current, $("#ps-note").value, selO).filter((h) => h.opts.some((x) => x.i === i));
+    c.checked = true; selO = $$('input[name="ps-o"]:checked', ps).map((x) => +x.value);
+    const ta = $("#ps-note");
+    hits.forEach((h) => {
+      ta.value = ta.value.split(/\s*,\s*/).map((part) => {
+        const ws = part.split(/\s+/);
+        const left = ws.filter((w) => !sameWord(norm(w).replace(/[^a-z]/g, ""), h.word));
+        // tolgo anche "aggiungi", "con", "+" rimasti soli
+        return left.length && !left.every((w) => /^(aggiungi|aggiungere|con|e|anche|piu|più|\+|extra)$/i.test(w)) ? left.join(" ") : "";
+      }).filter(Boolean).join(", ");
+    });
+    renderNoteExtra(); updateAddLabel(); vibrate();
+    live(`${current.opzioni[i].nome} aggiunta`);
+  });
   // scelte rapide: aggiungono o tolgono il testo dalla nota
   $("#ps-note-chips").addEventListener("click", (e) => {
     const c = e.target.closest("[data-quick]"); if (!c) return;
@@ -866,7 +940,7 @@
     const fullAddr = `${addr.value.trim()}, ${city.value.trim()}`;
 
     const lines = state.cart.map((l) => {
-      return `• ${l.qty}× ${lineLabel(l)} — ${fmt(unitPrice(l) * l.qty)}${PRODUCTS.get(l.id).deal ? ` (promo ${PRODUCTS.get(l.id).deal.nome})` : ""}${(l.c || []).map((x) => `\n   ↳ ${x}`).join("")}${l.note ? `\n   ↳ ${l.note}` : ""}`;
+      return `• ${l.qty}× ${lineLabel(l)} — ${fmt(unitPrice(l) * l.qty)}${PRODUCTS.get(l.id).deal ? ` (promo ${PRODUCTS.get(l.id).deal.nome})` : ""}${(l.c || []).map((x) => `\n   ↳ ${x}`).join("")}${l.note ? `\n   ↳ ${l.note}${noteWarn(PRODUCTS.get(l.id), l)}` : ""}`;
     });
     const fee = deliveryFee();
     const text = [

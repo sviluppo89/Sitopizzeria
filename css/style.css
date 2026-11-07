@@ -537,7 +537,7 @@ img.is-contain, .is-contain img { object-fit: contain !important; }
 .deal__txt strong { font-size: 1.02rem; font-weight: 900; }
 .deal__txt small { opacity: .9; font-size: .86rem; }
 .deal__go { font-size: 1.8rem; line-height: 1; opacity: .9; }
-.ps__tags + .choices, .ps__tags + .ps__desc[hidden] + .ps__more[hidden] + .ps__allergens[hidden] + .choices { margin-top: 14px; }
+.ps__tags + .choices, .ps__tags + .ps__desc[hidden] + .ps__more[hidden] + .choices { margin-top: 14px; }
 .footer__admin { font-size: .78rem; opacity: .6; text-decoration: none; display: inline-block; padding: 8px; }
 .footer__admin:hover { opacity: 1; text-decoration: underline; }
 
@@ -843,8 +843,13 @@ img.is-contain, .is-contain img { object-fit: contain !important; }
 body.is-table:has(#cartbar[hidden]) { padding-bottom: 0; } /* al tavolo senza ordinazione niente spazio per la barra */
 
 /* Allergeni nella scheda prodotto */
-.ps__allergens { margin: 0 0 18px; padding: 12px 14px; border-radius: 14px; background: var(--surface-2); }
-.ps__allergens-title { margin: 0 0 8px; font-size: .78rem; font-weight: 900; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
-.ps__allergens-list { display: flex; flex-wrap: wrap; gap: 6px; }
-.allergen { display: inline-flex; align-items: center; min-height: 30px; padding: 0 12px; border-radius: 999px; background: var(--surface); border: 1.5px solid var(--line); font-weight: 800; font-size: .86rem; }
-.ps__allergens-note { margin: 10px 0 0; font-size: .8rem; color: var(--muted); line-height: 1.35; }
+.ps__allergens { margin: 22px 0 4px; padding-top: 12px; border-top: 1px solid var(--line); font-size: .74rem; line-height: 1.45; color: var(--muted); }
+.ps__allergens b { font-weight: 700; color: var(--muted); }
+.note-extra { margin-top: 10px; padding: 12px; border-radius: 14px; background: var(--surface-2); border: 1.5px solid var(--line); }
+.note-extra.is-alert { border-color: var(--red); animation: noteShake .35s ease; }
+.note-extra p { margin: 0 0 8px; font-size: .86rem; line-height: 1.4; }
+.note-extra__btns { display: flex; flex-wrap: wrap; gap: 6px; }
+.note-extra__btn { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 12px; border-radius: 999px; border: 1.5px solid var(--line); background: var(--surface); color: inherit; font: inherit; font-weight: 800; font-size: .86rem; cursor: pointer; }
+.note-extra__btn b { font-weight: 800; color: var(--muted); }
+@keyframes noteShake { 0%,100% { transform: none } 25% { transform: translateX(-4px) } 75% { transform: translateX(4px) } }
+@media (prefers-reduced-motion: reduce) { .note-extra.is-alert { animation: none; } }
