@@ -768,3 +768,51 @@ img.is-contain, .is-contain img { object-fit: contain !important; }
   .extras__list { display: grid; grid-template-columns: 1fr 1fr; column-gap: 0; }
   .extras__list li:nth-child(odd) { border-right: 1px solid var(--line); }
 }
+
+/* =========================================================
+   Modalità tavolo (?tavolo)
+   ========================================================= */
+.only-table { display: none !important; }
+.is-table .only-table { display: revert !important; }
+.is-table .btn.only-table { display: inline-flex !important; }
+.is-table .only-out { display: none !important; }
+.table-badge {
+  margin: 14px 0 0; display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px;
+  border-radius: 999px; background: rgba(255, 255, 255, .14); color: #fff; font-weight: 800; font-size: .88rem;
+}
+.table-badge .ic { width: 18px; height: 18px; }
+.is-table .table-badge { display: inline-flex !important; }
+.is-table .hero { padding-bottom: 4px; }
+.btn--show { min-height: 56px; font-size: 1.05rem; }
+
+/* Schermata per il cameriere: grande, chiara, leggibile da lontano */
+.waiter {
+  width: 100%; max-width: 640px; height: 100dvh; max-height: 100dvh; margin: 0 auto; padding: 0; border: 0;
+  background: var(--surface); color: var(--ink);
+}
+.waiter::backdrop { background: var(--overlay); }
+.waiter[open] { animation: sheet-in .28s var(--ease); }
+.waiter__inner { display: flex; flex-direction: column; height: 100%; }
+.waiter__head { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: var(--green); color: #fff; }
+.waiter__head img { width: 52px; height: 52px; object-fit: contain; background: #fff; border-radius: 14px; padding: 5px; flex: none; }
+.waiter__head > div { flex: 1; min-width: 0; }
+.waiter__kicker { margin: 0; font-size: .78rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; opacity: .8; }
+.waiter__head h2 { margin: 0; font-size: 1.4rem; font-weight: 900; }
+.waiter__close { width: 44px; height: 44px; border: 0; border-radius: 50%; background: rgba(255,255,255,.16); color: #fff; font-size: 1.7rem; line-height: 1; flex: none; }
+.waiter__list { list-style: none; margin: 0; padding: 6px 16px; overflow-y: auto; flex: 1; }
+.wt-item { display: flex; align-items: flex-start; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+.wt-qty { flex: none; min-width: 48px; height: 40px; padding: 0 8px; border-radius: 12px; background: var(--green-50); color: var(--green); display: grid; place-items: center; font-size: 1.3rem; font-weight: 900; }
+@media (prefers-color-scheme: dark) { .wt-qty { color: #5fd38c; } }
+.wt-body { flex: 1; min-width: 0; display: grid; gap: 3px; padding-top: 4px; }
+.wt-name { font-size: 1.3rem; font-weight: 900; line-height: 1.2; }
+.wt-var { font-weight: 800; color: var(--muted); font-size: 1rem; }
+.wt-sub { font-size: 1rem; font-weight: 700; color: var(--ink); }
+.wt-plus { color: var(--green); }
+@media (prefers-color-scheme: dark) { .wt-plus { color: #5fd38c; } }
+.wt-note { font-style: italic; color: var(--muted); font-weight: 600; }
+.wt-price { flex: none; padding-top: 8px; font-weight: 800; color: var(--muted); font-variant-numeric: tabular-nums; }
+.waiter__total { display: flex; justify-content: space-between; align-items: baseline; padding: 14px 16px; border-top: 2px solid var(--ink); font-size: 1.15rem; font-weight: 900; }
+.waiter__total b { font-size: 1.5rem; font-variant-numeric: tabular-nums; }
+.waiter__foot { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 16px calc(14px + var(--safe-b)); }
+@media (min-width: 680px) { .waiter { height: auto; max-height: 92vh; margin: auto; border-radius: 26px; overflow: hidden; } .waiter__inner { max-height: 92vh; } }
+.is-table .dock:has(.cartbar[hidden]) { display: none; }

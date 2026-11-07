@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Allura&family=Nunito:wght@500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=20261107v">
+  <link rel="stylesheet" href="css/style.css?v=20261107x">
 </head>
 <body>
   <a class="skip" href="#menu">Vai al menù</a>
@@ -45,7 +45,7 @@
         </div>
         <div class="hero__logo" aria-hidden="true"><img src="img/logo.png" alt="" width="640" height="510"></div>
 
-        <div class="segmented" role="radiogroup" aria-label="Come vuoi ricevere l'ordine?">
+        <div class="segmented only-out" role="radiogroup" aria-label="Come vuoi ricevere l'ordine?">
           <button type="button" role="radio" class="segmented__opt" data-mode="asporto" aria-checked="true">
             <i data-icon="bag"></i>
             Asporto
@@ -55,10 +55,11 @@
             Domicilio
           </button>
         </div>
-        <p class="hero__note" id="delivery-note" hidden></p>
+        <p class="hero__note only-out" id="delivery-note" hidden></p>
+        <p class="table-badge only-table"><i data-icon="list"></i> Menù al tavolo · nessun ordine viene inviato</p>
       </div>
 
-      <nav class="quick" aria-label="Azioni rapide">
+      <nav class="quick only-out" aria-label="Azioni rapide">
         <a class="quick__item" id="q-call" href="#">
           <span class="quick__ico quick__ico--red"><i data-icon="phone"></i></span>
           Chiama
@@ -192,7 +193,7 @@
 
   <!-- ===== Barra in basso: contatti oppure "Vedi ordine" ===== -->
   <div class="dock" id="dock">
-    <div class="dock__contacts" id="dock-contacts">
+    <div class="dock__contacts only-out" id="dock-contacts">
       <a class="btn btn--light" id="d-call" href="#">
         <i data-icon="phone"></i>
         Chiama
@@ -208,6 +209,26 @@
 
   <div class="site-toast" id="site-toast" role="status" hidden></div>
   <div class="sr-only" aria-live="polite" id="live"></div>
+
+  <!-- ===== Modalità tavolo: ordinazione da mostrare al cameriere ===== -->
+  <dialog class="waiter" id="waiter" aria-labelledby="wt-title">
+    <div class="waiter__inner">
+      <header class="waiter__head">
+        <img src="img/logo.png" alt="" width="640" height="510">
+        <div>
+          <p class="waiter__kicker">Da mostrare al cameriere</p>
+          <h2 id="wt-title">La mia ordinazione</h2>
+        </div>
+        <button type="button" class="waiter__close" id="wt-close" aria-label="Chiudi">×</button>
+      </header>
+      <ol class="waiter__list" id="wt-list"></ol>
+      <div class="waiter__total"><span>Totale</span><b id="wt-total"></b></div>
+      <footer class="waiter__foot">
+        <button type="button" class="btn btn--light" id="wt-edit"><i data-icon="pencil"></i> Modifica</button>
+        <button type="button" class="btn btn--ghost" id="wt-clear">Nuova ordinazione</button>
+      </footer>
+    </div>
+  </dialog>
 
   <!-- ===== Scheda prodotto ===== -->
   <dialog class="sheet" id="product-sheet" aria-labelledby="ps-name">
@@ -274,6 +295,7 @@
         </section>
         <button type="button" class="linkbtn" id="cart-more" value="cancel">+ Aggiungi altro dal menù</button>
 
+        <div class="only-out">
         <h3 class="cs__sub">Come lo vuoi?</h3>
         <div class="segmented segmented--light" role="radiogroup" aria-label="Modalità">
           <button type="button" role="radio" class="segmented__opt" data-mode="asporto" aria-checked="true">Asporto</button>
@@ -303,6 +325,7 @@
           <span class="field__label">Note per la pizzeria <small>(facoltativo)</small></span>
           <textarea id="c-note" rows="2" maxlength="200" placeholder="Es. pago con banconota da 50 €"></textarea>
         </label>
+        </div>
 
         <dl class="summary">
           <div><dt>Subtotale</dt><dd id="s-sub"></dd></div>
@@ -312,21 +335,26 @@
         <p class="form-error" id="c-error" role="alert" hidden></p>
       </div>
       <div class="sheet__footer sheet__footer--stack">
-        <div class="confirm-box" role="note">
+        <div class="confirm-box only-out" role="note">
           <span class="confirm-box__ico" aria-hidden="true"><i data-icon="hourglass"></i></span>
           <p><b>Ordine e orario da confermare:</b> la pizzeria ti risponde su WhatsApp.</p>
         </div>
-        <button type="button" class="btn btn--wa btn--grow" id="send-wa">
+        <button type="button" class="btn btn--primary btn--grow btn--show only-table" id="show-waiter">
+          <i data-icon="eye"></i>
+          Mostra al cameriere
+        </button>
+        <p class="fineprint fineprint--center only-table">Scegli con calma: quando passa il cameriere, mostragli lo schermo.</p>
+        <button type="button" class="btn btn--wa btn--grow only-out" id="send-wa">
           <i data-icon="whatsapp"></i>
           Invia richiesta su WhatsApp
         </button>
-        <p class="fineprint fineprint--center">Preferisci telefonare? <a id="cs-call" href="#">Chiama</a></p>
+        <p class="fineprint fineprint--center only-out">Preferisci telefonare? <a id="cs-call" href="#">Chiama</a></p>
       </div>
     </form>
   </dialog>
 
-  <script src="js/icons.js?v=20261107v"></script>
-  <script src="js/art.js?v=20261107v"></script>
-  <script src="js/app.js?v=20261107v"></script>
+  <script src="js/icons.js?v=20261107x"></script>
+  <script src="js/art.js?v=20261107x"></script>
+  <script src="js/app.js?v=20261107x"></script>
 </body>
 </html>

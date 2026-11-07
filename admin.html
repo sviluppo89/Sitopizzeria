@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/admin.css?v=20261107v">
+  <link rel="stylesheet" href="css/admin.css?v=20261107x">
 </head>
 <body>
 
@@ -176,10 +176,21 @@
           <div class="panel__head"><h2>QR code del menù</h2></div>
           <p class="muted">Stampalo e mettilo sul bancone, sui volantini o sui cartoni delle pizze.</p>
           <label class="field"><span class="field__label">Indirizzo del sito</span><input type="url" id="site-url" placeholder="https://…"></label>
-          <div class="qr" id="qr"></div>
-          <div class="btnrow">
-            <button class="btn btn--light" type="button" id="qr-download">Scarica QR</button>
+          <div class="qr-pair">
+            <div class="qr-card">
+              <b>Asporto e consegna</b>
+              <small>Volantini, cartoni, bancone</small>
+              <div class="qr" id="qr"></div>
+              <button class="btn btn--light btn--sm" type="button" id="qr-download">Scarica</button>
+            </div>
+            <div class="qr-card">
+              <b>Per i tavoli</b>
+              <small>Solo menù: l'ordinazione si mostra al cameriere</small>
+              <div class="qr" id="qr-table"></div>
+              <button class="btn btn--light btn--sm" type="button" id="qr-table-download">Scarica</button>
+            </div>
           </div>
+          <a class="btn btn--ghost btn--block" href="index.html?tavolo" target="_blank" rel="noopener">Prova il menù al tavolo</a>
         </div>
 
         <div class="panel">
@@ -274,8 +285,8 @@
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
-  <script src="js/icons.js?v=20261107v" defer></script>
-  <script src="js/art.js?v=20261107v" defer></script>
-  <script src="js/admin.js?v=20261107v" defer></script>
+  <script src="js/icons.js?v=20261107x" defer></script>
+  <script src="js/art.js?v=20261107x" defer></script>
+  <script src="js/admin.js?v=20261107x" defer></script>
 </body>
 </html>

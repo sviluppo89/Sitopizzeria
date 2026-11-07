@@ -18,6 +18,10 @@
 
   /* ---------- Caricamento dati (data/menu.json, gestito dalla pagina admin) ---------- */
   const PREVIEW = new URLSearchParams(location.search).has("anteprima");
+  // Modalità tavolo (QR sui tavolini): solo consultazione, ordinazione da mostrare al cameriere
+  const TABLE = new URLSearchParams(location.search).has("tavolo");
+  if (TABLE) document.body.classList.add("is-table");
+  const CART_KEY = TABLE ? "pallone-cart-tavolo" : "pallone-cart";
   const loadData = () => {
     if (PREVIEW) {
       const d = store.get("pallone-admin-draft", null);
@@ -39,7 +43,7 @@
   const today0 = new Date(); today0.setHours(0, 0, 0, 0);
   const day = (d) => new Date(d + "T00:00:00"); // data locale, non UTC
   const inRange = (o) => (!o.dal || day(o.dal) <= today0) && (!o.al || day(o.al) >= today0);
-  const ORDERS_ON = !C.ordini || C.ordini.attivi !== false;
+  const ORDERS_ON = TABLE || !C.ordini || C.ordini.attivi !== false; // al tavolo si ordina sempre a voce
   const MENU = [];
   const todayOk = (o) => !o.giorni || !o.giorni.length || o.giorni.includes(new Date().getDay());
   const promos = (DATA.promo || []).filter((o) => o.attiva !== false && inRange(o) && (!C.offerteSoloOggi || todayOk(o)));
@@ -172,12 +176,12 @@
   /* ---------- Stato ---------- */
   const state = {
     // righe del carrello: { id, qty, note, v: indice variante, o: [indici opzioni] }
-    cart: store.get("pallone-cart", []).filter((l) => PRODUCTS.has(l.id) && (!PRODUCTS.get(l.id).varianti || PRODUCTS.get(l.id).varianti[l.v])),
-    mode: store.get("pallone-mode", "asporto"),
+    cart: store.get(CART_KEY, []).filter((l) => PRODUCTS.has(l.id) && (!PRODUCTS.get(l.id).varianti || PRODUCTS.get(l.id).varianti[l.v])),
+    mode: TABLE ? "asporto" : store.get("pallone-mode", "asporto"),
     filters: new Set(),
     query: ""
   };
-  const save = () => { store.set("pallone-cart", state.cart); store.set("pallone-mode", state.mode); };
+  const save = () => { store.set(CART_KEY, state.cart); if (!TABLE) store.set("pallone-mode", state.mode); };
   const qtyOf = (id) => state.cart.filter((l) => l.id === id).reduce((a, l) => a + l.qty, 0);
   const subtotal = () => state.cart.reduce((a, l) => a + unitPrice(l) * l.qty, 0);
   const deliveryFee = () => (state.mode === "domicilio" && C.consegna && typeof C.consegna.costo === "number" ? C.consegna.costo : 0);
@@ -765,7 +769,7 @@
         addToCart(p.id);
         if (!store.get("pallone-notehint", false)) {
           store.set("pallone-notehint", true);
-          siteToast("Aggiunto! Puoi scrivere una nota da «Vedi ordine».");
+          siteToast(TABLE ? "Aggiunto alla tua ordinazione." : "Aggiunto! Puoi scrivere una nota da «Vedi ordine».");
         }
       }
       return;
@@ -889,6 +893,52 @@
   $("#cs-sent-ok").addEventListener("click", () => closeSheet(cs));
   $("#cs-sent-clear").addEventListener("click", () => {
     state.cart = []; editingNote = -1; save(); renderCart(); closeSheet(cs);
+  });
+
+  /* ---------- Modalità tavolo ---------- */
+  if (TABLE) {
+    $(".hero__eyebrow").textContent = "Benvenuto al tavolo";
+    $(".hero__title").innerHTML = "Scegli con calma,<br>mostra al cameriere.";
+    $(".hero__sub").textContent = "Componi la tua ordinazione dal menù e mostrala a chi passa al tavolo.";
+    $(".cartbar__label").textContent = "La mia ordinazione";
+    $("#cs-title").textContent = "La mia ordinazione";
+    $("#cart-more").textContent = "+ Aggiungi altro dal menù";
+    document.title = `${C.nome || "Pizzeria"} · Menù al tavolo`;
+  }
+  let wakeLock = null;
+  function renderWaiter() {
+    $("#wt-list").innerHTML = state.cart.map((l) => {
+      const p = PRODUCTS.get(l.id);
+      const v = p.varianti ? (p.varianti[l.v] || p.varianti[0]).nome : "";
+      const extras = (l.o || []).map((i) => p.opzioni[i]).filter(Boolean).map((o) => o.nome);
+      return `<li class="wt-item">
+        <span class="wt-qty">${l.qty}×</span>
+        <div class="wt-body">
+          <b class="wt-name">${esc(p.nome)}${v ? ` <span class="wt-var">${esc(v)}</span>` : ""}</b>
+          ${extras.length ? `<span class="wt-sub wt-plus">+ ${extras.map(esc).join(", ")}</span>` : ""}
+          ${(l.c || []).map((x) => `<span class="wt-sub">${esc(x)}</span>`).join("")}
+          ${l.note ? `<span class="wt-sub wt-note">“${esc(l.note)}”</span>` : ""}
+        </div>
+        <span class="wt-price">${fmt(unitPrice(l) * l.qty)}</span>
+      </li>`;
+    }).join("");
+    $("#wt-total").textContent = fmt(subtotal());
+  }
+  $("#show-waiter").addEventListener("click", async () => {
+    if (!state.cart.length) return;
+    renderWaiter();
+    $("#waiter").showModal();
+    $("#wt-clear").dataset.armed = ""; $("#wt-clear").textContent = "Nuova ordinazione";
+    try { wakeLock = navigator.wakeLock ? await navigator.wakeLock.request("screen") : null; } catch { wakeLock = null; } // schermo acceso
+  });
+  $("#waiter").addEventListener("close", () => { try { wakeLock && wakeLock.release(); } catch { /* niente */ } wakeLock = null; });
+  $("#wt-close").addEventListener("click", () => $("#waiter").close());
+  $("#wt-edit").addEventListener("click", () => $("#waiter").close());
+  $("#wt-clear").addEventListener("click", (e) => {
+    const b = e.currentTarget;
+    if (!b.dataset.armed) { b.dataset.armed = "1"; b.textContent = "Tocca ancora per svuotare"; return; }
+    state.cart = []; save(); renderCart(); $("#waiter").close(); closeSheet($("#cart-sheet"));
+    siteToast("Ordinazione svuotata.");
   });
 
   /* ---------- Avvio ---------- */

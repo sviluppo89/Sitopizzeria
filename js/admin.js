@@ -1210,11 +1210,20 @@
   function renderQR() {
     const input = $("#site-url");
     if (!input.value) input.value = siteUrl();
-    const box = $("#qr"); box.innerHTML = "";
-    if (!window.QRCode) { box.textContent = "QR non disponibile senza connessione."; return; }
-    new window.QRCode(box, { text: input.value, width: 400, height: 400, colorDark: "#0b4d2c", colorLight: "#ffffff", correctLevel: window.QRCode.CorrectLevel.M });
+    const make = (box, text) => {
+      box.innerHTML = "";
+      if (!window.QRCode) { box.textContent = "QR non disponibile senza connessione."; return; }
+      new window.QRCode(box, { text, width: 400, height: 400, colorDark: "#0b4d2c", colorLight: "#ffffff", correctLevel: window.QRCode.CorrectLevel.M });
+    };
+    const base = input.value.trim();
+    make($("#qr"), base);
+    make($("#qr-table"), base.replace(/[?#].*$/, "") + "?tavolo");
   }
   $("#site-url").addEventListener("change", (e) => { store.set(K.site, e.target.value.trim()); renderQR(); });
+  $("#qr-table-download").addEventListener("click", () => {
+    const cv = $("#qr-table canvas"); if (!cv) return;
+    const a = document.createElement("a"); a.href = cv.toDataURL("image/png"); a.download = "qr-tavoli-pizzeria-pallone.png"; a.click();
+  });
   $("#qr-download").addEventListener("click", () => {
     const cv = $("#qr canvas"); if (!cv) return;
     const a = document.createElement("a"); a.href = cv.toDataURL("image/png"); a.download = "qr-menu-pizzeria-pallone.png"; a.click();
