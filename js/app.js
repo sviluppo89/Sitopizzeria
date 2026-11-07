@@ -430,12 +430,14 @@
   }));
 
   /* ---------- Carrello ---------- */
+  let editingNote = -1; // riga del carrello di cui si sta scrivendo la nota
   function addToCart(id, qty = 1, note = "", v = 0, o = []) {
     note = note.trim();
     const key = (l) => [l.id, l.note, l.v || 0, (l.o || []).join(",")].join("|");
     const nl = { id, qty, note, v, o };
     const line = state.cart.find((l) => key(l) === key(nl));
     line ? (line.qty += qty) : state.cart.push(nl);
+    editingNote = -1;
     save(); renderCart(true); vibrate();
     live(`${qty} × ${lineLabel(nl)} aggiunto all'ordine`);
   }
@@ -471,14 +473,43 @@
           </div>
         </div>
         <span class="cart__price">${fmt(unitPrice(l) * l.qty)}</span>
-        ${l.note ? `<span class="cart__note">“${esc(l.note)}”</span>` : ""}
+        ${editingNote === i ? `
+          <div class="cart__noteedit">
+            <input type="text" maxlength="160" value="${esc(l.note)}" placeholder="Es. ben cotta, senza origano" data-note-input="${i}" aria-label="Nota per ${esc(p.nome)}" enterkeyhint="done">
+            <button type="button" class="btn btn--primary btn--xs" data-note-save="${i}">Salva</button>
+          </div>` : `
+          ${l.note ? `<span class="cart__note">📝 ${esc(l.note)}</span>` : ""}
+          <button type="button" class="cart__notebtn" data-note-edit="${i}">✏️ ${l.note ? "Modifica nota" : "Aggiungi nota"}</button>`}
       </li>`;
     }).join("");
     renderTotals();
     renderAddButtons();
   }
+  function saveNote(i) {
+    const input = $(`[data-note-input="${i}"]`); const line = state.cart[i];
+    if (!input || !line) return;
+    line.note = input.value.trim();
+    // se ora è uguale a un'altra riga (stessa pizza, stessa nota) le unisco
+    const key = (l) => [l.id, l.note, l.v || 0, (l.o || []).join(",")].join("|");
+    const twin = state.cart.findIndex((l, j) => j !== i && key(l) === key(line));
+    if (twin >= 0) { state.cart[twin].qty += line.qty; state.cart.splice(i, 1); }
+    editingNote = -1; save(); renderCart();
+    live(line.note ? "Nota salvata" : "Nota tolta");
+  }
+  $("#cart-list").addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && e.target.dataset.noteInput != null) { e.preventDefault(); saveNote(+e.target.dataset.noteInput); }
+  });
   $("#cart-list").addEventListener("click", (e) => {
+    const ed = e.target.closest("[data-note-edit]");
+    if (ed) {
+      editingNote = +ed.dataset.noteEdit; renderCart();
+      const inp = $(`[data-note-input="${editingNote}"]`); if (inp) { inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); }
+      return;
+    }
+    const sv = e.target.closest("[data-note-save]");
+    if (sv) { saveNote(+sv.dataset.noteSave); return; }
     const b = e.target.closest("[data-line]"); if (!b) return;
+    editingNote = -1;
     const i = +b.dataset.line, line = state.cart[i];
     line.qty += +b.dataset.delta;
     if (line.qty <= 0) state.cart.splice(i, 1);
@@ -558,7 +589,11 @@
         <span class="choice__name">${esc(o.nome)}</span><span class="choice__price">+ ${fmt(o.prezzo)}</span></label>`).join("");
     $("#ps-note").value = "";
     $("#ps-note").placeholder = current.segnaposto || "Es. ben cotta, senza origano…";
-    $("#ps-note-label").firstChild.textContent = current.segnaposto ? "La tua scelta " : "Richieste particolari ";
+    $("#ps-note-label").firstChild.textContent = current.segnaposto ? "La tua scelta " : "Vuoi cambiare qualcosa? ";
+    const quick = !current.segnaposto && current.tipo === "pizza" ? ["Ben cotta", "Poco cotta", "Tagliata a spicchi"] : [];
+    $("#ps-note-chips").innerHTML = quick.map((q) => `<button type="button" class="note-chip" data-quick="${esc(q)}" aria-pressed="false">${esc(q)}</button>`).join("");
+    $("#ps-note-chips").hidden = !quick.length;
+    $("#ps-note-hint").hidden = !!current.segnaposto;
     $("#ps-note-label small").hidden = !!current.segnaposto;
     $("#ps-note-wrap").hidden = !canOrder(current);
     $(".stepper", ps).hidden = !canOrder(current);
@@ -587,18 +622,31 @@
     const add = e.target.closest("[data-add]");
     if (add) {
       const p = PRODUCTS.get(add.dataset.add);
-      needsSheet(p) ? openProduct(p.id) : addToCart(p.id);
+      if (needsSheet(p)) openProduct(p.id);
+      else {
+        addToCart(p.id);
+        if (!store.get("pallone-notehint", false)) {
+          store.set("pallone-notehint", true);
+          siteToast("Aggiunta! Per una nota (es. ben cotta) tocca la pizza, oppure scrivila nel carrello.");
+        }
+      }
       return;
     }
     const open = e.target.closest("[data-open]");
     if (open) openProduct(open.dataset.open);
   });
 
+  let toastT;
+  function siteToast(msg) {
+    const t = $("#site-toast"); t.textContent = msg; t.hidden = false;
+    clearTimeout(toastT); toastT = setTimeout(() => (t.hidden = true), 5000);
+  }
+
   /* Carrello */
   const cs = $("#cart-sheet");
   function fillTimes() {
     const sel = $("#c-time");
-    const opts = ['<option value="">Prima possibile</option>'];
+    const opts = ['<option value="">Prima possibile (ti diciamo noi l\'orario)</option>'];
     const d = new Date(); d.setSeconds(0, 0);
     d.setMinutes(Math.ceil((d.getMinutes() + 30) / 15) * 15);
     for (let i = 0; i < 16; i++) {
@@ -613,11 +661,26 @@
     $("#c-name").value = $("#c-name").value || store.get("pallone-name", "");
     $("#c-addr").value = $("#c-addr").value || store.get("pallone-addr", "");
     $("#c-error").hidden = true;
+    $("#cs-sent").hidden = true;
     openSheet(cs);
   });
   $("#cart-more").addEventListener("click", () => { closeSheet(cs); setTimeout(() => $("#menu").scrollIntoView(), 250); });
 
   $("#ps-note").addEventListener("input", (e) => e.target.removeAttribute("aria-invalid"));
+  // scelte rapide: aggiungono o tolgono il testo dalla nota
+  $("#ps-note-chips").addEventListener("click", (e) => {
+    const c = e.target.closest("[data-quick]"); if (!c) return;
+    const ta = $("#ps-note"), q = c.dataset.quick;
+    let parts = ta.value.split(",").map((x) => x.trim()).filter(Boolean);
+    const on = parts.some((x) => x.toLowerCase() === q.toLowerCase());
+    if (on) parts = parts.filter((x) => x.toLowerCase() !== q.toLowerCase());
+    else {
+      if (q.startsWith("Ben") || q.startsWith("Poco")) parts = parts.filter((x) => !/^(ben|poco) cotta$/i.test(x)); // solo una cottura
+      parts.push(q);
+    }
+    ta.value = parts.join(", ");
+    $$("[data-quick]", $("#ps-note-chips")).forEach((b) => b.setAttribute("aria-pressed", parts.some((x) => x.toLowerCase() === b.dataset.quick.toLowerCase())));
+  });
   ["#c-name", "#c-addr"].forEach((s) => $(s).addEventListener("input", (e) => { e.target.removeAttribute("aria-invalid"); $("#c-error").hidden = true; }));
   $("#send-wa").addEventListener("click", () => {
     const name = $("#c-name"), addr = $("#c-addr"), err = $("#c-error");
@@ -638,7 +701,7 @@
     });
     const fee = deliveryFee();
     const text = [
-      `Ciao ${C.nome}! Vorrei ordinare:`,
+      `Ciao ${C.nome}! Vorrei fare questo ordine:`,
       "",
       ...lines,
       "",
@@ -647,11 +710,20 @@
       "",
       `👤 Nome: ${name.value.trim()}`,
       state.mode === "domicilio" ? `🛵 Consegna a domicilio: ${addr.value.trim()}` : "🥡 Ritiro in pizzeria (asporto)",
-      `🕒 Orario: ${$("#c-time").value || "prima possibile"}`,
-      $("#c-note").value.trim() ? `📝 Note: ${$("#c-note").value.trim()}` : null
+      `🕒 Orario richiesto: ${$("#c-time").value || "prima possibile"} (da confermare)`,
+      $("#c-note").value.trim() ? `📝 Note: ${$("#c-note").value.trim()}` : null,
+      "",
+      "Attendo la vostra conferma dell'ordine e dell'orario. Grazie!"
     ].filter((x) => x !== null).join("\n");
 
     window.open(waBase + "?text=" + encodeURIComponent(text), "_blank", "noopener");
+    // dopo l'invio: ricorda che bisogna aspettare la conferma
+    $("#cs-sent").hidden = false;
+    $(".sheet__body", cs).scrollTop = 0;
+  });
+  $("#cs-sent-ok").addEventListener("click", () => closeSheet(cs));
+  $("#cs-sent-clear").addEventListener("click", () => {
+    state.cart = []; editingNote = -1; save(); renderCart(); closeSheet(cs);
   });
 
   /* ---------- Avvio ---------- */
