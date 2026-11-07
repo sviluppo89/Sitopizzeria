@@ -186,7 +186,9 @@
      "ingredienti": "Pomodoro San Marzano, Fior di latte, Olio evo, Basilico",
      "prezzo": 5,
      "varianti": [],
-     "tag": [],
+     "tag": [
+      "vegetariana"
+     ],
      "allergeni": [],
      "foto": "",
      "attivo": true,
@@ -201,7 +203,9 @@
      "ingredienti": "Olio evo, Origano",
      "prezzo": 3,
      "varianti": [],
-     "tag": [],
+     "tag": [
+      "vegetariana"
+     ],
      "allergeni": [],
      "foto": "",
      "attivo": true,
@@ -216,7 +220,9 @@
      "ingredienti": "Pomodoro San Marzano, Aglio, Origano, Olio Evo, Basilico",
      "prezzo": 5,
      "varianti": [],
-     "tag": [],
+     "tag": [
+      "vegetariana"
+     ],
      "allergeni": [],
      "foto": "",
      "attivo": true,
@@ -246,7 +252,9 @@
      "ingredienti": "Pomodoro San Marzano, Pecorino Romano, Olio evo, Basilico",
      "prezzo": 6,
      "varianti": [],
-     "tag": [],
+     "tag": [
+      "vegetariana"
+     ],
      "allergeni": [],
      "foto": "",
      "attivo": true,
@@ -278,7 +286,9 @@
      "ingredienti": "Pomodoro San Marzano, Fior di latte, Melanzane a funghetto, Grana Padano, Olio evo, Basilico",
      "prezzo": 6.5,
      "varianti": [],
-     "tag": [],
+     "tag": [
+      "vegetariana"
+     ],
      "allergeni": [],
      "foto": "",
      "attivo": true,
@@ -308,7 +318,9 @@
      "ingredienti": "Pomodoro San Marzano, Mozzarella di Bufala DOP, Olio Evo, Basilico",
      "prezzo": 7,
      "varianti": [],
-     "tag": [],
+     "tag": [
+      "vegetariana"
+     ],
      "allergeni": [],
      "foto": "",
      "attivo": true,
@@ -323,7 +335,9 @@
      "ingredienti": "Fior di latte, Melanzane, Zucchine, Peperoni, Olio evo, Basilico",
      "prezzo": 7,
      "varianti": [],
-     "tag": [],
+     "tag": [
+      "vegetariana"
+     ],
      "allergeni": [],
      "foto": "",
      "attivo": true,
@@ -338,7 +352,9 @@
      "ingredienti": "Fior di latte, Gorgonzola DOP, Provola di Agerola, Parmigiano Reggiano, Olio evo, Basilico",
      "prezzo": 7,
      "varianti": [],
-     "tag": [],
+     "tag": [
+      "vegetariana"
+     ],
      "allergeni": [],
      "foto": "",
      "attivo": true,
@@ -396,7 +412,9 @@
      "ingredienti": "Pomodoro San Marzano, Fior di latte, Parmigiana di melanzane, Parmigiano Reggiano, Olio evo, Basilico",
      "prezzo": 7,
      "varianti": [],
-     "tag": [],
+     "tag": [
+      "vegetariana"
+     ],
      "allergeni": [],
      "foto": "",
      "attivo": true,
@@ -456,7 +474,9 @@
      "ingredienti": "Datterini rossi, Mozzarella di bufala DOP, Olio evo, Basilico",
      "prezzo": 8,
      "varianti": [],
-     "tag": [],
+     "tag": [
+      "vegetariana"
+     ],
      "allergeni": [],
      "foto": "",
      "attivo": true,
@@ -597,7 +617,9 @@
      "ingredienti": "Provola, Pomodori gialli e rossi, Pepe",
      "prezzo": 9,
      "varianti": [],
-     "tag": [],
+     "tag": [
+      "vegetariana"
+     ],
      "allergeni": [],
      "foto": "",
      "attivo": true,
@@ -916,7 +938,9 @@
      "ingredienti": "Mozzarella di bufala, Pesto, Parmigiana di melanzane, Parmigiano",
      "prezzo": 9,
      "varianti": [],
-     "tag": [],
+     "tag": [
+      "vegetariana"
+     ],
      "allergeni": [],
      "foto": "",
      "attivo": true,
@@ -1056,7 +1080,9 @@
      "ingredienti": "10 pezzi",
      "prezzo": 2,
      "varianti": [],
-     "tag": [],
+     "tag": [
+      "vegetariana"
+     ],
      "allergeni": [],
      "foto": "",
      "attivo": true,
@@ -1182,7 +1208,9 @@
        "prezzo": 5
       }
      ],
-     "tag": [],
+     "tag": [
+      "vegetariana"
+     ],
      "allergeni": [],
      "foto": "",
      "attivo": true,
@@ -1206,7 +1234,9 @@
        "prezzo": 5
       }
      ],
-     "tag": [],
+     "tag": [
+      "vegetariana"
+     ],
      "allergeni": [],
      "foto": "",
      "attivo": true,
@@ -1230,7 +1260,9 @@
        "prezzo": 6
       }
      ],
-     "tag": [],
+     "tag": [
+      "vegetariana"
+     ],
      "allergeni": [],
      "foto": "",
      "attivo": true,
@@ -1245,7 +1277,9 @@
      "ingredienti": "Pomodoro San Marzano, Mozzarella, Parmigiano",
      "prezzo": 2,
      "varianti": [],
-     "tag": [],
+     "tag": [
+      "vegetariana"
+     ],
      "allergeni": [],
      "foto": "",
      "attivo": true,
@@ -1300,7 +1334,9 @@
      "ingredienti": "Focaccia, Nutella, Zucchero a velo",
      "prezzo": 6,
      "varianti": [],
-     "tag": [],
+     "tag": [
+      "vegetariana"
+     ],
      "allergeni": [],
      "foto": "",
      "attivo": true,
@@ -1315,7 +1351,9 @@
      "ingredienti": "Straccetti di pizza, Nutella, Zucchero a velo",
      "prezzo": 6,
      "varianti": [],
-     "tag": [],
+     "tag": [
+      "vegetariana"
+     ],
      "allergeni": [],
      "foto": "",
      "attivo": true,

@@ -294,8 +294,8 @@
     ? offers.sort((a, b) => validToday(b) - validToday(a))
     : [...PRODUCTS.values()].filter((p) => p.tag.includes("consigliata") || p.tag.includes("novita"));
   if (offers.length) $("#featured-title").textContent = "Le offerte";
-  if (!featuredList.length) $("#featured-wrap").remove();
-  $("#featured").innerHTML = featuredList.map((p) => `
+  if (!featuredList.length) $("#featured-wrap").remove(); // nessuna offerta oggi: niente carosello
+  else $("#featured").innerHTML = featuredList.map((p) => `
     <div class="fcard${canOrder(p) ? "" : " is-off"}" data-id="${p.id}">
       <button type="button" class="item__open" data-open="${p.id}" aria-label="${esc(p.nome)}, ${priceLabel(p)}. Dettagli"></button>
       <div class="fcard__art">${art(p)}</div>
