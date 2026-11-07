@@ -917,59 +917,123 @@
 
   /* ---------- Offerta ---------- */
   // ---- Scelte delle offerte (es. 1 pizza + 1 frittura + 1 bibita) ----
-  function stepHTML(s) {
-    const sel = new Set(s.prodotti || []);
-    return `<div class="step">
-      <div class="step__head">
-        <input type="text" data-s="titolo" value="${esc(s.titolo || "")}" placeholder="Nome della scelta (es. La bibita)" aria-label="Nome della scelta">
-        <button type="button" class="iconbtn" data-step-del aria-label="Togli questa scelta">×</button>
-      </div>
-      <div class="picker">${S.draft.categorie.map((c) => {
-        const n = c.prodotti.filter((p) => sel.has(p.id)).length;
-        return `<details data-cat="${esc(c.id)}">
-          <summary>${esc(c.nome)}<span class="cnt">${n ? `${n} scelti` : ""}</span></summary>
-          <label class="pick pick--all"><input type="checkbox" data-allc ${n && n === c.prodotti.length ? "checked" : ""}><span>Tutti i prodotti di questa categoria</span></label>
-          ${c.prodotti.map((p) => `<label class="pick"><input type="checkbox" data-sp="${esc(p.id)}" ${sel.has(p.id) ? "checked" : ""}><span>${esc(p.nome)}</span></label>`).join("")}
-        </details>`;
-      }).join("")}</div>
-      <p class="step__sum"></p>
-    </div>`;
+  const allProds = () => S.draft.categorie.flatMap((c) => c.prodotti.map((p) => ({ p, c })));
+  const prodById = (id) => allProds().find((x) => x.p.id === id);
+  function renderSteps(root, steps) {
+    $("#steps", root).innerHTML = steps.length ? steps.map((s, k) => {
+      const items = s.prodotti.map(prodById).filter(Boolean);
+      const shown = items.slice(0, items.length > 4 ? 3 : 4);
+      return `<div class="stepc${items.length ? "" : " is-empty"}" data-k="${k}">
+        <div class="stepc__head">
+          <span class="stepc__n">${k + 1}</span>
+          <input type="text" class="stepc__title" data-k-title value="${esc(s.titolo)}" placeholder="Nome della scelta (es. La bibita)" aria-label="Nome della scelta ${k + 1}">
+          <div class="stepc__tools">
+            ${k > 0 ? `<button type="button" class="iconbtn iconbtn--sm" data-k-up aria-label="Sposta su">↑</button>` : ""}
+            <button type="button" class="iconbtn iconbtn--sm" data-k-del aria-label="Elimina scelta ${k + 1}">${ic("trash")}</button>
+          </div>
+        </div>
+        <button type="button" class="stepc__pick" data-k-pick>
+          ${items.length ? `<span class="stepc__thumbs">${shown.map(({ p, c }) => `<span class="mini" title="${esc(p.nome)}">${art({ ...p, tipo: c.tipo })}</span>`).join("")}${items.length > shown.length ? `<span class="mini mini--more">+${items.length - shown.length}</span>` : ""}</span>
+            <span class="stepc__txt"><b>${items.length} ${items.length === 1 ? "prodotto" : "prodotti"}</b><small>${esc(items.slice(0, 3).map((x) => x.p.nome).join(", "))}${items.length > 3 ? "…" : ""}</small></span>`
+          : `<span class="stepc__txt"><b>Scegli i prodotti</b><small>Nessun prodotto ancora</small></span>`}
+          <span class="stepc__go">${ic("chev")}</span>
+        </button>
+      </div>`;
+    }).join("") : `<p class="stepc-empty">Nessuna scelta: il cliente aggiunge l'offerta così com'è.</p>`;
   }
-  function stepSummary(st) {
-    const names = S.draft.categorie.flatMap((c) => c.prodotti).filter((p) => $(`[data-sp="${CSS.escape(p.id)}"]`, st)?.checked).map((p) => p.nome);
-    $(".step__sum", st).textContent = names.length ? `Il cliente sceglie tra: ${names.join(", ")}` : "Nessun prodotto spuntato";
-    $$("details[data-cat]", st).forEach((d) => {
-      const k = $$("[data-sp]:checked", d).length, all = $$("[data-sp]", d).length;
-      $(".cnt", d).textContent = k ? `${k} scelti` : "";
-      $("[data-allc]", d).checked = k > 0 && k === all;
+  function bindSteps(root, steps) {
+    renderSteps(root, steps);
+    root.addEventListener("input", (e) => {
+      if (e.target.matches("[data-k-title]")) steps[+e.target.closest(".stepc").dataset.k].titolo = e.target.value;
     });
-  }
-  function bindSteps(root) {
-    $$(".step", root).forEach(stepSummary);
     root.addEventListener("click", (e) => {
       const add = e.target.closest("[data-step-add]");
       if (add) {
-        $("#steps", root).insertAdjacentHTML("beforeend", stepHTML({ titolo: add.dataset.stepAdd, prodotti: [] }));
-        const st = $$(".step", root).pop(); stepSummary(st);
-        const guess = { "La pizza": "pizze", "La frittura": "fritture", "La bibita": "bibite" }[add.dataset.stepAdd];
-        const d = guess && $(`details[data-cat="${guess}"]`, st); if (d) d.open = true;
-        st.scrollIntoView({ behavior: "smooth", block: "start" });
-        if (!add.dataset.stepAdd) $("[data-s=titolo]", st).focus();
+        steps.push({ titolo: add.dataset.stepAdd, prodotti: [] });
+        renderSteps(root, steps);
+        const k = steps.length - 1;
+        if (add.dataset.stepAdd) openPicker(steps, k, add.dataset.guess, () => renderSteps(root, steps));
+        else $(`.stepc[data-k="${k}"] [data-k-title]`, root).focus();
+        return;
       }
-      const del = e.target.closest("[data-step-del]");
-      if (del) del.closest(".step").remove();
-    });
-    root.addEventListener("change", (e) => {
-      const st = e.target.closest(".step"); if (!st) return;
-      if (e.target.matches("[data-allc]")) $$("[data-sp]", e.target.closest("details")).forEach((x) => (x.checked = e.target.checked));
-      stepSummary(st);
+      const card = e.target.closest(".stepc"); if (!card) return;
+      const k = +card.dataset.k;
+      if (e.target.closest("[data-k-pick]")) openPicker(steps, k, null, () => renderSteps(root, steps));
+      if (e.target.closest("[data-k-del]")) { steps.splice(k, 1); renderSteps(root, steps); }
+      if (e.target.closest("[data-k-up]")) { [steps[k - 1], steps[k]] = [steps[k], steps[k - 1]]; renderSteps(root, steps); }
     });
   }
+
+  // Finestra per scegliere i prodotti di una voce
+  const pk = $("#picker");
+  let PK = null; // { steps, k, sel:Set, cat, q, done }
+  function openPicker(steps, k, guess, done) {
+    const first = steps[k].prodotti.map(prodById).find(Boolean);
+    PK = { steps, k, sel: new Set(steps[k].prodotti), cat: guess || (first ? first.c.id : "all"), q: "", done };
+    $("#pk-title").textContent = steps[k].titolo || `Scelta ${k + 1}`;
+    $("#pk-q").value = "";
+    renderPicker();
+    pk.showModal();
+    $("#pk-list").scrollTop = 0;
+    const on = $(".pkcat.is-on"); if (on) on.scrollIntoView({ block: "nearest", inline: "center" });
+  }
+  const visible = () => {
+    const q = PK.q.trim().toLowerCase();
+    return allProds().filter(({ p, c }) => (PK.cat === "all" || c.id === PK.cat) && (!q || p.nome.toLowerCase().includes(q)));
+  };
+  function renderPicker() {
+    const count = (cid) => S.draft.categorie.find((c) => c.id === cid).prodotti.filter((p) => PK.sel.has(p.id)).length;
+    $("#pk-cats").innerHTML = [`<button type="button" role="tab" class="pkcat${PK.cat === "all" ? " is-on" : ""}" data-pk-cat="all" aria-selected="${PK.cat === "all"}">Tutti</button>`]
+      .concat(S.draft.categorie.map((c) => { const n = count(c.id); return `<button type="button" role="tab" class="pkcat${PK.cat === c.id ? " is-on" : ""}" data-pk-cat="${esc(c.id)}" aria-selected="${PK.cat === c.id}">${esc(c.nome)}${n ? `<span class="pkcat__n">${n}</span>` : ""}</button>`; })).join("");
+    const list = visible();
+    let last = null;
+    $("#pk-list").innerHTML = list.length ? list.map(({ p, c }) => {
+      const head = PK.cat === "all" && c.id !== last ? `<h3 class="pk__group">${esc(c.nome)}</h3>` : "";
+      last = c.id;
+      const on = PK.sel.has(p.id);
+      return `${head}<label class="pkrow${on ? " is-on" : ""}${p.disponibile === false ? " is-off" : ""}">
+        <input type="checkbox" data-pk-id="${esc(p.id)}" ${on ? "checked" : ""}>
+        <span class="pkrow__art">${art({ ...p, tipo: c.tipo })}</span>
+        <span class="pkrow__txt"><b>${esc(p.nome)}</b><small>${p.disponibile === false ? "Esaurito · " : ""}${priceText(p)}</small></span>
+        <span class="pkrow__check" aria-hidden="true">${ic("checkMini")}</span>
+      </label>`;
+    }).join("") : `<p class="stepc-empty">Nessun prodotto trovato.</p>`;
+    const n = PK.sel.size;
+    $("#pk-count").textContent = n ? `${n} ${n === 1 ? "selezionato" : "selezionati"}` : "Nessuno selezionato";
+    const allOn = list.length && list.every(({ p }) => PK.sel.has(p.id));
+    $("#pk-all").textContent = allOn ? "Togli tutti" : (PK.cat === "all" && !PK.q ? "Seleziona tutti" : "Seleziona questi");
+    $("#pk-all").disabled = !list.length;
+  }
+  $("#pk-cats").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-pk-cat]"); if (!b) return;
+    PK.cat = b.dataset.pkCat; renderPicker(); $("#pk-list").scrollTop = 0;
+    b.scrollIntoView({ block: "nearest", inline: "center" });
+  });
+  $("#pk-q").addEventListener("input", (e) => { PK.q = e.target.value; renderPicker(); });
+  $("#pk-list").addEventListener("change", (e) => {
+    const id = e.target.dataset.pkId; if (!id) return;
+    e.target.checked ? PK.sel.add(id) : PK.sel.delete(id);
+    const top = $("#pk-list").scrollTop; renderPicker(); $("#pk-list").scrollTop = top;
+  });
+  $("#pk-all").addEventListener("click", () => {
+    const list = visible(); const allOn = list.every(({ p }) => PK.sel.has(p.id));
+    list.forEach(({ p }) => (allOn ? PK.sel.delete(p.id) : PK.sel.add(p.id)));
+    renderPicker();
+  });
+  pk.addEventListener("click", (e) => {
+    if (e.target.closest("[data-pk-cancel]")) pk.close();
+    if (e.target.closest("[data-pk-done]")) {
+      const order = allProds().map((x) => x.p.id);
+      PK.steps[PK.k].prodotti = order.filter((id) => PK.sel.has(id)); // nell'ordine del menù
+      pk.close(); PK.done();
+    }
+  });
 
   function editPromo(i) {
     const isNew = i < 0;
     const o = isNew ? { id: uid("promo"), titolo: "", testo: "", prezzo: null, giorni: [], dal: "", al: "", attiva: true, dettagli: "", richiesta: "", foto: "" } : clone(S.draft.promo[i]);
     const holder = { foto: o.foto || "" };
+    const steps = clone(o.scelte || []); // voci di scelta in modifica
     const html = `
       ${photoHTML(holder.foto, art({ nome: o.titolo, ingredienti: o.testo, dettagli: o.dettagli, prezzo: o.prezzo, tipo: "offerta" }))}
       ${panel("", `
@@ -987,13 +1051,16 @@
         <p class="field__hint">Fuori da questo periodo l'offerta sparisce dal sito da sola.</p>
       `)}
       ${panel("Cosa sceglie il cliente", `
-        <p class="muted" style="font-size:.88rem">Crea una voce per ogni scelta (es. "La pizza", "Patatina o alghe", "La bibita") e spunta i prodotti ammessi. Il cliente vedrà solo quelli e dovrà sceglierne uno per voce.</p>
-        <div id="steps">${(o.scelte || []).map((s) => stepHTML(s)).join("")}</div>
-        <div class="btnrow" style="margin-top:0">
-          <button type="button" class="btn btn--light btn--sm" data-step-add="La pizza">+ Pizza</button>
-          <button type="button" class="btn btn--light btn--sm" data-step-add="La frittura">+ Frittura</button>
-          <button type="button" class="btn btn--light btn--sm" data-step-add="La bibita">+ Bibita</button>
-          <button type="button" class="btn btn--ghost btn--sm" data-step-add="">+ Altra scelta</button>
+        <p class="muted" style="font-size:.88rem">Il cliente sceglie un prodotto per ogni voce, solo tra quelli che indichi tu.</p>
+        <div id="steps" class="stepc-list"></div>
+        <div class="quickadd">
+          <span class="quickadd__label">Aggiungi una scelta</span>
+          <div class="quickadd__row">
+            <button type="button" class="qchip" data-step-add="La pizza" data-guess="pizze">${ic("pizza")}Pizza</button>
+            <button type="button" class="qchip" data-step-add="La frittura" data-guess="fritture">${ic("fries")}Frittura</button>
+            <button type="button" class="qchip" data-step-add="La bibita" data-guess="bibite">${ic("cup")}Bibita</button>
+            <button type="button" class="qchip qchip--ghost" data-step-add="">${ic("plus")}Altro</button>
+          </div>
         </div>
       `)}
       ${panel("Altre informazioni", `
@@ -1011,8 +1078,7 @@
       if (!isPrice(prezzo)) { $("[name=prezzo]", root).setAttribute("aria-invalid", "true"); toast("Scrivi un prezzo valido.", true); return false; }
       const dal = $("[name=dal]", root).value, al = $("[name=al]", root).value;
       if (dal && al && al < dal) { toast("La data di fine è prima di quella di inizio.", true); return false; }
-      const scelte = $$(".step", root).map((st) => ({ titolo: $("[data-s=titolo]", st).value.trim(), prodotti: $$("[data-sp]:checked", st).map((x) => x.dataset.sp) }))
-        .filter((s) => s.titolo || s.prodotti.length);
+      const scelte = steps.map((s) => ({ titolo: s.titolo.trim(), prodotti: s.prodotti.slice() })).filter((s) => s.titolo || s.prodotti.length);
       const bad = scelte.findIndex((s) => !s.titolo || !s.prodotti.length);
       if (bad >= 0) { toast(scelte[bad].titolo ? `"${scelte[bad].titolo}": spunta almeno un prodotto.` : "Dai un nome a ogni scelta.", true); return false; }
       Object.assign(o, {
@@ -1024,7 +1090,7 @@
       saveDraft(); renderPromo(); toast(isNew ? "Offerta creata" : "Modifiche salvate");
     }, (root) => {
       bindPhoto(root, () => art({ nome: $("[name=titolo]", root).value, ingredienti: $("[name=testo]", root).value, prezzo: parseMoney($("[name=prezzo]", root).value), tipo: "offerta" }), holder);
-      bindSteps(root);
+      bindSteps(root, steps);
       if (isNew) setTimeout(() => $("[name=titolo]", root).focus(), 50);
       const dup = $("#dup", root), del = $("#del", root);
       if (dup) dup.addEventListener("click", () => {

@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/admin.css?v=20261107i">
+  <link rel="stylesheet" href="css/admin.css?v=20261107k">
 </head>
 <body>
 
@@ -228,6 +228,30 @@
   </dialog>
 
   <!-- Conferma -->
+  <!-- Scelta dei prodotti per una voce dell'offerta -->
+  <dialog class="sheet pk" id="picker" aria-labelledby="pk-title">
+    <div class="sheet__inner">
+      <header class="sheet__head">
+        <button type="button" class="linkbtn" data-pk-cancel>Annulla</button>
+        <h2 id="pk-title">Scegli i prodotti</h2>
+        <button type="button" class="linkbtn linkbtn--strong" data-pk-done>Fatto</button>
+      </header>
+      <div class="pk__tools">
+        <label class="search pk__search">
+          <i data-icon="search"></i>
+          <span class="sr-only">Cerca prodotto</span>
+          <input id="pk-q" type="search" placeholder="Cerca prodotto" autocomplete="off">
+        </label>
+        <div class="pk__cats" id="pk-cats" role="tablist" aria-label="Categorie"></div>
+      </div>
+      <div class="sheet__body pk__list" id="pk-list"></div>
+      <footer class="pk__foot">
+        <span class="pk__count" id="pk-count"></span>
+        <button type="button" class="btn btn--light btn--sm" id="pk-all">Seleziona tutti</button>
+      </footer>
+    </div>
+  </dialog>
+
   <dialog class="confirm" id="confirm">
     <form method="dialog">
       <h2 id="confirm-title"></h2>
@@ -242,8 +266,8 @@
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
-  <script src="js/icons.js?v=20261107i" defer></script>
-  <script src="js/art.js?v=20261107i" defer></script>
-  <script src="js/admin.js?v=20261107i" defer></script>
+  <script src="js/icons.js?v=20261107k" defer></script>
+  <script src="js/art.js?v=20261107k" defer></script>
+  <script src="js/admin.js?v=20261107k" defer></script>
 </body>
 </html>

@@ -34,6 +34,10 @@
     dot: '<circle class="f" cx="12" cy="12" r="4"/>',
     trash: '<path d="M4.5 7h15"/><path d="M9.5 7V4.5h5V7"/><path d="m6.3 7 .9 13h9.6l.9-13"/><path d="M10 11v5.5M14 11v5.5"/>',
     chev: '<path d="m9.5 6 6 6-6 6"/>',
+    fries: '<path d="M6 10h12l-1.6 10.5H7.6z"/><path d="M8 10 7 4.5M10.5 10 10 3.5M13.5 10l.5-6.5M16 10l1-5.5"/>',
+    cup: '<path d="M6.5 7.5h11l-1.3 13H7.8z"/><path d="M12 7.5 13.5 3h3"/><path d="M7 12h10"/>',
+    plus: '<path d="M12 5v14M5 12h14"/>',
+    checkMini: '<path d="m6 12.5 4 4L18 8"/>',
     pizza: '<path d="M12 21 3.5 6.3a17 17 0 0 1 17 0z"/><path d="M4.8 8.6a15 15 0 0 1 14.4 0"/><circle class="f" cx="10.3" cy="11.3" r="1.2"/><circle class="f" cx="13.8" cy="13.6" r="1.1"/><circle class="f" cx="12" cy="16.7" r=".9"/>'
   };
   function svg(name, cls) {
