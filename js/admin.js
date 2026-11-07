@@ -21,14 +21,15 @@
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const clone = (o) => JSON.parse(JSON.stringify(o));
   const euro = new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR" });
-  const fmt = (n) => (typeof n === "number" ? euro.format(n) : "—");
+  const isPrice = (n) => typeof n === "number" && Number.isFinite(n); // NaN (es. "abc") non è un prezzo
+  const fmt = (n) => (isPrice(n) ? euro.format(n) : "—");
   const parseMoney = (v) => {
     const t = String(v ?? "").trim().replace(/€/g, "").replace(/\s/g, "").replace(",", ".");
     if (!t) return null;
     const n = Number(t);
     return Number.isFinite(n) && n >= 0 ? Math.round(n * 100) / 100 : NaN;
   };
-  const moneyInput = (n) => (typeof n === "number" ? String(n).replace(".", ",") : "");
+  const moneyInput = (n) => (isPrice(n) ? String(n).replace(".", ",") : "");
   const uid = (p) => `${p}-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
   const store = {
     get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
@@ -45,10 +46,15 @@
   const ALLERGENI = ["Glutine", "Latte", "Uova", "Pesce", "Crostacei", "Molluschi", "Frutta a guscio", "Arachidi", "Soia", "Sedano", "Senape", "Sesamo", "Solfiti", "Lupini"];
   const TIPI = [["pizza", "Pizza"], ["calzone", "Calzone / ripieno"], ["fritto", "Fritto"], ["bevanda", "Bevanda"], ["dolce", "Dolce"], ["offerta", "Offerta / menù combo"]];
 
+  const DEMO_OK = new URLSearchParams(location.search).has("prova");
+  if (!DEMO_OK) store.del(K.demo);
+  $("#demo-box").hidden = !DEMO_OK;
+
   /* ---------- Stato ---------- */
   const S = {
     gh: store.get(K.gh, null),          // { token, owner, repo, branch }
-    demo: store.get(K.demo, false),
+    // la modalità prova si apre solo con "?prova" nell'indirizzo (es. admin.html?prova)
+    demo: DEMO_OK && store.get(K.demo, false),
     base: null,                         // { data, sha } = versione pubblicata
     draft: null,                        // bozza in modifica
     view: "menu",
@@ -243,7 +249,7 @@
      ========================================================= */
   const priceText = (p) => {
     if (p.varianti && p.varianti.length) {
-      const ps = p.varianti.map((v) => v.prezzo).filter((x) => typeof x === "number");
+      const ps = p.varianti.map((v) => v.prezzo).filter((x) => isPrice(x));
       const min = Math.min(...ps), max = Math.max(...ps);
       return ps.length ? (min === max ? fmt(min) : `${fmt(min)} – ${fmt(max)}`) : "—";
     }
@@ -353,7 +359,7 @@
     const html = panel("", `<p class="muted" style="font-size:.9rem">Le aggiunte che il cliente può mettere su qualsiasi pizza, con il prezzo in più. Compaiono in fondo al menù. Per le aggiunte di una sola categoria (es. "Nel ruoto") apri la categoria con la matita.</p>${rowsHTML(S.draft.aggiunte || [], "Es. Mozzarella di bufala", "€")}`);
     openEditor("Aggiunte a pagamento", html, (root) => {
       const rows = readRows(root);
-      if (rows.some((r) => !r.nome || typeof r.prezzo !== "number")) { toast("Ogni aggiunta deve avere nome e prezzo.", true); return false; }
+      if (rows.some((r) => !r.nome || !isPrice(r.prezzo))) { toast("Ogni aggiunta deve avere nome e prezzo.", true); return false; }
       S.draft.aggiunte = rows.map((r) => ({ nome: r.nome, prezzo: r.prezzo }));
       saveDraft(); toast("Aggiunte salvate");
     }, (root) => bindRows(root));
@@ -510,10 +516,10 @@
         $(".cnt", d).textContent = all ? "Tutta la categoria" : n ? `${n} scelti` : "";
       });
       const t = scontoTargets(y);
-      const ok = typeof y.valore === "number";
+      const ok = isPrice(y.valore);
       const ex = ok ? t.slice(0, 4).map(({ p }) => {
         const base = p.varianti && p.varianti.length ? p.varianti[0].prezzo : p.prezzo;
-        if (typeof base !== "number") return "";
+        if (!isPrice(base)) return "";
         const np = applySconto(y, base);
         return `<li>${esc(p.nome)}: ${np < base ? `<s>${fmt(base)}</s> → <b>${fmt(np)}</b>` : `${fmt(base)} (resta uguale: costa già così)`}</li>`;
       }).join("") : "";
@@ -528,7 +534,7 @@
       y.attiva = $("[name=attiva]", root).checked;
       y.dal = $("[name=dal]", root).value; y.al = $("[name=al]", root).value;
       if (!y.nome) { $("[name=nome]", root).setAttribute("aria-invalid", "true"); $("[name=nome]", root).focus(); toast("Scrivi il nome dello sconto.", true); return false; }
-      if (typeof y.valore !== "number" || (y.tipo === "percentuale" && y.valore > 100)) { $("[name=valore]", root).setAttribute("aria-invalid", "true"); $("[name=valore]", root).focus(); toast("Scrivi un valore valido.", true); return false; }
+      if (!isPrice(y.valore) || (y.tipo === "percentuale" && y.valore > 100)) { $("[name=valore]", root).setAttribute("aria-invalid", "true"); $("[name=valore]", root).focus(); toast("Scrivi un valore valido.", true); return false; }
       if (!y.categorie.length && !y.prodotti.length) { toast("Scegli almeno una categoria o un prodotto.", true); return false; }
       if (y.dal && y.al && y.al < y.dal) { toast("La data di fine è prima di quella di inizio.", true); return false; }
       if (isNew) S.draft.sconti.push(y); else S.draft.sconti[i] = y;
@@ -782,10 +788,10 @@
       let prezzo = null, varianti = [];
       if (isMulti) {
         varianti = readRows(root);
-        if (!varianti.length || varianti.some((v) => !v.nome || typeof v.prezzo !== "number")) { toast("Ogni formato deve avere nome e prezzo.", true); return false; }
+        if (!varianti.length || varianti.some((v) => !v.nome || !isPrice(v.prezzo))) { toast("Ogni formato deve avere nome e prezzo.", true); return false; }
       } else {
         prezzo = parseMoney($("[name=prezzo]", root).value);
-        if (typeof prezzo !== "number") { $("[name=prezzo]", root).setAttribute("aria-invalid", "true"); $("[name=prezzo]", root).focus(); toast("Scrivi un prezzo valido, es. 6,50", true); return false; }
+        if (!isPrice(prezzo)) { $("[name=prezzo]", root).setAttribute("aria-invalid", "true"); $("[name=prezzo]", root).focus(); toast("Scrivi un prezzo valido, es. 6,50", true); return false; }
       }
       Object.assign(p, {
         nome, ingredienti: $("[name=ingredienti]", root).value.trim(), prezzo, varianti,
@@ -848,7 +854,7 @@
       const nome = $("[name=nome]", root).value.trim();
       if (!nome) { $("[name=nome]", root).setAttribute("aria-invalid", "true"); toast("Scrivi il nome della categoria.", true); return false; }
       const opzioni = readRows(root);
-      if (opzioni.some((o) => !o.nome || typeof o.prezzo !== "number")) { toast("Ogni extra deve avere nome e prezzo.", true); return false; }
+      if (opzioni.some((o) => !o.nome || !isPrice(o.prezzo))) { toast("Ogni extra deve avere nome e prezzo.", true); return false; }
       Object.assign(c, { nome, nota: $("[name=nota]", root).value.trim(), tipo: $("[name=tipo]", root).value, attiva: $("[name=attiva]", root).checked, opzioni });
       if (isNew) { S.draft.categorie.push(c); S.open.add(c.id); }
       saveDraft(); renderMenu();
@@ -915,7 +921,7 @@
       const titolo = $("[name=titolo]", root).value.trim();
       const prezzo = parseMoney($("[name=prezzo]", root).value);
       if (!titolo) { $("[name=titolo]", root).setAttribute("aria-invalid", "true"); toast("Scrivi il nome dell'offerta.", true); return false; }
-      if (typeof prezzo !== "number") { $("[name=prezzo]", root).setAttribute("aria-invalid", "true"); toast("Scrivi un prezzo valido.", true); return false; }
+      if (!isPrice(prezzo)) { $("[name=prezzo]", root).setAttribute("aria-invalid", "true"); toast("Scrivi un prezzo valido.", true); return false; }
       const dal = $("[name=dal]", root).value, al = $("[name=al]", root).value;
       if (dal && al && al < dal) { toast("La data di fine è prima di quella di inizio.", true); return false; }
       Object.assign(o, {

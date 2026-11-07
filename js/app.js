@@ -384,7 +384,7 @@
   }
   function onScroll() {
     $(".appbar").classList.toggle("is-scrolled", scrollY > 4);
-    const line = $(".cats").getBoundingClientRect().bottom + 8;
+    const line = $(".cats").getBoundingClientRect().bottom + 24; // margine: la sezione si ferma appena sotto la barra delle categorie
     let cur = null;
     $$(".cat-section:not([hidden])").forEach((s) => { if (s.getBoundingClientRect().top <= line) cur = s.dataset.id; });
     setActive(cur || ($$(".cat-section:not([hidden])")[0] || {}).dataset?.id);
