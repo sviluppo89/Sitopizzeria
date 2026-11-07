@@ -42,7 +42,8 @@
 
   const DAYS = [[1, "Lun"], [2, "Mar"], [3, "Mer"], [4, "Gio"], [5, "Ven"], [6, "Sab"], [0, "Dom"]];
   const DAY_FULL = { 0: "Domenica", 1: "Lunedì", 2: "Martedì", 3: "Mercoledì", 4: "Giovedì", 5: "Venerdì", 6: "Sabato" };
-  const TAGS = [["piccante", "🌶️ Piccante"], ["vegetariana", "🌱 Vegetariana"], ["novita", "✨ Novità"], ["consigliata", "★ Consigliata"]];
+  const ic = (n, c) => (window.PallonIcons ? window.PallonIcons.svg(n, c) : "");
+  const TAGS = [["piccante", "Piccante", "chili"], ["vegetariana", "Vegetariana", "leaf"], ["novita", "Novità", "sparkle"], ["consigliata", "Consigliata", "star"]];
   const ALLERGENI = ["Glutine", "Latte", "Uova", "Pesce", "Crostacei", "Molluschi", "Frutta a guscio", "Arachidi", "Soia", "Sedano", "Senape", "Sesamo", "Solfiti", "Lupini"];
   const TIPI = [["pizza", "Pizza"], ["calzone", "Calzone / ripieno"], ["fritto", "Fritto"], ["bevanda", "Bevanda"], ["dolce", "Dolce"], ["offerta", "Offerta / menù combo"]];
 
@@ -124,7 +125,7 @@
     const dirty = isDirty();
     st.classList.toggle("is-dirty", dirty);
     st.classList.toggle("is-demo", S.demo);
-    st.textContent = S.demo ? (dirty ? "Prova · modifiche solo qui" : "Modalità prova") : (dirty ? "● Modifiche da pubblicare" : "✓ Tutto pubblicato");
+    st.innerHTML = S.demo ? (dirty ? "Prova · modifiche solo qui" : "Modalità prova") : (dirty ? `${ic("dot")} Modifiche da pubblicare` : `${ic("check")} Tutto pubblicato`);
     $("#publish").disabled = !dirty || S.demo;
     $("#publish-2").disabled = !dirty || S.demo;
     $("#discard").disabled = !dirty;
@@ -271,14 +272,14 @@
       <section class="cat${open ? " is-open" : ""}${c.attiva === false ? " is-off" : ""}" data-ci="${ci}">
         <div class="cat__head">
           <button type="button" class="cat__toggle" data-act="toggle-cat" aria-expanded="${!!open}">
-            <svg class="cat__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6-1.4-1.4 4.6-4.6-4.6-4.6z"/></svg>
+            ${ic("chev", "cat__chev")}
             <span style="min-width:0">
               <span class="cat__name">${esc(c.nome)}</span>
               <span class="cat__meta">${c.prodotti.length} prodotti${hidden ? ` · ${hidden} nascosti` : ""}${out ? ` · ${out} esauriti` : ""}${c.attiva === false ? " · categoria nascosta" : ""}</span>
             </span>
           </button>
           <button type="button" class="iconbtn" data-act="edit-cat" aria-label="Modifica categoria ${esc(c.nome)}" title="Modifica categoria">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17.2V20h2.8l8.3-8.3-2.8-2.8zM19.7 7.3a1 1 0 0 0 0-1.4l-1.6-1.6a1 1 0 0 0-1.4 0l-1.3 1.3 2.8 2.8z"/></svg>
+            ${ic("pencil")}
           </button>
         </div>
         ${open ? `
@@ -293,7 +294,7 @@
                     ${p.attivo === false ? '<span class="tag">Nascosto</span>' : ""}
                     ${p.disponibile === false ? '<span class="tag tag--off">Esaurito</span>' : ""}
                     ${p.giorni && p.giorni.length ? `<span class="tag">${daysText(p.giorni)}</span>` : ""}
-                    ${p.evidenza ? '<span class="tag tag--warn">⭐ In evidenza</span>' : ""}
+                    ${p.evidenza ? `<span class="tag tag--warn">${ic("star")} In evidenza</span>` : ""}
                     ${p.foto && p.foto.startsWith("data:") ? '<span class="tag tag--warn">Foto nuova</span>' : ""}
                   </span>
                 </span>
@@ -384,7 +385,7 @@
       return `
       <div class="pcard" data-i="${i}">
         <button type="button" class="prod__open" data-act="edit">
-          <span class="thumb">${art({ nome: o.titolo, ingredienti: o.testo, foto: o.foto, tipo: "offerta" })}</span>
+          <span class="thumb">${art({ nome: o.titolo, ingredienti: o.testo, dettagli: o.dettagli, prezzo: o.prezzo, foto: o.foto, tipo: "offerta" })}</span>
           <span class="prod__txt">
             <span class="prod__name">${esc(o.titolo)}</span>
             <span class="prod__sub"><span class="prod__price">${fmt(o.prezzo)}</span><span class="tag ${cls}">${esc(st)}</span></span>
@@ -665,7 +666,7 @@
   // blocchi riutilizzabili
   const fieldHTML = (label, inner, hint) => `<label class="field"><span class="field__label">${label}</span>${inner}${hint ? `<span class="field__hint">${hint}</span>` : ""}</label>`;
   const switchHTML = (name, label, sub, on) => `<label class="switchrow"><span><b>${label}</b>${sub ? `<small>${sub}</small>` : ""}</span><input type="checkbox" class="switch" name="${name}" ${on ? "checked" : ""}></label>`;
-  const chipsHTML = (name, items, sel) => `<div class="chips">${items.map(([v, l]) => `<label class="chip"><input type="checkbox" name="${name}" value="${esc(v)}" ${sel.map(String).includes(String(v)) ? "checked" : ""}><span>${esc(l)}</span></label>`).join("")}</div>`;
+  const chipsHTML = (name, items, sel) => `<div class="chips">${items.map(([v, l, i]) => `<label class="chip"><input type="checkbox" name="${name}" value="${esc(v)}" ${sel.map(String).includes(String(v)) ? "checked" : ""}><span>${i ? ic(i) : ""}${esc(l)}</span></label>`).join("")}</div>`;
   const panel = (title, inner) => `<div class="panel">${title ? `<div class="panel__head"><h2>${title}</h2></div>` : ""}${inner}</div>`;
   const rowsHTML = (list, phName, phPrice) => `
     <div class="variants" data-ph-name="${esc(phName)}" data-ph-price="${esc(phPrice)}">${list.map((v) => rowHTML(v, phName, phPrice)).join("")}</div>
@@ -767,7 +768,7 @@
       ${panel("Sul sito", `
         ${switchHTML("attivo", "Visibile sul sito", "Spegnilo per nasconderlo senza cancellarlo.", p.attivo !== false)}
         ${switchHTML("disponibile", "Disponibile", "Se è finito, spegnilo: resta visibile ma non si può ordinare.", p.disponibile !== false)}
-        ${switchHTML("evidenza", "⭐ In evidenza", "Compare in cima al sito (massimo 3 pizze) e con il badge nel menù.", p.evidenza === true)}
+        ${switchHTML("evidenza", `${ic("star")} In evidenza`, "Compare in cima al sito (massimo 3 pizze) e con il badge nel menù.", p.evidenza === true)}
         <div class="field"><span class="field__label">Etichette</span>${chipsHTML("tag", TAGS, p.tag || [])}</div>
         <div class="field"><span class="field__label">Ordinabile solo in questi giorni <small>(nessuno = tutti i giorni)</small></span>${chipsHTML("giorni", DAYS, p.giorni || [])}</div>
       `)}
@@ -894,7 +895,7 @@
     const o = isNew ? { id: uid("promo"), titolo: "", testo: "", prezzo: null, giorni: [], dal: "", al: "", attiva: true, dettagli: "", richiesta: "", foto: "" } : clone(S.draft.promo[i]);
     const holder = { foto: o.foto || "" };
     const html = `
-      ${photoHTML(holder.foto, art({ nome: o.titolo, tipo: "offerta" }))}
+      ${photoHTML(holder.foto, art({ nome: o.titolo, ingredienti: o.testo, dettagli: o.dettagli, prezzo: o.prezzo, tipo: "offerta" }))}
       ${panel("", `
         ${fieldHTML("Nome offerta *", `<input type="text" name="titolo" value="${esc(o.titolo)}" placeholder="Es. Menù famiglia" required>`)}
         ${fieldHTML("Cosa comprende", `<textarea name="testo" rows="2" placeholder="Es. 2 pizze classiche + patatine + bibita 1,5 L">${esc(o.testo)}</textarea>`)}
@@ -932,7 +933,7 @@
       if (isNew) S.draft.promo.push(o); else S.draft.promo[i] = o;
       saveDraft(); renderPromo(); toast(isNew ? "Offerta creata" : "Modifiche salvate");
     }, (root) => {
-      bindPhoto(root, () => art({ nome: o.titolo, tipo: "offerta" }), holder);
+      bindPhoto(root, () => art({ nome: $("[name=titolo]", root).value, ingredienti: $("[name=testo]", root).value, prezzo: parseMoney($("[name=prezzo]", root).value), tipo: "offerta" }), holder);
       if (isNew) setTimeout(() => $("[name=titolo]", root).focus(), 50);
       const dup = $("#dup", root), del = $("#del", root);
       if (dup) dup.addEventListener("click", () => {

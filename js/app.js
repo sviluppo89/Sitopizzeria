@@ -88,11 +88,12 @@
   if (!ORDERS_ON) notices.push(["pause", (C.ordini && C.ordini.messaggioPausa) || "Al momento non accettiamo ordini online."]);
   if (C.avviso) notices.push(["info", C.avviso]);
   $("#notices").innerHTML = notices.map(([t, m]) => `<p class="notice notice--${t}">${esc(m)}</p>`).join("");
+  const ic = (n, c) => window.PallonIcons.svg(n, c);
   const TAG_INFO = {
-    vegetariana: { ico: "🌱", label: "Vegetariana" },
-    piccante: { ico: "🌶️", label: "Piccante" },
-    novita: { ico: "✨", label: "Novità" },
-    consigliata: { ico: "★", label: "La più amata" }
+    vegetariana: { ico: "leaf", label: "Vegetariana", cls: "ic--green" },
+    piccante: { ico: "chili", label: "Piccante", cls: "ic--red" },
+    novita: { ico: "sparkle", label: "Novità" },
+    consigliata: { ico: "star", label: "La più amata" }
   };
 
   /* ---------- Indice prodotti ---------- */
@@ -154,8 +155,8 @@
   const badges = (tags, onlyIcons) => tags.map((t) => {
     const i = TAG_INFO[t]; if (!i) return "";
     return onlyIcons
-      ? (t === "vegetariana" || t === "piccante" ? `<span class="ico-tag" role="img" aria-label="${i.label}" title="${i.label}">${i.ico}</span>` : "")
-      : `<span class="badge badge--${t}">${i.ico} ${i.label}</span>`;
+      ? (t === "vegetariana" || t === "piccante" ? `<span class="ico-tag" role="img" aria-label="${i.label}" title="${i.label}">${ic(i.ico, i.cls)}</span>` : "")
+      : `<span class="badge badge--${t}">${ic(i.ico)} ${i.label}</span>`;
   }).join("");
 
   /* ---------- Stato ---------- */
@@ -251,10 +252,10 @@
               <h4 class="item__name">${esc(p.nome)} ${badges(p.tag, true)}</h4>
               ${descOf(p) ? `<p class="item__desc">${esc(descOf(p))}</p>` : ""}
               <span class="item__price">${priceHTML(p)}</span>
-              ${p.deal ? `<span class="badge badge--promo">🏷️ ${esc(p.deal.nome)}</span>` : ""}
-              ${p.tag.includes("novita") ? ` <span class="badge badge--novita">✨ Novità</span>` : ""}
+              ${p.deal ? `<span class="badge badge--promo">${ic("tag")} ${esc(p.deal.nome)}</span>` : ""}
+              ${p.tag.includes("novita") ? ` <span class="badge badge--novita">${ic("sparkle")} Novità</span>` : ""}
               ${statusBadge(p)}
-              ${p.evidenza ? `<span class="badge badge--star">⭐ In evidenza</span>` : ""}
+              ${p.evidenza ? `<span class="badge badge--star">${ic("star")} In evidenza</span>` : ""}
             </div>
             <div class="item__media">
               <div class="item__art">${art(p)}</div>
@@ -275,7 +276,7 @@
         <button type="button" class="item__open" data-open="${p.id}" aria-label="${esc(p.nome)}, ${priceLabel(p)}. Dettagli"></button>
         <div class="spot__art">${art(p)}</div>
         <div class="spot__body">
-          <span class="badge badge--star">⭐ In evidenza</span>
+          <span class="badge badge--star">${ic("star")} In evidenza</span>
           <span class="spot__name">${esc(p.nome)}</span>
           <span class="spot__desc">${esc(descOf(p))}</span>
           <span class="spot__price">${priceHTML(p)}</span>
@@ -296,7 +297,7 @@
     <div class="fcard${canOrder(p) ? "" : " is-off"}" data-id="${p.id}">
       <button type="button" class="item__open" data-open="${p.id}" aria-label="${esc(p.nome)}, ${priceLabel(p)}. Dettagli"></button>
       <div class="fcard__art">${art(p)}</div>
-      ${p.giorni ? statusBadge(p) : p.tag.includes("consigliata") ? `<span class="badge badge--consigliata">★ La più amata</span>` : p.tag.includes("novita") ? `<span class="badge badge--novita">✨ Novità</span>` : ""}
+      ${p.giorni ? statusBadge(p) : p.tag.includes("consigliata") ? `<span class="badge badge--consigliata">${ic("star")} La più amata</span>` : p.tag.includes("novita") ? `<span class="badge badge--novita">${ic("sparkle")} Novità</span>` : ""}
       <div class="fcard__body">
         <span class="fcard__name">${esc(p.nome)}</span>
         <span class="fcard__desc">${esc(descOf(p))}</span>
@@ -309,7 +310,7 @@
   if (todayDeals.length) {
     $("#deals").innerHTML = todayDeals.map((x) => `
       <button type="button" class="deal" data-deal>
-        <span class="deal__ico" aria-hidden="true">🏷️</span>
+        <span class="deal__ico" aria-hidden="true">${ic("tag")}</span>
         <span class="deal__txt"><strong>Oggi: ${esc(x.nome)}</strong><small>${esc(x.testo || "Tocca per vedere i prodotti in promo")}</small></span>
         <span class="deal__go" aria-hidden="true">›</span>
       </button>`).join("");
@@ -467,7 +468,7 @@
         <span class="cart__name">${esc(lineLabel(l))}</span>
         <div class="cart__side">
           <div class="stepper stepper--sm" aria-label="Quantità ${esc(p.nome)}">
-            <button type="button" class="stepper__btn" data-line="${i}" data-delta="-1" aria-label="${l.qty === 1 ? "Rimuovi" : "Diminuisci"} ${esc(p.nome)}">${l.qty === 1 ? "🗑" : "−"}</button>
+            <button type="button" class="stepper__btn" data-line="${i}" data-delta="-1" aria-label="${l.qty === 1 ? "Rimuovi" : "Diminuisci"} ${esc(p.nome)}">${l.qty === 1 ? ic("trash") : "−"}</button>
             <output>${l.qty}</output>
             <button type="button" class="stepper__btn" data-line="${i}" data-delta="1" aria-label="Aumenta ${esc(p.nome)}">+</button>
           </div>
@@ -478,8 +479,8 @@
             <input type="text" maxlength="160" value="${esc(l.note)}" placeholder="Es. ben cotta, senza origano" data-note-input="${i}" aria-label="Nota per ${esc(p.nome)}" enterkeyhint="done">
             <button type="button" class="btn btn--primary btn--xs" data-note-save="${i}">Salva</button>
           </div>` : `
-          ${l.note ? `<span class="cart__note">📝 ${esc(l.note)}</span>` : ""}
-          <button type="button" class="cart__notebtn" data-note-edit="${i}">✏️ ${l.note ? "Modifica nota" : "Aggiungi nota"}</button>`}
+          ${l.note ? `<span class="cart__note">${ic("note")} ${esc(l.note)}</span>` : ""}
+          <button type="button" class="cart__notebtn" data-note-edit="${i}">${ic("pencil")} ${l.note ? "Modifica nota" : "Aggiungi nota"}</button>`}
       </li>`;
     }).join("");
     renderTotals();
@@ -562,7 +563,7 @@
     $("#ps-art").innerHTML = art(current);
     $("#ps-art").classList.toggle("is-contain", !!current.fotoIntera);
     $("#ps-name").textContent = current.nome;
-    $("#ps-tags").innerHTML = badges(current.tag, false) + statusBadge(current) + (current.deal ? `<span class="badge badge--promo">🏷️ ${esc(current.deal.nome)}</span>` : "");
+    $("#ps-tags").innerHTML = badges(current.tag, false) + statusBadge(current) + (current.deal ? `<span class="badge badge--promo">${ic("tag")} ${esc(current.deal.nome)}</span>` : "");
     const desc = current.ingredienti && current.ingredienti !== "Scegli il gusto" ? current.ingredienti : "";
     $("#ps-desc").textContent = desc;
     $("#ps-desc").hidden = !desc;

@@ -355,7 +355,11 @@ img.is-contain, .is-contain img { object-fit: contain !important; }
 
 .services { list-style: none; padding: 0; margin: 16px 0 0; display: flex; flex-wrap: wrap; gap: 8px; }
 .services li { font-size: .82rem; font-weight: 700; padding: 6px 12px; border-radius: 999px; background: var(--surface-2); }
-.services li::before { content: "✓ "; color: var(--red); }
+.services li::before {
+  content: ""; display: inline-block; width: 12px; height: 12px; margin-right: 6px; vertical-align: -1px; background: var(--red);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 12.5 4.3 4.3L19 7.2'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 12.5 4.3 4.3L19 7.2'/%3E%3C/svg%3E") center / contain no-repeat;
+}
 
 .footer { text-align: center; padding: 28px 16px; background: var(--green); color: #d9e6dd; font-size: .9rem; }
 .footer p { margin: 2px 0; }
@@ -596,3 +600,38 @@ img.is-contain, .is-contain img { object-fit: contain !important; }
   padding: 12px 16px; border-radius: 14px; font-weight: 700; font-size: .92rem; box-shadow: var(--shadow-2);
   animation: rise .3s var(--ease);
 }
+
+/* ---------- Icone (js/icons.js) ---------- */
+.ic {
+  width: 1.15em; height: 1.15em; flex: none; display: inline-block; vertical-align: -0.2em;
+  fill: none !important; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round;
+}
+.ic .f { fill: currentColor !important; stroke: none; }
+.ic--red { color: var(--red); }
+.ic--green { color: #1f8a46; }
+@media (prefers-color-scheme: dark) { .ic--green { color: #5fd38c; } .ic--red { color: #ff6b70; } }
+.quick__ico { color: #fff; }
+.quick__ico .ic { width: 22px; height: 22px; stroke-width: 2.1; }
+.row__ico { color: var(--green); }
+@media (prefers-color-scheme: dark) { .row__ico { color: #5fd38c; } }
+.row__ico .ic { width: 22px; height: 22px; }
+.search > .ic { color: var(--muted); width: 20px; height: 20px; }
+.iconbtn .ic { width: 22px; height: 22px; color: var(--ink); }
+.btn .ic, .segmented__opt .ic { width: 20px; height: 20px; }
+.filter { display: inline-flex; align-items: center; gap: 6px; }
+.filter .ic { width: 18px; height: 18px; }
+.filter[aria-pressed="true"] .ic { color: inherit; }
+.badge .ic { width: 13px; height: 13px; stroke-width: 2.2; vertical-align: -2px; }
+.ico-tag .ic { width: 17px; height: 17px; vertical-align: -3px; }
+.deal__ico .ic { width: 30px; height: 30px; }
+.empty__emoji .ic { width: 44px; height: 44px; color: var(--crust); stroke-width: 1.6; }
+.sent__title .ic, .cart-hint .ic { width: 17px; height: 17px; vertical-align: -3px; }
+.confirm-box__ico .ic { width: 22px; height: 22px; color: #b26a00; }
+@media (prefers-color-scheme: dark) { .confirm-box__ico .ic { color: #f2c25c; } }
+.cart__note, .cart__notebtn { display: inline-flex; align-items: center; gap: 6px; }
+.cart__note .ic, .cart__notebtn .ic { width: 16px; height: 16px; }
+.stepper__btn .ic { width: 18px; height: 18px; vertical-align: -3px; }
+
+/* Copertine delle offerte: riempiono il riquadro */
+.fcard__art svg.art-cover, .ps__art svg.art-cover { position: absolute; inset: 0; width: 100%; height: 100%; }
+.item__art svg.art-cover, .spot__art svg.art-cover { width: 100%; height: 100%; }
