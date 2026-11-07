@@ -131,7 +131,7 @@
   const validToday = (p) => !p.giorni || p.giorni.includes(new Date().getDay());
   const daysLabel = (p) => (p.giorni || []).slice().sort((a, b) => ((a + 6) % 7) - ((b + 6) % 7)).map((d) => DAY_SHORT[d]).join(" · ");
   const canOrder = (p) => ORDERS_ON && p.disponibile && validToday(p);
-  const needsSheet = (p) => !!(p.varianti || p.segnaposto || (p.scelte && p.scelte.length));
+  const needsSheet = (p) => !!(p.varianti || p.segnaposto || (p.scelte && p.scelte.length) || (p.opzioni && p.opzioni.length));
   // prezzo base (variante) con l'eventuale sconto del giorno
   const finalPrice = (p, base) => { const d = bestDeal(p, base); return d ? d.price : base; };
   const priceLabel = (p) => {
@@ -529,7 +529,9 @@
             <button type="button" class="btn btn--primary btn--xs" data-note-save="${i}">Salva</button>
           </div>` : `
           ${l.note ? `<span class="cart__note">${ic("note")} ${esc(l.note)}</span>` : ""}
-          <button type="button" class="cart__notebtn" data-note-edit="${i}">${ic("pencil")} ${l.note ? "Modifica nota" : "Aggiungi nota"}</button>`}
+          ${needsSheet(p)
+            ? `<button type="button" class="cart__notebtn" data-line-edit="${i}">${ic("pencil")} Modifica ${p.opzioni.length ? "ingredienti e note" : "scelta e note"}</button>`
+            : `<button type="button" class="cart__notebtn" data-note-edit="${i}">${ic("pencil")} ${l.note ? "Modifica nota" : "Aggiungi nota"}</button>`}`}
       </li>`;
     }).join("");
     renderTotals();
@@ -552,6 +554,8 @@
     if (e.key === "Enter" && e.target.dataset.noteInput != null) { e.preventDefault(); saveNote(+e.target.dataset.noteInput); }
   });
   $("#cart-list").addEventListener("click", (e) => {
+    const le = e.target.closest("[data-line-edit]");
+    if (le) { openProduct(state.cart[+le.dataset.lineEdit].id, +le.dataset.lineEdit); return; }
     const ed = e.target.closest("[data-note-edit]");
     if (ed) {
       editingNote = +ed.dataset.noteEdit; renderCart();
@@ -620,10 +624,12 @@
     if (!ORDERS_ON) { add.textContent = "Ordini online in pausa"; add.disabled = true; }
     else if (!current.disponibile) { add.textContent = "Al momento non disponibile"; add.disabled = true; }
     else if (!validToday(current)) { add.textContent = `Valida solo ${daysLabel(current)}`; add.disabled = true; }
-    else { add.textContent = `Aggiungi · ${fmt(unitPrice({ id: current.id, v: selV, o: selO }) * qty)}`; add.disabled = false; }
+    else { add.textContent = `${editLine >= 0 ? "Aggiorna" : "Aggiungi"} · ${fmt(unitPrice({ id: current.id, v: selV, o: selO }) * qty)}`; add.disabled = false; }
   }
-  function openProduct(id) {
+  let editLine = -1; // riga dell'ordine che si sta modificando (-1 = nuovo prodotto)
+  function openProduct(id, lineIndex = -1) {
     current = PRODUCTS.get(id); qty = 1; selV = 0; selO = []; selC = [];
+    editLine = lineIndex;
     // offerte con scelte: per ogni voce il cliente sceglie tra i prodotti decisi in admin
     const catName = (id) => (MENU.find((c) => c.id === id) || {}).nome || "";
     const steps = (current.scelte || []).map((s) => {
@@ -682,10 +688,26 @@
     $("#ps-note-label small").hidden = !!current.segnaposto;
     $("#ps-note-wrap").hidden = !canOrder(current);
     $(".stepper", ps).hidden = !canOrder(current);
+    // modifica di una riga già nell'ordine: ripristino le scelte fatte
+    if (editLine >= 0 && state.cart[editLine]) {
+      const l = state.cart[editLine];
+      qty = l.qty; selV = l.v || 0; selO = (l.o || []).slice();
+      const vr = $(`input[name="ps-v"][value="${selV}"]`, ps); if (vr) vr.checked = true;
+      selO.forEach((i) => { const c = $(`input[name="ps-o"][value="${i}"]`, ps); if (c) c.checked = true; });
+      (l.c || []).forEach((txt) => {
+        const k = (current._steps || []).findIndex((s) => txt.startsWith(s.titolo + ": "));
+        if (k < 0) return;
+        const val = txt.slice(current._steps[k].titolo.length + 2);
+        const r = [...ps.querySelectorAll(`input[name="ps-c${k}"]`)].find((x) => x.value === val);
+        if (r) { r.checked = true; selC[k] = val; }
+      });
+      $("#ps-note").value = l.note || "";
+    }
     updateAddLabel();
     openSheet(ps);
     $(".sheet__body", ps).scrollTop = 0;
   }
+  ps.addEventListener("close", () => { editLine = -1; });
   ps.addEventListener("change", (e) => {
     if (e.target.name === "ps-v") selV = +e.target.value;
     if (e.target.name === "ps-o") selO = $$('input[name="ps-o"]:checked', ps).map((i) => +i.value);
@@ -713,7 +735,15 @@
       return;
     }
     const choices = steps.map((s, k) => `${s.titolo}: ${selC[k]}`);
-    addToCart(current.id, qty, $("#ps-note").value, current.varianti ? selV : 0, selO, choices);
+    if (editLine >= 0 && state.cart[editLine]) {
+      const nl = { id: current.id, qty, note: $("#ps-note").value.trim(), v: current.varianti ? selV : 0, o: selO.slice().sort((a, b) => a - b) };
+      if (choices.length) nl.c = choices;
+      state.cart[editLine] = nl;
+      editLine = -1; save(); renderCart(); vibrate();
+      live(`${lineLabel(nl)} aggiornato`);
+    } else {
+      addToCart(current.id, qty, $("#ps-note").value, current.varianti ? selV : 0, selO.slice().sort((a, b) => a - b), choices);
+    }
     closeSheet(ps);
   });
 
@@ -726,7 +756,7 @@
         addToCart(p.id);
         if (!store.get("pallone-notehint", false)) {
           store.set("pallone-notehint", true);
-          siteToast("Aggiunta! Per ingredienti in più o una nota (es. ben cotta) tocca la pizza.");
+          siteToast("Aggiunto! Puoi scrivere una nota da «Vedi ordine».");
         }
       }
       return;
