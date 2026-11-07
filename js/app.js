@@ -773,17 +773,30 @@
 
   /* Carrello */
   const cs = $("#cart-sheet");
+  // Fasce orarie ogni mezz'ora (20:00, 20:30…), la prima almeno 30 minuti da adesso.
+  // Con gli orari impostati in admin propone solo fasce dentro l'orario di oggi.
+  function timeSlots(now = new Date()) {
+    const mins = now.getHours() * 60 + now.getMinutes();
+    const first = Math.ceil((mins + 30) / 30) * 30;
+    let ranges = [[0, 24 * 60]];
+    if (C.orari) {
+      const d = now.getDay(); ranges = [];
+      (C.orari[d] || []).forEach(([a, b]) => { const s = toMin(a); let e = toMin(b); if (e <= s) e += 1440; ranges.push([s, e]); });
+      (C.orari[(d + 6) % 7] || []).forEach(([a, b]) => { const s = toMin(a), e = toMin(b); if (e <= s) ranges.push([s - 1440, e]); });
+    }
+    const out = [];
+    ranges.forEach(([s, e]) => {
+      for (let t = Math.max(first, Math.ceil(s / 30) * 30); t < e; t += 30) out.push(t);
+    });
+    return [...new Set(out)].sort((x, y) => x - y)
+      .map((t) => `${String(Math.floor(((t % 1440) + 1440) % 1440 / 60)).padStart(2, "0")}:${String(((t % 60) + 60) % 60).padStart(2, "0")}`);
+  }
   function fillTimes() {
     const sel = $("#c-time");
-    const opts = ['<option value="">Prima possibile (ti diciamo noi l\'orario)</option>'];
-    const d = new Date(); d.setSeconds(0, 0);
-    d.setMinutes(Math.ceil((d.getMinutes() + 30) / 15) * 15);
-    for (let i = 0; i < 16; i++) {
-      const t = d.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
-      opts.push(`<option>${t}</option>`);
-      d.setMinutes(d.getMinutes() + 15);
-    }
-    const prev = sel.value; sel.innerHTML = opts.join(""); sel.value = prev;
+    const slots = timeSlots();
+    const opts = ['<option value="">Prima possibile (ti diciamo noi l\'orario)</option>']
+      .concat(slots.map((t) => `<option>${t}</option>`));
+    const prev = sel.value; sel.innerHTML = opts.join(""); sel.value = slots.includes(prev) ? prev : "";
   }
   $("#cartbar").addEventListener("click", () => {
     buildSuggestions(); renderSuggestions();
