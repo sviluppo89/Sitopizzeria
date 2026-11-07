@@ -18,7 +18,7 @@
 
   /* ---------- Caricamento dati (data/menu.json, gestito dalla pagina admin) ---------- */
   const PREVIEW = new URLSearchParams(location.search).has("anteprima");
-  // Modalità tavolo (QR sui tavolini): solo consultazione, ordinazione da mostrare al cameriere
+  // Modalità tavolo (QR sui tavolini): solo consultazione, ordinazione da mostrare al personale
   const TABLE = new URLSearchParams(location.search).has("tavolo");
   if (TABLE) document.body.classList.add("is-table");
   const CART_KEY = TABLE ? "pallone-cart-tavolo" : "pallone-cart";
