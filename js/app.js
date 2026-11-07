@@ -636,8 +636,8 @@
     $("#ps-steps").innerHTML = steps.map((s, k) => `
       <fieldset class="choices choices--step" data-step="${k}">
         <legend><span class="step-n">${k + 1}</span> ${esc(s.titolo || "Scegli")} <small class="step-req">obbligatoria</small></legend>
-        <div class="choices__grid">${s.items.map((p) => `
-          <label class="choice choice--compact${p.disponibile ? "" : " is-off"}"><input type="radio" name="ps-c${k}" value="${esc(p.nome)}" ${p.disponibile ? "" : "disabled"}>
+        <div class="optlist">${s.items.map((p) => `
+          <label class="choice${p.disponibile ? "" : " is-off"}"><input type="radio" name="ps-c${k}" value="${esc(p.nome)}" ${p.disponibile ? "" : "disabled"}>
             <span class="choice__name">${esc(p.nome)}${p.disponibile ? "" : " <small>(finito)</small>"}</span></label>`).join("")}</div>
       </fieldset>`).join("");
     $("#ps-art").innerHTML = art(current);
@@ -665,13 +665,13 @@
     // opzioni (es. nel ruoto)
     const ow = $("#ps-options");
     ow.hidden = !current.opzioni.length;
-    const optRow = (o, i, compact) => `
-      <label class="choice${compact ? " choice--compact" : ""}"><input type="checkbox" name="ps-o" value="${i}">
+    const optRow = (o, i) => `
+      <label class="choice"><input type="checkbox" name="ps-o" value="${i}">
         <span class="choice__name">${esc(o.nome)}</span><span class="choice__price">+${fmt(o.prezzo)}</span></label>`;
     const own = current.opzioni.map((o, i) => [o, i]).filter(([o]) => !o.g);
     const glob = current.opzioni.map((o, i) => [o, i]).filter(([o]) => o.g);
-    $("#ps-options-list").innerHTML = own.map(([o, i]) => optRow(o, i)).join("")
-      + (glob.length ? `<p class="choices__sub">Ingredienti in più</p><div class="choices__grid">${glob.map(([o, i]) => optRow(o, i, true)).join("")}</div>` : "");
+    $("#ps-options-list").innerHTML = (own.length ? `<div class="optlist">${own.map(([o, i]) => optRow(o, i)).join("")}</div>` : "")
+      + (glob.length ? `<p class="choices__sub">Ingredienti in più</p><div class="optlist">${glob.map(([o, i]) => optRow(o, i)).join("")}</div>` : "");
     $("#ps-note").value = "";
     $("#ps-note").placeholder = current.segnaposto || "Es. ben cotta, senza origano…";
     $("#ps-note-label").firstChild.textContent = current.segnaposto ? "La tua scelta " : "Vuoi cambiare qualcosa? ";

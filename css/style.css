@@ -689,3 +689,54 @@ img.is-contain, .is-contain img { object-fit: contain !important; }
 #ps-options-list > .choice { margin-bottom: 8px; }
 .choice--compact .choice__price { font-size: .85rem; white-space: nowrap; }
 .extras__hint { margin: 0 0 6px; font-size: .86rem; color: var(--muted); }
+
+/* =========================================================
+   Liste di scelta (formati, extra, ingredienti, scelte offerte)
+   Un solo stile: lista raggruppata, righe uguali, prezzo a destra
+   ========================================================= */
+.choices { margin: 0 0 18px; }
+.choices legend { margin-bottom: 10px; }
+.optlist {
+  display: block; background: var(--surface); border: 1.5px solid var(--line);
+  border-radius: 16px; overflow: hidden;
+}
+.optlist + .choices__sub { margin-top: 14px; }
+.optlist .choice {
+  display: flex; align-items: center; gap: 12px;
+  min-height: 54px; margin: 0; padding: 0 14px; border: 0; border-radius: 0;
+  background: transparent; cursor: pointer; transition: background-color .15s;
+}
+.optlist .choice + .choice { border-top: 1px solid var(--line); }
+.optlist .choice:has(input:checked) { background: var(--green-50); border-color: var(--line); }
+.optlist .choice.is-off { opacity: .45; cursor: default; }
+.optlist .choice__name {
+  flex: 1; min-width: 0; font-weight: 700; font-size: .98rem; line-height: 1.25;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.optlist .choice__name small { font-weight: 600; color: var(--muted); }
+.optlist .choice__price {
+  flex: none; margin-left: auto; font-weight: 800; font-size: .95rem; color: var(--muted);
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.optlist .choice:has(input:checked) .choice__price { color: var(--ink); }
+
+/* spunta e pallino nei colori del sito */
+.optlist .choice input {
+  appearance: none; -webkit-appearance: none; flex: none; margin: 0;
+  width: 22px; height: 22px; border: 2px solid #c9c2b6; background: var(--surface);
+  display: grid; place-items: center; transition: background-color .15s, border-color .15s;
+}
+.optlist .choice input[type="checkbox"] { border-radius: 7px; }
+.optlist .choice input[type="radio"] { border-radius: 50%; }
+.optlist .choice input:checked { background: var(--green); border-color: var(--green); }
+.optlist .choice input[type="checkbox"]:checked::after {
+  content: ""; width: 12px; height: 12px; background: #fff;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 12.5 4.3 4.3L19 7.2'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 12.5 4.3 4.3L19 7.2'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.optlist .choice input[type="radio"]:checked::after { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #fff; }
+.optlist .choice input:focus-visible { outline: 3px solid var(--crust); outline-offset: 2px; }
+@media (prefers-color-scheme: dark) { .optlist .choice input { border-color: #4a544e; } .optlist .choice input:checked { background: #1f8a46; border-color: #1f8a46; } }
+
+.choices__sub { margin: 14px 2px 8px; font-weight: 800; font-size: .82rem; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+.choices--step.is-missing .optlist { border-color: var(--red); box-shadow: 0 0 0 3px color-mix(in srgb, var(--red) 15%, transparent); }
