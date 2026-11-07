@@ -40,9 +40,48 @@
    "dal": "",
    "al": "",
    "attiva": true,
-   "dettagli": "Pizza Classic a scelta tra: Napoletana, Marinara, Margherita, Bufala, Diavola, Siciliana, 4 Formaggi, Cosacca, USA, Crocchè, Parmigiana, Ripieni.",
-   "richiesta": "Scrivi la pizza, patatina o alghe e la bibita",
-   "foto": ""
+   "dettagli": "",
+   "richiesta": "",
+   "foto": "",
+   "scelte": [
+    {
+     "titolo": "La pizza classic",
+     "prodotti": [
+      "pizze-napoletana",
+      "pizze-marinara",
+      "pizze-margherita",
+      "pizze-bufala",
+      "pizze-diavola",
+      "pizze-siciliana",
+      "pizze-4-formaggi",
+      "pizze-cosacca",
+      "pizze-usa",
+      "pizze-crocche",
+      "pizze-parmigiana",
+      "ripieni-napoli",
+      "ripieni-classico",
+      "ripieni-scarola",
+      "ripieni-parmigiana"
+     ]
+    },
+    {
+     "titolo": "Patatina o alghe",
+     "prodotti": [
+      "fritture-patatine-stick",
+      "fritture-frittelle-alle-alghe"
+     ]
+    },
+    {
+     "titolo": "La bibita (33 cl)",
+     "prodotti": [
+      "bibite-coca-cola",
+      "bibite-coca-cola-zero",
+      "bibite-fanta",
+      "bibite-sprite",
+      "bibite-estathe"
+     ]
+    }
+   ]
   },
   {
    "id": "promo-scrigno-party",
@@ -58,8 +97,42 @@
    "al": "",
    "attiva": true,
    "dettagli": "",
-   "richiesta": "Scrivi lo scrigno o la pizza, patatina o alghe e la bibita",
-   "foto": ""
+   "richiesta": "",
+   "foto": "",
+   "scelte": [
+    {
+     "titolo": "Scrigno o pizza special",
+     "prodotti": [
+      "scrigni-scrigno-mediterranea",
+      "scrigni-scrigno-pulled-pork",
+      "scrigni-scrigno-bandidos",
+      "scrigni-scrigno-bacoli",
+      "scrigni-scrigno-poldo",
+      "scrigni-scrigno-killer",
+      "scrigni-scrigno-vittorio",
+      "special-la-zingara",
+      "special-one-piece",
+      "special-scrignuozzo-nic-dan"
+     ]
+    },
+    {
+     "titolo": "Patatina o alghe",
+     "prodotti": [
+      "fritture-patatine-stick",
+      "fritture-frittelle-alle-alghe"
+     ]
+    },
+    {
+     "titolo": "La bibita (33 cl)",
+     "prodotti": [
+      "bibite-coca-cola",
+      "bibite-coca-cola-zero",
+      "bibite-fanta",
+      "bibite-sprite",
+      "bibite-estathe"
+     ]
+    }
+   ]
   },
   {
    "id": "promo-crazy-sunday",

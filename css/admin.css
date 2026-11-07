@@ -355,3 +355,10 @@ button { font: inherit; color: inherit; cursor: pointer; }
 /* Copertine delle offerte */
 .thumb svg.art-cover { width: 100%; height: 100%; }
 .photo__box svg.art-cover { width: 100%; height: 100%; }
+
+/* Scelte delle offerte */
+.step { border: 1.5px solid var(--line); border-radius: 14px; padding: 10px; display: grid; gap: 8px; margin-bottom: 10px; background: var(--surface); }
+.step__head { display: flex; gap: 8px; }
+.step__head input { flex: 1; min-width: 0; font: inherit; font-size: 16px; font-weight: 800; color: var(--ink); background: var(--surface-2); border: 1.5px solid transparent; border-radius: 12px; padding: 10px 12px; min-height: 46px; }
+.step__head input:focus { outline: 0; border-color: var(--green); }
+.step__sum { margin: 0; font-size: .82rem; color: var(--muted); }

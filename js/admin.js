@@ -414,7 +414,7 @@
           <span class="thumb">${art({ nome: o.titolo, ingredienti: o.testo, dettagli: o.dettagli, prezzo: o.prezzo, foto: o.foto, tipo: "offerta" })}</span>
           <span class="prod__txt">
             <span class="prod__name">${esc(o.titolo)}</span>
-            <span class="prod__sub"><span class="prod__price">${fmt(o.prezzo)}</span><span class="tag ${cls}">${esc(st)}</span></span>
+            <span class="prod__sub"><span class="prod__price">${fmt(o.prezzo)}</span><span class="tag ${cls}">${esc(st)}</span>${(o.scelte || []).length ? `<span class="tag">${o.scelte.length} scelte</span>` : ""}</span>
           </span>
         </button>
         <label class="prod__side"><input type="checkbox" class="switch" data-act="on" ${o.attiva !== false ? "checked" : ""} aria-label="Offerta ${esc(o.titolo)} attiva"><span>${o.attiva !== false ? "Attiva" : "Spenta"}</span></label>
@@ -916,6 +916,56 @@
   }
 
   /* ---------- Offerta ---------- */
+  // ---- Scelte delle offerte (es. 1 pizza + 1 frittura + 1 bibita) ----
+  function stepHTML(s) {
+    const sel = new Set(s.prodotti || []);
+    return `<div class="step">
+      <div class="step__head">
+        <input type="text" data-s="titolo" value="${esc(s.titolo || "")}" placeholder="Nome della scelta (es. La bibita)" aria-label="Nome della scelta">
+        <button type="button" class="iconbtn" data-step-del aria-label="Togli questa scelta">×</button>
+      </div>
+      <div class="picker">${S.draft.categorie.map((c) => {
+        const n = c.prodotti.filter((p) => sel.has(p.id)).length;
+        return `<details data-cat="${esc(c.id)}">
+          <summary>${esc(c.nome)}<span class="cnt">${n ? `${n} scelti` : ""}</span></summary>
+          <label class="pick pick--all"><input type="checkbox" data-allc ${n && n === c.prodotti.length ? "checked" : ""}><span>Tutti i prodotti di questa categoria</span></label>
+          ${c.prodotti.map((p) => `<label class="pick"><input type="checkbox" data-sp="${esc(p.id)}" ${sel.has(p.id) ? "checked" : ""}><span>${esc(p.nome)}</span></label>`).join("")}
+        </details>`;
+      }).join("")}</div>
+      <p class="step__sum"></p>
+    </div>`;
+  }
+  function stepSummary(st) {
+    const names = S.draft.categorie.flatMap((c) => c.prodotti).filter((p) => $(`[data-sp="${CSS.escape(p.id)}"]`, st)?.checked).map((p) => p.nome);
+    $(".step__sum", st).textContent = names.length ? `Il cliente sceglie tra: ${names.join(", ")}` : "Nessun prodotto spuntato";
+    $$("details[data-cat]", st).forEach((d) => {
+      const k = $$("[data-sp]:checked", d).length, all = $$("[data-sp]", d).length;
+      $(".cnt", d).textContent = k ? `${k} scelti` : "";
+      $("[data-allc]", d).checked = k > 0 && k === all;
+    });
+  }
+  function bindSteps(root) {
+    $$(".step", root).forEach(stepSummary);
+    root.addEventListener("click", (e) => {
+      const add = e.target.closest("[data-step-add]");
+      if (add) {
+        $("#steps", root).insertAdjacentHTML("beforeend", stepHTML({ titolo: add.dataset.stepAdd, prodotti: [] }));
+        const st = $$(".step", root).pop(); stepSummary(st);
+        const guess = { "La pizza": "pizze", "La frittura": "fritture", "La bibita": "bibite" }[add.dataset.stepAdd];
+        const d = guess && $(`details[data-cat="${guess}"]`, st); if (d) d.open = true;
+        st.scrollIntoView({ behavior: "smooth", block: "start" });
+        if (!add.dataset.stepAdd) $("[data-s=titolo]", st).focus();
+      }
+      const del = e.target.closest("[data-step-del]");
+      if (del) del.closest(".step").remove();
+    });
+    root.addEventListener("change", (e) => {
+      const st = e.target.closest(".step"); if (!st) return;
+      if (e.target.matches("[data-allc]")) $$("[data-sp]", e.target.closest("details")).forEach((x) => (x.checked = e.target.checked));
+      stepSummary(st);
+    });
+  }
+
   function editPromo(i) {
     const isNew = i < 0;
     const o = isNew ? { id: uid("promo"), titolo: "", testo: "", prezzo: null, giorni: [], dal: "", al: "", attiva: true, dettagli: "", richiesta: "", foto: "" } : clone(S.draft.promo[i]);
@@ -936,8 +986,18 @@
         </div>
         <p class="field__hint">Fuori da questo periodo l'offerta sparisce dal sito da sola.</p>
       `)}
-      ${panel("Scelta del cliente", `
-        ${fieldHTML("Chiedi al cliente di scrivere <small>(facoltativo)</small>", `<input type="text" name="richiesta" value="${esc(o.richiesta)}" placeholder="Es. Scrivi le pizze e la bibita">`)}
+      ${panel("Cosa sceglie il cliente", `
+        <p class="muted" style="font-size:.88rem">Crea una voce per ogni scelta (es. "La pizza", "Patatina o alghe", "La bibita") e spunta i prodotti ammessi. Il cliente vedrà solo quelli e dovrà sceglierne uno per voce.</p>
+        <div id="steps">${(o.scelte || []).map((s) => stepHTML(s)).join("")}</div>
+        <div class="btnrow" style="margin-top:0">
+          <button type="button" class="btn btn--light btn--sm" data-step-add="La pizza">+ Pizza</button>
+          <button type="button" class="btn btn--light btn--sm" data-step-add="La frittura">+ Frittura</button>
+          <button type="button" class="btn btn--light btn--sm" data-step-add="La bibita">+ Bibita</button>
+          <button type="button" class="btn btn--ghost btn--sm" data-step-add="">+ Altra scelta</button>
+        </div>
+      `)}
+      ${panel("Altre informazioni", `
+        ${fieldHTML("Chiedi al cliente di scrivere <small>(facoltativo, se non usi le scelte)</small>", `<input type="text" name="richiesta" value="${esc(o.richiesta)}" placeholder="Es. Scrivi le pizze e la bibita">`)}
         ${fieldHTML("Dettagli in evidenza <small>(facoltativo)</small>", `<textarea name="dettagli" rows="3" placeholder="Es. Pizze a scelta tra: Margherita, Marinara, Diavola…">${esc(o.dettagli)}</textarea>`)}
       `)}
       ${isNew ? "" : `<div class="danger-zone">
@@ -951,15 +1011,20 @@
       if (!isPrice(prezzo)) { $("[name=prezzo]", root).setAttribute("aria-invalid", "true"); toast("Scrivi un prezzo valido.", true); return false; }
       const dal = $("[name=dal]", root).value, al = $("[name=al]", root).value;
       if (dal && al && al < dal) { toast("La data di fine è prima di quella di inizio.", true); return false; }
+      const scelte = $$(".step", root).map((st) => ({ titolo: $("[data-s=titolo]", st).value.trim(), prodotti: $$("[data-sp]:checked", st).map((x) => x.dataset.sp) }))
+        .filter((s) => s.titolo || s.prodotti.length);
+      const bad = scelte.findIndex((s) => !s.titolo || !s.prodotti.length);
+      if (bad >= 0) { toast(scelte[bad].titolo ? `"${scelte[bad].titolo}": spunta almeno un prodotto.` : "Dai un nome a ogni scelta.", true); return false; }
       Object.assign(o, {
         titolo, prezzo, dal, al, testo: $("[name=testo]", root).value.trim(), attiva: $("[name=attiva]", root).checked,
         giorni: checked(root, "giorni").map(Number), richiesta: $("[name=richiesta]", root).value.trim(),
-        dettagli: $("[name=dettagli]", root).value.trim(), foto: holder.foto
+        dettagli: $("[name=dettagli]", root).value.trim(), foto: holder.foto, scelte
       });
       if (isNew) S.draft.promo.push(o); else S.draft.promo[i] = o;
       saveDraft(); renderPromo(); toast(isNew ? "Offerta creata" : "Modifiche salvate");
     }, (root) => {
       bindPhoto(root, () => art({ nome: $("[name=titolo]", root).value, ingredienti: $("[name=testo]", root).value, prezzo: parseMoney($("[name=prezzo]", root).value), tipo: "offerta" }), holder);
+      bindSteps(root);
       if (isNew) setTimeout(() => $("[name=titolo]", root).focus(), 50);
       const dup = $("#dup", root), del = $("#del", root);
       if (dup) dup.addEventListener("click", () => {

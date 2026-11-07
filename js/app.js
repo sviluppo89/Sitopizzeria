@@ -48,7 +48,9 @@
     piatti: promos.map((o) => ({
       nome: o.titolo, ingredienti: o.testo, prezzo: o.prezzo, foto: o.foto || undefined,
       giorni: o.giorni && o.giorni.length ? o.giorni : undefined,
-      dettagli: o.dettagli || undefined, segnaposto: o.richiesta || undefined
+      dettagli: o.dettagli || undefined,
+      scelte: (o.scelte || []).filter((s) => s.prodotti && s.prodotti.length),
+      segnaposto: (o.scelte || []).some((s) => s.prodotti && s.prodotti.length) ? undefined : (o.richiesta || undefined)
     }))
   });
   (DATA.categorie || []).filter((c) => c.attiva !== false).forEach((c) => {
@@ -122,7 +124,7 @@
   const validToday = (p) => !p.giorni || p.giorni.includes(new Date().getDay());
   const daysLabel = (p) => (p.giorni || []).slice().sort((a, b) => ((a + 6) % 7) - ((b + 6) % 7)).map((d) => DAY_SHORT[d]).join(" · ");
   const canOrder = (p) => ORDERS_ON && p.disponibile && validToday(p);
-  const needsSheet = (p) => !!(p.varianti || p.segnaposto);
+  const needsSheet = (p) => !!(p.varianti || p.segnaposto || (p.scelte && p.scelte.length));
   // prezzo base (variante) con l'eventuale sconto del giorno
   const finalPrice = (p, base) => { const d = bestDeal(p, base); return d ? d.price : base; };
   const priceLabel = (p) => {
@@ -471,10 +473,10 @@
 
   /* ---------- Carrello ---------- */
   let editingNote = -1; // riga del carrello di cui si sta scrivendo la nota
-  function addToCart(id, qty = 1, note = "", v = 0, o = []) {
+  function addToCart(id, qty = 1, note = "", v = 0, o = [], c = []) {
     note = note.trim();
-    const key = (l) => [l.id, l.note, l.v || 0, (l.o || []).join(",")].join("|");
-    const nl = { id, qty, note, v, o };
+    const key = (l) => [l.id, l.note, l.v || 0, (l.o || []).join(","), (l.c || []).join(",")].join("|");
+    const nl = c.length ? { id, qty, note, v, o, c } : { id, qty, note, v, o };
     const line = state.cart.find((l) => key(l) === key(nl));
     line ? (line.qty += qty) : state.cart.push(nl);
     editingNote = -1;
@@ -513,6 +515,7 @@
           </div>
         </div>
         <span class="cart__price">${fmt(unitPrice(l) * l.qty)}</span>
+        ${l.c && l.c.length ? `<ul class="cart__choices">${l.c.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>` : ""}
         ${editingNote === i ? `
           <div class="cart__noteedit">
             <input type="text" maxlength="160" value="${esc(l.note)}" placeholder="Es. ben cotta, senza origano" data-note-input="${i}" aria-label="Nota per ${esc(p.nome)}" enterkeyhint="done">
@@ -532,7 +535,7 @@
     if (!input || !line) return;
     line.note = input.value.trim();
     // se ora è uguale a un'altra riga (stessa pizza, stessa nota) le unisco
-    const key = (l) => [l.id, l.note, l.v || 0, (l.o || []).join(",")].join("|");
+    const key = (l) => [l.id, l.note, l.v || 0, (l.o || []).join(","), (l.c || []).join(",")].join("|");
     const twin = state.cart.findIndex((l, j) => j !== i && key(l) === key(line));
     if (twin >= 0) { state.cart[twin].qty += line.qty; state.cart.splice(i, 1); }
     editingNote = -1; save(); renderCart();
@@ -602,7 +605,7 @@
   /* Scheda prodotto */
   let current = null, qty = 1;
   const ps = $("#product-sheet");
-  let selV = 0, selO = [];
+  let selV = 0, selO = [], selC = [];
   function updateAddLabel() {
     $("#ps-qty").textContent = qty;
     $("#ps-minus").disabled = qty <= 1;
@@ -613,7 +616,23 @@
     else { add.textContent = `Aggiungi · ${fmt(unitPrice({ id: current.id, v: selV, o: selO }) * qty)}`; add.disabled = false; }
   }
   function openProduct(id) {
-    current = PRODUCTS.get(id); qty = 1; selV = 0; selO = [];
+    current = PRODUCTS.get(id); qty = 1; selV = 0; selO = []; selC = [];
+    // offerte con scelte: per ogni voce il cliente sceglie tra i prodotti decisi in admin
+    const catName = (id) => (MENU.find((c) => c.id === id) || {}).nome || "";
+    const steps = (current.scelte || []).map((s) => {
+      const items = s.prodotti.map((u) => BY_UID.get(u)).filter(Boolean);
+      // nomi uguali in categorie diverse (es. Parmigiana pizza e ripieno): aggiungo la categoria
+      const label = (p) => items.filter((x) => x.nome === p.nome).length > 1 ? `${p.nome} (${catName(p.cat).replace(/^(le|i|gli|il|la) /i, "").toLowerCase()})` : p.nome;
+      return { ...s, items: items.map((p) => ({ ...p, nome: label(p) })) };
+    }).filter((s) => s.items.length);
+    current._steps = steps;
+    $("#ps-steps").innerHTML = steps.map((s, k) => `
+      <fieldset class="choices choices--step" data-step="${k}">
+        <legend><span class="step-n">${k + 1}</span> ${esc(s.titolo || "Scegli")} <small class="step-req">obbligatoria</small></legend>
+        <div class="choices__grid">${s.items.map((p) => `
+          <label class="choice choice--compact${p.disponibile ? "" : " is-off"}"><input type="radio" name="ps-c${k}" value="${esc(p.nome)}" ${p.disponibile ? "" : "disabled"}>
+            <span class="choice__name">${esc(p.nome)}${p.disponibile ? "" : " <small>(finito)</small>"}</span></label>`).join("")}</div>
+      </fieldset>`).join("");
     $("#ps-art").innerHTML = art(current);
     $("#ps-art").classList.toggle("is-contain", !!current.fotoIntera);
     $("#ps-name").textContent = current.nome;
@@ -659,6 +678,10 @@
   ps.addEventListener("change", (e) => {
     if (e.target.name === "ps-v") selV = +e.target.value;
     if (e.target.name === "ps-o") selO = $$('input[name="ps-o"]:checked', ps).map((i) => +i.value);
+    if (/^ps-c\d+$/.test(e.target.name)) {
+      const k = +e.target.name.slice(4); selC[k] = e.target.value;
+      e.target.closest(".choices--step").classList.remove("is-missing");
+    }
     updateAddLabel();
   });
   $("#ps-minus").addEventListener("click", () => { qty = Math.max(1, qty - 1); updateAddLabel(); });
@@ -669,7 +692,17 @@
     if (current.segnaposto && !$("#ps-note").value.trim()) {
       $("#ps-note").setAttribute("aria-invalid", "true"); $("#ps-note").focus(); return;
     }
-    addToCart(current.id, qty, $("#ps-note").value, current.varianti ? selV : 0, selO);
+    const steps = current._steps || [];
+    const missing = steps.findIndex((s, k) => !selC[k]);
+    if (missing >= 0) {
+      const fs = $(`[data-step="${missing}"]`, ps);
+      steps.forEach((s, k) => { if (!selC[k]) $(`[data-step="${k}"]`, ps).classList.add("is-missing"); });
+      fs.scrollIntoView({ behavior: "smooth", block: "center" });
+      live(`Scegli: ${steps[missing].titolo}`);
+      return;
+    }
+    const choices = steps.map((s, k) => `${s.titolo}: ${selC[k]}`);
+    addToCart(current.id, qty, $("#ps-note").value, current.varianti ? selV : 0, selO, choices);
     closeSheet(ps);
   });
 
@@ -762,7 +795,7 @@
     const fullAddr = `${addr.value.trim()}, ${city.value.trim()}`;
 
     const lines = state.cart.map((l) => {
-      return `• ${l.qty}× ${lineLabel(l)} — ${fmt(unitPrice(l) * l.qty)}${PRODUCTS.get(l.id).deal ? ` (promo ${PRODUCTS.get(l.id).deal.nome})` : ""}${l.note ? `\n   ↳ ${l.note}` : ""}`;
+      return `• ${l.qty}× ${lineLabel(l)} — ${fmt(unitPrice(l) * l.qty)}${PRODUCTS.get(l.id).deal ? ` (promo ${PRODUCTS.get(l.id).deal.nome})` : ""}${(l.c || []).map((x) => `\n   ↳ ${x}`).join("")}${l.note ? `\n   ↳ ${l.note}` : ""}`;
     });
     const fee = deliveryFee();
     const text = [
